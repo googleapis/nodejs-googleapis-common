@@ -1,0 +1,48 @@
+{
+  "name": "googleapis-common",
+  "version": "0.1.1",
+  "description": "A common tooling library used by the googleapis npm module. You probably don't want to use this directly.",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "files": [
+    "build/"
+  ],
+  "scripts": {
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "test": "mocha build/test",
+    "system-test": "mocha build/system-test",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check",
+    "lint": "npm run check",
+    "samples-test": "mocha build/samples-test"
+  },
+  "keywords": [],
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/mocha": "^5.2.5",
+    "@types/nock": "^9.3.0",
+    "@types/pify": "^3.0.2",
+    "@types/qs": "^6.5.1",
+    "@types/url-template": "^2.0.28",
+    "@types/uuid": "^3.4.3",
+    "gts": "^0.8.0",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^5.2.0",
+    "nock": "^9.6.0",
+    "source-map-support": "^0.5.8",
+    "typescript": "~3.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "google-auth-library": "^1.4.0",
+    "pify": "^3.0.0",
+    "qs": "^6.5.2",
+    "url-template": "^2.0.8",
+    "uuid": "^3.2.1"
+  }
+}
