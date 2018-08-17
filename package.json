@@ -20,7 +20,6 @@
     "posttest": "npm run check",
     "lint": "npm run check",
     "samples-test": "mocha build/samples-test",
-    "presamples-test": "npm run compile",
     "docs": "jsdoc -c .jsdoc.js"
   },
   "keywords": [],
