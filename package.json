@@ -30,6 +30,7 @@
     "@types/qs": "^6.5.1",
     "@types/url-template": "^2.0.28",
     "@types/uuid": "^3.4.3",
+    "codecov": "^3.0.4",
     "gts": "^0.8.0",
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^5.2.0",
