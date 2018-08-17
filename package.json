@@ -5,7 +5,7 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "files": [
-    "build/"
+    "build/src"
   ],
   "scripts": {
     "check": "gts check",
@@ -13,12 +13,14 @@
     "compile": "tsc -p .",
     "test": "mocha build/test",
     "system-test": "mocha build/system-test",
+    "presystem-test": "npm run compile",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run check",
     "lint": "npm run check",
     "samples-test": "mocha build/samples-test",
+    "presamples-test": "npm run compile",
     "docs": "jsdoc -c .jsdoc.js"
   },
   "keywords": [],
