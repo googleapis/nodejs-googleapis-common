@@ -64,7 +64,7 @@ jobs:
           name: Install and link the module
           command: |-
             mkdir -p /home/node/.npm-global
-            npm install
+            ./.circleci/npm-install-retry.js
           environment:
             NPM_CONFIG_PREFIX: /home/node/.npm-global
       - run: npm test
@@ -92,7 +92,7 @@ jobs:
           command: |
             cd samples/
             npm link ../
-            npm install
+            ./../.circleci/npm-install-retry.js
           environment:
             NPM_CONFIG_PREFIX: /home/node/.npm-global
       - run:
@@ -107,15 +107,21 @@ jobs:
     steps:
       - checkout
       - run: *npm_install_and_link
-      - run:
-          name: Build documentation.
-          command: npm run docs
+      - run: npm run docs
   sample_tests:
     docker:
       - image: 'node:8'
         user: node
     steps:
       - checkout
+      - run:
+          name: Decrypt credentials.
+          command: |
+            if ! [[ -z "${SYSTEM_TESTS_ENCRYPTION_KEY}" ]]; then
+              openssl aes-256-cbc -d -in .circleci/key.json.enc \
+                -out .circleci/key.json \
+                -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
+            fi
       - run: *npm_install_and_link
       - run: *samples_npm_install_and_link
       - run:
@@ -125,6 +131,13 @@ jobs:
             GCLOUD_PROJECT: long-door-651
             GOOGLE_APPLICATION_CREDENTIALS: /home/node/samples/.circleci/key.json
             NPM_CONFIG_PREFIX: /home/node/.npm-global
+      - run:
+          name: Remove unencrypted key.
+          command: |
+            if ! [[ -z "${SYSTEM_TESTS_ENCRYPTION_KEY}" ]]; then
+              rm .circleci/key.json
+            fi
+          when: always
     working_directory: /home/node/samples/
   system_tests:
     docker:
@@ -132,18 +145,33 @@ jobs:
         user: node
     steps:
       - checkout
+      - run:
+          name: Decrypt credentials.
+          command: |
+            if ! [[ -z "${SYSTEM_TESTS_ENCRYPTION_KEY}" ]]; then
+              openssl aes-256-cbc -d -in .circleci/key.json.enc \
+                -out .circleci/key.json \
+                -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
+            fi
       - run: *npm_install_and_link
       - run:
           name: Run system tests.
           command: npm run system-test
           environment:
             GOOGLE_APPLICATION_CREDENTIALS: .circleci/key.json
+      - run:
+          name: Remove unencrypted key.
+          command: |
+            if ! [[ -z "${SYSTEM_TESTS_ENCRYPTION_KEY}" ]]; then
+              rm .circleci/key.json
+            fi
+          when: always
   publish_npm:
     docker:
       - image: 'node:8'
         user: node
     steps:
       - checkout
-      - run: npm install
-      - run: 'echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc'
+      - run: ./.circleci/npm-install-retry.js
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - run: npm publish --access=public
