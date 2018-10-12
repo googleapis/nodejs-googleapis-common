@@ -16,8 +16,5 @@ import subprocess
 
 logging.basicConfig(level=logging.DEBUG)
 common_templates = gcp.CommonTemplates()
-templates = common_templates.node_library(
-  package_name="googleapis-common",
-  repo_name="googleapis/nodejs-googleapis-common"
-)
+templates = common_templates.node_library()
 s.copy(templates)
