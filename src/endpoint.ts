@@ -94,8 +94,9 @@ export class Endpoint implements Target, APIRequestContext {
             callback?: BodyResponseCallback<{}>) => {
       const params =
           typeof paramsOrCallback === 'function' ? {} : paramsOrCallback;
-      callback =
-          typeof paramsOrCallback === 'function' ? paramsOrCallback : callback;
+      callback = typeof paramsOrCallback === 'function' ?
+          paramsOrCallback as BodyResponseCallback<{}>:
+          callback;
       const schemaUrl =
           buildurl(schema.rootUrl + schema.servicePath + method.path);
 
