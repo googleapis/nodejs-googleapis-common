@@ -68,6 +68,7 @@ export interface SchemaItem {
   default?: string;
   id?: string;
   properties?: {[index: string]: SchemaItem};
+  additionalProperties?: {[index: string]: SchemaItem};
   items?: {[index: string]: SchemaItem};
   type?: SchemaType;
   format?: ParameterFormat;
