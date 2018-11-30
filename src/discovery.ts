@@ -62,7 +62,7 @@ export class Discovery {
    */
   private log(...args: string[]) {
     if (this.options && this.options.debug) {
-      console.log.apply(this, arguments);
+      console.log(...args);
     }
   }
 
