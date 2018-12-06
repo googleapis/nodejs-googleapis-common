@@ -13,7 +13,7 @@
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
-    "test": "mocha build/test",
+    "test": "nyc mocha build/test",
     "system-test": "mocha build/system-test",
     "presystem-test": "npm run compile",
     "fix": "gts fix",
@@ -41,6 +41,7 @@
     "jsdoc": "^3.5.5",
     "mocha": "^5.2.0",
     "nock": "^10.0.0",
+    "nyc": "^13.1.0",
     "source-map-support": "^0.5.8",
     "typescript": "~3.2.0"
   },
