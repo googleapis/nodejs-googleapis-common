@@ -200,7 +200,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
             }
           });
           part.body.pipe(pStream).pipe(rStream, {end: false});
-          part.body.on('end', () => {
+          pStream.on('end', () => {
             rStream.push('\r\n');
             rStream.push(finale);
             rStream.push(null);
