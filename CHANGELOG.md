@@ -4,6 +4,34 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## v0.5.0
+
+12-26-2018 13:14 PST
+
+### Fixes
+- fix: Prevent premature closure of rStream. ([#65](https://github.com/googleapis/nodejs-googleapis-common/pull/65))
+
+### Dependencies
+- chore(deps): update dependency gts to ^0.9.0 ([#43](https://github.com/googleapis/nodejs-googleapis-common/pull/43))
+- chore(deps): update dependency typescript to ~3.2.0 ([#47](https://github.com/googleapis/nodejs-googleapis-common/pull/47))
+
+### Documentation
+- chore: update license file ([#52](https://github.com/googleapis/nodejs-googleapis-common/pull/52))
+
+### Internal / Testing Changes
+- fix(build): fix Kokoro release script ([#60](https://github.com/googleapis/nodejs-googleapis-common/pull/60))
+- fix(build): fix system key decryption ([#48](https://github.com/googleapis/nodejs-googleapis-common/pull/48))
+- chore: fix publish.sh permission +x ([#61](https://github.com/googleapis/nodejs-googleapis-common/pull/61))
+- chore: update eslintignore config ([#42](https://github.com/googleapis/nodejs-googleapis-common/pull/42))
+- chore: use latest npm on Windows ([#41](https://github.com/googleapis/nodejs-googleapis-common/pull/41))
+- chore: update nyc and eslint configs ([#63](https://github.com/googleapis/nodejs-googleapis-common/pull/63))
+- chore: nyc ignore build/test by default ([#55](https://github.com/googleapis/nodejs-googleapis-common/pull/55))
+- chore: always nyc report before calling codecov ([#56](https://github.com/googleapis/nodejs-googleapis-common/pull/56))
+- chore: add synth.metadata
+- chore(build): update the prettier and renovate configs ([#53](https://github.com/googleapis/nodejs-googleapis-common/pull/53))
+- chore(build): inject yoshi automation key ([#64](https://github.com/googleapis/nodejs-googleapis-common/pull/64))
+- build: add Kokoro configs for autorelease ([#59](https://github.com/googleapis/nodejs-googleapis-common/pull/59))
+
 ## v0.4.0
 
 11-02-2018 10:31 PDT
