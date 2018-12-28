@@ -181,6 +181,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       const finale = `--${boundary}--`;
       const rStream = new stream.PassThrough();
       const pStream = new ProgressStream();
+      const bStream = new BaundaryStream(finale);
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
@@ -199,12 +200,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
               options.onUploadProgress({bytesRead});
             }
           });
-          part.body.pipe(pStream).pipe(rStream, {end: false});
-          pStream.on('end', () => {
-            rStream.push('\r\n');
-            rStream.push(finale);
-            rStream.push(null);
-          });
+          part.body.pipe(pStream).pipe(bStream).pipe(rStream);
         }
       }
       if (!isStream) {
@@ -269,6 +265,24 @@ class ProgressStream extends stream.Transform {
     this.bytesRead += chunk.length;
     this.emit('progress', this.bytesRead);
     this.push(chunk);
+    callback();
+  }
+}
+
+class BaundaryStream extends stream.Transform {
+  finale: string;
+  constructor(finale: string) {
+    super();
+    this.finale = finale;
+  }
+  // tslint:disable-next-line: no-any
+  _transform(chunk: any, encoding: string, callback: Function) {
+    this.push(chunk);
+    callback();
+  }
+  _flush(callback: Function) {
+    this.push('\r\n');
+    this.push(this.finale);
     callback();
   }
 }
