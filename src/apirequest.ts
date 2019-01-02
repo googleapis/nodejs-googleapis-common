@@ -181,7 +181,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       const finale = `--${boundary}--`;
       const rStream = new stream.PassThrough();
       const pStream = new ProgressStream();
-      const bStream = new BaundaryStream(finale);
+      const bStream = new BoundaryStream(finale);
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
@@ -269,7 +269,7 @@ class ProgressStream extends stream.Transform {
   }
 }
 
-class BaundaryStream extends stream.Transform {
+class BoundaryStream extends stream.Transform {
   finale: string;
   constructor(finale: string) {
     super();
