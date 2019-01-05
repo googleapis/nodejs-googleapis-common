@@ -14,6 +14,7 @@
 import {AxiosPromise} from 'axios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
 import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
+import {isBrowser} from './isbrowser';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
@@ -228,7 +229,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // https://github.com/google/google-api-nodejs-client/issues/991
   options.maxContentLength = options.maxContentLength || maxContentLength;
   options.headers['Accept-Encoding'] = 'gzip';
-  options.headers['User-Agent'] = USER_AGENT;
+  if (!isBrowser()) {
+    options.headers['User-Agent'] = USER_AGENT;
+  }
 
   // By default Axios treats any 2xx as valid, and all non 2xx status
   // codes as errors.  This is a problem for HTTP 304s when used along
