@@ -14,13 +14,13 @@
 import {AxiosPromise} from 'axios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
 import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
-import {isBrowser} from './isbrowser';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 
 import {APIRequestParams, GlobalOptions} from './api';
+import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 
 const maxContentLength = Math.pow(2, 31);
