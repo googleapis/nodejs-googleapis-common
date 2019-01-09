@@ -228,8 +228,8 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // to 10MB.  Setting to 2GB by default.
   // https://github.com/google/google-api-nodejs-client/issues/991
   options.maxContentLength = options.maxContentLength || maxContentLength;
-  options.headers['Accept-Encoding'] = 'gzip';
   if (!isBrowser()) {
+    options.headers['Accept-Encoding'] = 'gzip';
     options.headers['User-Agent'] = USER_AGENT;
   }
 
