@@ -22,7 +22,8 @@
     "posttest": "npm run check",
     "lint": "npm run check",
     "samples-test": "mocha build/samples-test",
-    "docs": "compodoc src/"
+    "docs": "compodoc src/",
+    "webpack": "webpack"
   },
   "keywords": [],
   "author": "Google LLC",
