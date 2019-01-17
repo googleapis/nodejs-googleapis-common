@@ -12,10 +12,12 @@
 // limitations under the License.
 
 import * as fs from 'fs';
+import {Headers} from 'gaxios';
 import {DefaultTransporter} from 'google-auth-library';
 import * as pify from 'pify';
 import * as url from 'url';
 import * as util from 'util';
+
 import {GlobalOptions, ServiceOptions} from './api';
 import {createAPIRequest} from './apirequest';
 import {Endpoint} from './endpoint';
@@ -71,7 +73,8 @@ export class Discovery {
    * @param discoveryUrl
    */
   async discoverAllAPIs(discoveryUrl: string): Promise<{}> {
-    const headers = this.options.includePrivate ? {} : {'X-User-Ip': '0.0.0.0'};
+    const headers: Headers =
+        this.options.includePrivate ? {} : {'X-User-Ip': '0.0.0.0'};
     const res =
         await this.transporter.request<Schemas>({url: discoveryUrl, headers});
     const items = res.data.items;
