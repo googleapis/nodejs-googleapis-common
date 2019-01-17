@@ -7,3 +7,4 @@ yarn.lock
 .nyc_output
 dist
 docs
+coverage
