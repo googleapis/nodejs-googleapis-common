@@ -11,18 +11,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {AxiosPromise} from 'axios';
+import {GaxiosPromise} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
-import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 
-import {APIRequestParams, GlobalOptions} from './api';
+import {APIRequestParams, BodyResponseCallback} from './api';
+import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
-
-const maxContentLength = Math.pow(2, 31);
 
 // tslint:disable-next-line no-var-requires
 const pkg = require('../../package.json');
@@ -52,12 +50,12 @@ function getMissingParams(params: SchemaParameters, required: string[]) {
  * @param callback   Callback when request finished or error found
  */
 export function createAPIRequest<T>(parameters: APIRequestParams):
-    AxiosPromise<T>;
+    GaxiosPromise<T>;
 export function createAPIRequest<T>(
     parameters: APIRequestParams, callback: BodyResponseCallback<T>): void;
 export function createAPIRequest<T>(
     parameters: APIRequestParams, callback?: BodyResponseCallback<T>): void|
-    AxiosPromise<T> {
+    GaxiosPromise<T> {
   if (callback) {
     createAPIRequestAsync<T>(parameters).then(r => callback(null, r), callback);
   } else {
@@ -223,12 +221,10 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   options.headers = headers;
   options.params = params;
-  // We need to set a default content size, or the max defaults
-  // to 10MB.  Setting to 2GB by default.
-  // https://github.com/google/google-api-nodejs-client/issues/991
-  options.maxContentLength = options.maxContentLength || maxContentLength;
-  options.headers['Accept-Encoding'] = 'gzip';
-  options.headers['User-Agent'] = USER_AGENT;
+  if (!isBrowser()) {
+    options.headers!['Accept-Encoding'] = 'gzip';
+    options.headers!['User-Agent'] = USER_AGENT;
+  }
 
   // By default Axios treats any 2xx as valid, and all non 2xx status
   // codes as errors.  This is a problem for HTTP 304s when used along
