@@ -4,6 +4,26 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## v0.6.0
+
+- feat: export AuthPlus ([#70](https://github.com/googleapis/nodejs-googleapis-common/pull/70))
+- feat: make it ready for use in browser ([#69](https://github.com/googleapis/nodejs-googleapis-common/pull/69))
+- build: check for 404s in the docs ([#73](https://github.com/googleapis/nodejs-googleapis-common/pull/73))
+
+### New Features
+
+This release makes it possible to use this library in browser. 
+It was actually possible before but with some nasty warnings
+printed to JavaScript console. These warnings are now eliminated.
+
+Also, now exporting `AuthPlus` and `OAuth2Client` which allows
+APIs that use this common module to drop direct dependency on
+`google-auth-library`.
+
+### Internal / Testing Changes
+
+Simple system tests and browser tests were added in this release.
+
 ## v0.4.0
 
 11-02-2018 10:31 PDT
