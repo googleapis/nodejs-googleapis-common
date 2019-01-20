@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as assert from 'assert';
+import {assert} from 'chai';
 import * as nock from 'nock';
 import {createAPIRequest} from '../src/apirequest';
 
@@ -49,6 +49,26 @@ it('should create a valid API request', async () => {
     context: fakeContext
   });
   scope.done();
-  assert.strictEqual(result.data, fakeResponse);
+  assert.strictEqual(result.data, fakeResponse as {});
   assert(result);
+});
+
+it('should include directives in the user agent', async () => {
+  const scope = nock(url).get('/').reply(200);
+  const res = await createAPIRequest<FakeParams>({
+    options: {
+      url,
+      userAgentDirectives:
+          [{product: 'frog', version: '1.0', comment: 'jumps'}]
+    },
+    params: {},
+    requiredParams: [],
+    pathParams: [],
+    context: fakeContext
+  });
+  scope.done();
+  // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
+  const userAgent = res.config.headers!['User-Agent'];
+  assert.match(userAgent, /frog\/1.0 \(jumps\)/);
+  assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
 });
