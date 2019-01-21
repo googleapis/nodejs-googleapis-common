@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## v0.7.0
+
+01-21-2019 00:50 PST
+
+### Features
+- feat: add ability to augment the user agent ([#76](https://github.com/googleapis/nodejs-googleapis-common/pull/76))
+
 ## v0.6.0
 
 - feat: export AuthPlus ([#70](https://github.com/googleapis/nodejs-googleapis-common/pull/70))
