@@ -18,7 +18,7 @@ import {Endpoint} from './endpoint';
 
 // tslint:disable-next-line no-any
 export interface APIRequestParams<T = any> {
-  options: GaxiosOptions;
+  options: MethodOptions;
   params: T;
   requiredParams: string[];
   pathParams: string[];
@@ -45,7 +45,23 @@ export interface GlobalOptions extends GaxiosOptions {
 
 export interface MethodOptions extends GaxiosOptions {
   rootUrl?: string;
+  userAgentDirectives?: UserAgentDirective[];
 }
+
+/**
+ * An additional directive to add to the user agent header.
+ * Directives come in the form of:
+ * User-Agent: <product> / <product-version> <comment>
+ *
+ * For more information, see:
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+ */
+export interface UserAgentDirective {
+  product: string;
+  version: string;
+  comment?: string;
+}
+
 export interface ServiceOptions extends GlobalOptions {
   version?: string;
 }
