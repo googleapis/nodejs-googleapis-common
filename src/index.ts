@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+export {OAuth2Client} from 'google-auth-library';
 export {APIEndpoint, APIRequestContext, APIRequestParams, BodyResponseCallback, GlobalOptions, GoogleConfigurable, MethodOptions, ServiceOptions} from './api';
 export {getAPI} from './apiIndex';
 export {createAPIRequest} from './apirequest';

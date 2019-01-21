@@ -18,16 +18,12 @@ set -xeo pipefail
 
 export NPM_CONFIG_PREFIX=/home/node/.npm-global
 
+# Setup service account credentials.
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/service-account.json
+export GCLOUD_PROJECT=long-door-651
+
 cd $(dirname $0)/..
 
 npm install
 
-npm run docs
-
-# Check broken links
-BIN=./node_modules/.bin
-
-npm install broken-link-checker
-npm install http-server
-$BIN/http-server -p 8080 docs/ &
-$BIN/blc -r http://localhost:8080
+npm run browser-test

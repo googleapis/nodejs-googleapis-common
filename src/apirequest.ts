@@ -11,22 +11,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {AxiosPromise} from 'axios';
+import {GaxiosPromise} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
-import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 
-import {APIRequestParams, GlobalOptions} from './api';
+import {APIRequestParams, BodyResponseCallback} from './api';
+import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
-
-const maxContentLength = Math.pow(2, 31);
 
 // tslint:disable-next-line no-var-requires
 const pkg = require('../../package.json');
-const USER_AGENT = `google-api-nodejs-client/${pkg.version} (gzip)`;
 
 function isReadableStream(obj: stream.Readable|string) {
   return obj instanceof stream.Readable && typeof obj._read === 'function';
@@ -52,12 +49,12 @@ function getMissingParams(params: SchemaParameters, required: string[]) {
  * @param callback   Callback when request finished or error found
  */
 export function createAPIRequest<T>(parameters: APIRequestParams):
-    AxiosPromise<T>;
+    GaxiosPromise<T>;
 export function createAPIRequest<T>(
     parameters: APIRequestParams, callback: BodyResponseCallback<T>): void;
 export function createAPIRequest<T>(
     parameters: APIRequestParams, callback?: BodyResponseCallback<T>): void|
-    AxiosPromise<T> {
+    GaxiosPromise<T> {
   if (callback) {
     createAPIRequestAsync<T>(parameters).then(r => callback(null, r), callback);
   } else {
@@ -147,7 +144,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // values are serialized like this:
   // myParams: ['one', 'two'] ---> 'myParams=one&myParams=two'
   // This serializer also encodes spaces in the querystring as `%20`,
-  // whereas the default serializer in axios encodes to a `+`.
+  // whereas the default serializer in gaxios encodes to a `+`.
   options.paramsSerializer = (params) => {
     return qs.stringify(params, {arrayFormat: 'repeat'});
   };
@@ -167,7 +164,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   if (parameters.mediaUrl && media.body) {
     options.url = parameters.mediaUrl;
     if (resource) {
-      // Axios doesn't support multipart/related uploads, so it has to
+      // gaxios doesn't support multipart/related uploads, so it has to
       // be implemented here.
       params.uploadType = 'multipart';
       const multipart = [
@@ -198,7 +195,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
           rStream.push(part.body);
           rStream.push('\r\n');
         } else {
-          // Axios does not natively support onUploadProgress in node.js.
+          // Gaxios does not natively support onUploadProgress in node.js.
           // Pipe through the pStream first to read the number of bytes read
           // for the purpose of tracking progress.
           pStream.on('progress', bytesRead => {
@@ -225,14 +222,27 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   options.headers = headers;
   options.params = params;
-  // We need to set a default content size, or the max defaults
-  // to 10MB.  Setting to 2GB by default.
-  // https://github.com/google/google-api-nodejs-client/issues/991
-  options.maxContentLength = options.maxContentLength || maxContentLength;
-  options.headers['Accept-Encoding'] = 'gzip';
-  options.headers['User-Agent'] = USER_AGENT;
+  if (!isBrowser()) {
+    options.headers!['Accept-Encoding'] = 'gzip';
+    const directives = options.userAgentDirectives || [];
+    directives.push({
+      product: 'google-api-nodejs-client',
+      version: pkg.version,
+      comment: 'gzip'
+    });
+    const userAgent = directives
+                          .map(d => {
+                            let line = `${d.product}/${d.version}`;
+                            if (d.comment) {
+                              line += ` (${d.comment})`;
+                            }
+                            return line;
+                          })
+                          .join(' ');
+    options.headers!['User-Agent'] = userAgent;
+  }
 
-  // By default Axios treats any 2xx as valid, and all non 2xx status
+  // By default gaxios treats any 2xx as valid, and all non 2xx status
   // codes as errors.  This is a problem for HTTP 304s when used along
   // with an eTag.
   if (!options.validateStatus) {
@@ -241,7 +251,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     };
   }
 
-  // Combine the AxiosRequestConfig options passed with this specific
+  // Combine the GaxiosOptions options passed with this specific
   // API call witht the global options configured at the API Context
   // level, or at the global level.
   const mergedOptions = Object.assign(
