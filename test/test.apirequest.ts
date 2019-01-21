@@ -12,12 +12,11 @@
 // limitations under the License.
 
 import {assert} from 'chai';
-import {AxiosRequestConfig} from 'axios';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
 
-import {GlobalOptions} from '../src/api';
+import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
 
 interface MyWritableOptions {
@@ -147,8 +146,8 @@ describe('createAPIRequest', () => {
       body: fStream,
     };
     const auth = {
-      request: (opts: GlobalOptions&AxiosRequestConfig) => {
-        const contentType = opts.headers['Content-Type'];
+      request: (opts: GlobalOptions&MethodOptions) => {
+        const contentType = opts.headers!['Content-Type'];
         const boundary = `--${
             contentType.substring(contentType.indexOf('boundary=') + 9)}--`;
         const rStream = new FakeWritable(boundary, {highWaterMark: 400});
@@ -176,4 +175,3 @@ describe('createAPIRequest', () => {
     });
   });
 });
-
