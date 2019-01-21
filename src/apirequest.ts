@@ -179,9 +179,15 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       ];
       const boundary = uuid.v4();
       const finale = `--${boundary}--`;
-      const rStream = new stream.PassThrough();
+      const flush = function(
+          this: stream.PassThrough,
+          // tslint:disable-next-line no-any
+          callback: (error?: Error, data?: any) => void) {
+        this.push('\r\n');
+        callback(undefined, finale);
+      };
+      const rStream = new stream.PassThrough({flush});
       const pStream = new ProgressStream();
-      const bStream = new BoundaryStream(finale);
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
@@ -200,7 +206,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
               options.onUploadProgress({bytesRead});
             }
           });
-          part.body.pipe(pStream).pipe(bStream).pipe(rStream);
+          part.body.pipe(pStream).pipe(rStream);
         }
       }
       if (!isStream) {
@@ -265,24 +271,6 @@ class ProgressStream extends stream.Transform {
     this.bytesRead += chunk.length;
     this.emit('progress', this.bytesRead);
     this.push(chunk);
-    callback();
-  }
-}
-
-class BoundaryStream extends stream.Transform {
-  finale: string;
-  constructor(finale: string) {
-    super();
-    this.finale = finale;
-  }
-  // tslint:disable-next-line: no-any
-  _transform(chunk: any, encoding: string, callback: Function) {
-    this.push(chunk);
-    callback();
-  }
-  _flush(callback: Function) {
-    this.push('\r\n');
-    this.push(this.finale);
     callback();
   }
 }
