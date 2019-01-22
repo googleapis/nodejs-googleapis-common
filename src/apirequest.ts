@@ -176,7 +176,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       ];
       const boundary = uuid.v4();
       const finale = `--${boundary}--`;
-      const rStream = new stream.PassThrough();
+      const flush = function(
+          this: stream.PassThrough,
+          // tslint:disable-next-line no-any
+          callback: (error?: Error, data?: any) => void) {
+        this.push('\r\n');
+        callback(undefined, finale);
+      };
+      const rStream = new stream.PassThrough({flush});
       const pStream = new ProgressStream();
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
@@ -196,12 +203,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
               options.onUploadProgress({bytesRead});
             }
           });
-          part.body.pipe(pStream).pipe(rStream, {end: false});
-          pStream.on('end', () => {
-            rStream.push('\r\n');
-            rStream.push(finale);
-            rStream.push(null);
-          });
+          part.body.pipe(pStream).pipe(rStream);
         }
       }
       if (!isStream) {
