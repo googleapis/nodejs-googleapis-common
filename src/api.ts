@@ -39,7 +39,7 @@ export interface APIRequestContext {
  * This interface is a mix of the AxiosRequestConfig options
  * and our `auth: OAuth2Client|string` options.
  */
-export interface GlobalOptions extends GaxiosOptions {
+export interface GlobalOptions extends MethodOptions {
   auth?: OAuth2Client|string;
 }
 
