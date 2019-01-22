@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## v0.7.1
+
+01-22-2019 11:22 PST
+
+### Bug fixes
+- fix(types): allow user agent directives in global options ([#78](https://github.com/googleapis/nodejs-googleapis-common/pull/78))
+- fix(streams): reroute boundary insertion through transform stream ([#67](https://github.com/googleapis/nodejs-googleapis-common/pull/67))
+
 ## v0.7.0
 
 01-21-2019 00:50 PST
