@@ -4,6 +4,12 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## v0.7.2
+
+01-26-2019 21:18 PST
+
+- fix: explicit push of finale for multipart/related streams to fix node.js 6 ([#82](https://github.com/googleapis/nodejs-googleapis-common/pull/82))
+
 ## v0.7.1
 
 01-22-2019 11:22 PST
