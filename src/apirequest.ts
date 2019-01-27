@@ -176,14 +176,13 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       ];
       const boundary = uuid.v4();
       const finale = `--${boundary}--`;
-      const flush = function(
-          this: stream.PassThrough,
-          // tslint:disable-next-line no-any
-          callback: (error?: Error, data?: any) => void) {
-        this.push('\r\n');
-        callback(undefined, finale);
-      };
-      const rStream = new stream.PassThrough({flush});
+      const rStream = new stream.PassThrough({
+        flush(callback) {
+          this.push('\r\n');
+          this.push(finale);
+          callback();
+        }
+      });
       const pStream = new ProgressStream();
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
