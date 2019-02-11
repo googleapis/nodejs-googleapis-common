@@ -24,7 +24,9 @@
     "samples-test": "mocha build/samples-test",
     "docs": "compodoc src/",
     "webpack": "webpack",
-    "browser-test": "karma start"
+    "browser-test": "karma start",
+    "docs-test": "blcl docs -r --exclude www.googleapis.com",
+    "predocs-test": "npm run docs"
   },
   "keywords": [],
   "author": "Google LLC",
@@ -67,7 +69,8 @@
     "ts-loader": "^5.3.2",
     "typescript": "~3.3.0",
     "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.0"
+    "webpack-cli": "^3.2.0",
+    "broken-link-checker-local": "^0.2.0"
   },
   "dependencies": {
     "gaxios": "^1.2.2",
