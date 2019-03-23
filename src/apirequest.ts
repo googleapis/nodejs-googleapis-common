@@ -250,6 +250,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     };
   }
 
+  // Retry by default
+  options.retry = options.retry === undefined ? true : options.retry;
+
   // Combine the GaxiosOptions options passed with this specific
   // API call witht the global options configured at the API Context
   // level, or at the global level.

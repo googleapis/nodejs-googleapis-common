@@ -174,4 +174,18 @@ describe('createAPIRequest', () => {
       assert.strictEqual(totalBytesSent, totalBytesReceived);
     });
   });
+
+  describe('options', () => {
+    it('should retry GET requests by default', async () => {
+      const scope = nock(url).get('/').reply(500).get('/').reply(200);
+      await createAPIRequest<FakeParams>({
+        options: {url},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: fakeContext
+      });
+      scope.done();
+    });
+  });
 });
