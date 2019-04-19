@@ -49,7 +49,7 @@
     "gts": "^0.9.0",
     "ink-docstrap": "^1.3.2",
     "intelli-espower-loader": "^1.0.1",
-    "is-docker": "^1.1.0",
+    "is-docker": "^2.0.0",
     "karma": "^4.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.2",
