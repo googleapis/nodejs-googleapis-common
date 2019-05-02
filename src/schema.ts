@@ -23,7 +23,7 @@ export interface Schemas {
 }
 
 export interface Schema {
-  auth: {oauth2: {scopes: {[index: string]: {description: string;}}}};
+  auth: {oauth2: {scopes: {[index: string]: {description: string}}}};
   basePath: string;
   baseUrl: string;
   batchPath: string;
@@ -32,7 +32,7 @@ export interface Schema {
   discoveryRestUrl: string;
   documentationLink: string;
   etag: string;
-  icons: {x16: string, x32: string};
+  icons: {x16: string; x32: string};
   id: string;
   kind: string;
   methods: SchemaMethods;
@@ -101,18 +101,18 @@ export interface SchemaMethod {
   parameterOrder?: string[];
   parameters?: {[index: string]: SchemaParameter};
   path: string;
-  request: {$ref: string;};
-  response: {$ref: string;};
+  request: {$ref: string};
+  response: {$ref: string};
   sampleUrl: string;
   scopes: string[];
   fragment: string;
-  mediaUpload: {protocols: {simple: {path: string;};};};
+  mediaUpload: {protocols: {simple: {path: string}}};
 }
 
 export interface FragmentResponse {
-  codeFragment: {[index: string]: {fragment: string;}};
+  codeFragment: {[index: string]: {fragment: string}};
 }
 
 export type ParameterFormat = 'int32';
-export type HttpMethod = 'GET'|'PATCH'|'PUT';
-export type SchemaType = 'object'|'integer'|'string'|'array'|'boolean';
+export type HttpMethod = 'GET' | 'PATCH' | 'PUT';
+export type SchemaType = 'object' | 'integer' | 'string' | 'array' | 'boolean';

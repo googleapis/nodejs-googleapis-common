@@ -14,9 +14,12 @@
 import {GoogleConfigurable, ServiceOptions} from '.';
 
 export function getAPI<T>(
-    api: string, options: ServiceOptions|string,
-    // tslint:disable-next-line no-any
-    versions: {[index: string]: any}, context?: GoogleConfigurable) {
+  api: string,
+  options: ServiceOptions | string,
+  // tslint:disable-next-line no-any
+  versions: {[index: string]: any},
+  context?: GoogleConfigurable
+) {
   let version: string;
   if (typeof options === 'string') {
     version = options;
@@ -33,6 +36,7 @@ export function getAPI<T>(
     return Object.freeze(ep) as T;
   } catch (e) {
     throw new Error(
-        `Unable to load endpoint ${api}("${version}"): ${e.message}`);
+      `Unable to load endpoint ${api}("${version}"): ${e.message}`
+    );
   }
 }
