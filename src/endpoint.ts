@@ -42,8 +42,11 @@ export class Endpoint implements Target, APIRequestContext {
    * @param {object} context The context to add to each method.
    */
   applySchema(
-      target: Target, rootSchema: Schema, schema: SchemaResource,
-      context: APIRequestContext) {
+    target: Target,
+    rootSchema: Schema,
+    schema: SchemaResource,
+    context: APIRequestContext
+  ) {
     this.applyMethodsFromSchema(target, rootSchema, schema, context);
     if (schema.resources) {
       for (const resourceName in schema.resources) {
@@ -68,8 +71,11 @@ export class Endpoint implements Target, APIRequestContext {
    * @param {object} context The context to add to each method.
    */
   private applyMethodsFromSchema(
-      target: Target, rootSchema: Schema, schema: SchemaResource,
-      context: APIRequestContext) {
+    target: Target,
+    rootSchema: Schema,
+    schema: SchemaResource,
+    context: APIRequestContext
+  ) {
     if (schema.methods) {
       for (const name in schema.methods) {
         if (schema.methods.hasOwnProperty(name)) {
@@ -89,33 +95,44 @@ export class Endpoint implements Target, APIRequestContext {
    * @param context The context to add to the method.
    */
   private makeMethod(
-      schema: Schema, method: SchemaMethod, context: APIRequestContext) {
-    return (paramsOrCallback: {}|BodyResponseCallback<{}>,
-            callback?: BodyResponseCallback<{}>) => {
+    schema: Schema,
+    method: SchemaMethod,
+    context: APIRequestContext
+  ) {
+    return (
+      paramsOrCallback: {} | BodyResponseCallback<{}>,
+      callback?: BodyResponseCallback<{}>
+    ) => {
       const params =
-          typeof paramsOrCallback === 'function' ? {} : paramsOrCallback;
-      callback = typeof paramsOrCallback === 'function' ?
-          paramsOrCallback as BodyResponseCallback<{}>:
-          callback;
-      const schemaUrl =
-          buildurl(schema.rootUrl + schema.servicePath + method.path);
+        typeof paramsOrCallback === 'function' ? {} : paramsOrCallback;
+      callback =
+        typeof paramsOrCallback === 'function'
+          ? (paramsOrCallback as BodyResponseCallback<{}>)
+          : callback;
+      const schemaUrl = buildurl(
+        schema.rootUrl + schema.servicePath + method.path
+      );
 
       const parameters: APIRequestParams = {
         options: {
           url: schemaUrl.substring(1, schemaUrl.length - 1),
-          method: method.httpMethod
+          method: method.httpMethod,
         },
         params,
         requiredParams: method.parameterOrder || [],
         pathParams: this.getPathParams(method.parameters),
-        context
+        context,
       };
 
-      if (method.mediaUpload && method.mediaUpload.protocols &&
-          method.mediaUpload.protocols.simple &&
-          method.mediaUpload.protocols.simple.path) {
-        const mediaUrl =
-            buildurl(schema.rootUrl + method.mediaUpload.protocols.simple.path);
+      if (
+        method.mediaUpload &&
+        method.mediaUpload.protocols &&
+        method.mediaUpload.protocols.simple &&
+        method.mediaUpload.protocols.simple.path
+      ) {
+        const mediaUrl = buildurl(
+          schema.rootUrl + method.mediaUpload.protocols.simple.path
+        );
         parameters.mediaUrl = mediaUrl.substring(1, mediaUrl.length - 1);
       }
 
