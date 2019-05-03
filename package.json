@@ -73,7 +73,7 @@
     "linkinator": "^1.1.2"
   },
   "dependencies": {
-    "gaxios": "^1.2.2",
+    "gaxios": "^2.0.0",
     "google-auth-library": "^3.0.0",
     "pify": "^4.0.0",
     "qs": "^6.5.2",
