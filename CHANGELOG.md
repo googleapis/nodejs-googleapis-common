@@ -4,6 +4,23 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [2.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v1.0.0...v2.0.0) (2019-05-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gaxios to v2 ([#116](https://www.github.com/googleapis/nodejs-googleapis-common/issues/116)) ([0db9055](https://www.github.com/googleapis/nodejs-googleapis-common/commit/0db9055))
+
+
+### Build System
+
+* upgrade engines field to >=8.10.0 ([#119](https://www.github.com/googleapis/nodejs-googleapis-common/issues/119)) ([ba257e8](https://www.github.com/googleapis/nodejs-googleapis-common/commit/ba257e8))
+
+
+### BREAKING CHANGES
+
+* upgrade engines field to >=8.10.0 (#119)
+
 ## v1.0.0
 
 03-29-2019 11:28 PDT
@@ -131,4 +148,3 @@ This release uses the 2.0 release of `google-auth-library`.  A summary of these 
 
 ### Fixes
 - fix: use the latest google-auth-library (#4)
-
