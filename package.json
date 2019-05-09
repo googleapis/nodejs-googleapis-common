@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "gaxios": "^2.0.0",
-    "google-auth-library": "^3.0.0",
+    "google-auth-library": "^4.0.0",
     "pify": "^4.0.0",
     "qs": "^6.5.2",
     "url-template": "^2.0.8",
