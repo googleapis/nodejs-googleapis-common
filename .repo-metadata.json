@@ -1,0 +1,8 @@
+{
+  "name": "googleapis-common",
+  "name_pretty": "Google APIs Common Module",
+  "release_level": "ga",
+  "language": "nodejs",
+  "repo": "googleapis/nodejs-googleapis-common",
+  "distribution_name": "googleapis-common"
+}
