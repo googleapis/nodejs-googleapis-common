@@ -4,6 +4,66 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [2.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v1.0.0...v2.0.0) (2019-05-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gaxios to v2 ([#116](https://www.github.com/googleapis/nodejs-googleapis-common/issues/116)) ([0db9055](https://www.github.com/googleapis/nodejs-googleapis-common/commit/0db9055))
+* **deps:** update dependency google-auth-library to v4 ([#127](https://www.github.com/googleapis/nodejs-googleapis-common/issues/127)) ([5f83c34](https://www.github.com/googleapis/nodejs-googleapis-common/commit/5f83c34))
+
+
+### Build System
+
+* upgrade engines field to >=8.10.0 ([#119](https://www.github.com/googleapis/nodejs-googleapis-common/issues/119)) ([ba257e8](https://www.github.com/googleapis/nodejs-googleapis-common/commit/ba257e8))
+
+
+### BREAKING CHANGES
+
+* upgrade engines field to >=8.10.0 (#119)
+
+## v1.0.0
+
+03-29-2019 11:28 PDT
+
+**This release has breaking changes**. HTTP retries for a subset of requests are now enabled by default. The retry logic matches the defaults for [gaxios](https://github.com/JustinBeckwith/gaxios):
+
+```js
+{
+  // The amount of time to initially delay the retry
+  retryDelay: 100;
+
+  // The HTTP Methods that will be automatically retried.
+  httpMethodsToRetry: ['GET','PUT','HEAD','OPTIONS','DELETE']
+
+  // The HTTP response status codes that will automatically be retried.
+  statusCodesToRetry: [[100, 199], [429, 429], [500, 599]];
+}
+```
+
+The behavior can be disabled by setting `retry` to `false` in the request config. For more information, see https://github.com/googleapis/nodejs-googleapis-common/pull/104.
+
+### New Features
+- feat: retry requests by default ([#104](https://github.com/googleapis/nodejs-googleapis-common/pull/104))
+
+### Documentation
+- docs: update links in contrib guide ([#94](https://github.com/googleapis/nodejs-googleapis-common/pull/94))
+- docs: update contributing path in README ([#89](https://github.com/googleapis/nodejs-googleapis-common/pull/89))
+- docs: move CONTRIBUTING.md to root ([#88](https://github.com/googleapis/nodejs-googleapis-common/pull/88))
+- docs: add lint/fix example to contributing guide ([#86](https://github.com/googleapis/nodejs-googleapis-common/pull/86))
+
+### Internal / Testing Changes
+- chore: publish to npm using wombat ([#101](https://github.com/googleapis/nodejs-googleapis-common/pull/101))
+- build: use per-repo publish token ([#100](https://github.com/googleapis/nodejs-googleapis-common/pull/100))
+- build: Add docuploader credentials to node publish jobs ([#98](https://github.com/googleapis/nodejs-googleapis-common/pull/98))
+- build: use node10 to run samples-test, system-test etc ([#97](https://github.com/googleapis/nodejs-googleapis-common/pull/97))
+- build: update release configuration
+- chore(deps): update dependency mocha to v6
+- build: use linkinator for docs test ([#92](https://github.com/googleapis/nodejs-googleapis-common/pull/92))
+- chore(deps): update dependency @types/tmp to v0.0.34 ([#93](https://github.com/googleapis/nodejs-googleapis-common/pull/93))
+- build: create docs test npm scripts ([#91](https://github.com/googleapis/nodejs-googleapis-common/pull/91))
+- build: test using @grpc/grpc-js in CI ([#90](https://github.com/googleapis/nodejs-googleapis-common/pull/90))
+
 ## v0.7.2
 
 01-26-2019 21:18 PST
@@ -89,4 +149,3 @@ This release uses the 2.0 release of `google-auth-library`.  A summary of these 
 
 ### Fixes
 - fix: use the latest google-auth-library (#4)
-

@@ -49,8 +49,10 @@ class FakeWritable extends stream.Writable {
   }
 
   _write(
-      chunk: Buffer|string, encoding: string,
-      callback: (error?: Error|null) => void) {
+    chunk: Buffer | string,
+    encoding: string,
+    callback: (error?: Error | null) => void
+  ) {
     let chunkString = chunk.toString();
     if (!this.startParsed) {
       const startIndex = chunkString.lastIndexOf('\r\n\r\n');
@@ -75,7 +77,7 @@ class FakeWritable extends stream.Writable {
 nock.disableNetConnect();
 
 const fakeContext = {
-  _options: {}
+  _options: {},
 };
 
 const url = 'https://example.com';
@@ -98,7 +100,9 @@ describe('createAPIRequest', () => {
      */
 
     it('should create a valid API request', async () => {
-      const scope = nock(url).get('/').reply(200, fakeResponse);
+      const scope = nock(url)
+        .get('/')
+        .reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -112,17 +116,20 @@ describe('createAPIRequest', () => {
     });
 
     it('should include directives in the user agent', async () => {
-      const scope = nock(url).get('/').reply(200);
+      const scope = nock(url)
+        .get('/')
+        .reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
           url,
-          userAgentDirectives:
-              [{product: 'frog', version: '1.0', comment: 'jumps'}]
+          userAgentDirectives: [
+            {product: 'frog', version: '1.0', comment: 'jumps'},
+          ],
         },
         params: {},
         requiredParams: [],
         pathParams: [],
-        context: fakeContext
+        context: fakeContext,
       });
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
@@ -146,10 +153,11 @@ describe('createAPIRequest', () => {
       body: fStream,
     };
     const auth = {
-      request: (opts: GlobalOptions&MethodOptions) => {
+      request: (opts: GlobalOptions & MethodOptions) => {
         const contentType = opts.headers!['Content-Type'];
-        const boundary = `--${
-            contentType.substring(contentType.indexOf('boundary=') + 9)}--`;
+        const boundary = `--${contentType.substring(
+          contentType.indexOf('boundary=') + 9
+        )}--`;
         const rStream = new FakeWritable(boundary, {highWaterMark: 400});
         rStream.on('progress', (currentBytesReceived: number) => {
           totalBytesReceived += currentBytesReceived;
@@ -177,13 +185,17 @@ describe('createAPIRequest', () => {
 
   describe('options', () => {
     it('should retry GET requests by default', async () => {
-      const scope = nock(url).get('/').reply(500).get('/').reply(200);
+      const scope = nock(url)
+        .get('/')
+        .reply(500)
+        .get('/')
+        .reply(200);
       await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
         requiredParams: [],
         pathParams: [],
-        context: fakeContext
+        context: fakeContext,
       });
       scope.done();
     });

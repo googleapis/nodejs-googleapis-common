@@ -73,24 +73,30 @@ export class Discovery {
    * @param discoveryUrl
    */
   async discoverAllAPIs(discoveryUrl: string): Promise<{}> {
-    const headers: Headers =
-        this.options.includePrivate ? {} : {'X-User-Ip': '0.0.0.0'};
-    const res =
-        await this.transporter.request<Schemas>({url: discoveryUrl, headers});
+    const headers: Headers = this.options.includePrivate
+      ? {}
+      : {'X-User-Ip': '0.0.0.0'};
+    const res = await this.transporter.request<Schemas>({
+      url: discoveryUrl,
+      headers,
+    });
     const items = res.data.items;
-    const apis = await Promise.all(items.map(async api => {
-      const endpointCreator = await this.discoverAPI(api.discoveryRestUrl);
-      return {api, endpointCreator};
-    }));
+    const apis = await Promise.all(
+      items.map(async api => {
+        const endpointCreator = await this.discoverAPI(api.discoveryRestUrl);
+        return {api, endpointCreator};
+      })
+    );
 
-    const versionIndex:
-        {[index: string]: {[index: string]: EndpointCreator}} = {};
+    const versionIndex: {
+      [index: string]: {[index: string]: EndpointCreator};
+    } = {};
     // tslint:disable-next-line no-any
     const apisIndex: {[index: string]: any} = {};
     for (const set of apis) {
       if (!apisIndex[set.api.name]) {
         versionIndex[set.api.name] = {};
-        apisIndex[set.api.name] = (options: ServiceOptions|string) => {
+        apisIndex[set.api.name] = (options: ServiceOptions | string) => {
           const type = typeof options;
           let version: string;
           if (type === 'string') {
@@ -104,13 +110,18 @@ export class Discovery {
           }
           try {
             const ep =
-                // tslint:disable-next-line: no-any
-                set.endpointCreator(options as GlobalOptions, this as any);
-            return Object.freeze(ep);  // create new & freeze
+              // tslint:disable-next-line: no-any
+              set.endpointCreator(options as GlobalOptions, this as any);
+            return Object.freeze(ep); // create new & freeze
           } catch (e) {
-            throw new Error(util.format(
-                'Unable to load endpoint %s("%s"): %s', set.api.name, version,
-                e.message));
+            throw new Error(
+              util.format(
+                'Unable to load endpoint %s("%s"): %s',
+                set.api.name,
+                version,
+                e.message
+              )
+            );
           }
         };
       }
@@ -125,8 +136,9 @@ export class Discovery {
    * @param apiDiscoveryUrl URL or filename of discovery doc for API
    * @returns A promise that resolves with a function that creates the endpoint
    */
-  async discoverAPI(apiDiscoveryUrl: string|
-                    {url: string}): Promise<EndpointCreator> {
+  async discoverAPI(
+    apiDiscoveryUrl: string | {url: string}
+  ): Promise<EndpointCreator> {
     if (typeof apiDiscoveryUrl === 'string') {
       const parts = url.parse(apiDiscoveryUrl);
       if (apiDiscoveryUrl && !parts.protocol) {
@@ -135,8 +147,9 @@ export class Discovery {
         return this.makeEndpoint(JSON.parse(file));
       } else {
         this.log('Requesting ' + apiDiscoveryUrl);
-        const res =
-            await this.transporter.request<Schema>({url: apiDiscoveryUrl});
+        const res = await this.transporter.request<Schema>({
+          url: apiDiscoveryUrl,
+        });
         return this.makeEndpoint(res.data);
       }
     } else {
@@ -149,7 +162,7 @@ export class Discovery {
         requiredParams: [],
         pathParams: [],
         params: options,
-        context: {google: {_options: {}}, _options: {}}
+        context: {google: {_options: {}}, _options: {}},
       };
       const pcr = pify(createAPIRequest);
       const res = await pcr(parameters);

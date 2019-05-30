@@ -25,7 +25,7 @@ import {SchemaParameters} from './schema';
 // tslint:disable-next-line no-var-requires
 const pkg = require('../../package.json');
 
-function isReadableStream(obj: stream.Readable|string) {
+function isReadableStream(obj: stream.Readable | string) {
   return obj instanceof stream.Readable && typeof obj._read === 'function';
 }
 
@@ -48,13 +48,17 @@ function getMissingParams(params: SchemaParameters, required: string[]) {
  * @param parameters Parameters used to form request
  * @param callback   Callback when request finished or error found
  */
-export function createAPIRequest<T>(parameters: APIRequestParams):
-    GaxiosPromise<T>;
 export function createAPIRequest<T>(
-    parameters: APIRequestParams, callback: BodyResponseCallback<T>): void;
+  parameters: APIRequestParams
+): GaxiosPromise<T>;
 export function createAPIRequest<T>(
-    parameters: APIRequestParams, callback?: BodyResponseCallback<T>): void|
-    GaxiosPromise<T> {
+  parameters: APIRequestParams,
+  callback: BodyResponseCallback<T>
+): void;
+export function createAPIRequest<T>(
+  parameters: APIRequestParams,
+  callback?: BodyResponseCallback<T>
+): void | GaxiosPromise<T> {
   if (callback) {
     createAPIRequestAsync<T>(parameters).then(r => callback(null, r), callback);
   } else {
@@ -69,14 +73,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // Create a new params object so it can no longer be modified from outside
   // code Also support global and per-client params, but allow them to be
   // overriden per-request
-  const topOptions = parameters.context.google ?
-      parameters.context.google._options.params :
-      {};
+  const topOptions = parameters.context.google
+    ? parameters.context.google._options.params
+    : {};
   params = Object.assign(
-      {},                                  // New base object
-      topOptions,                          // Global params
-      parameters.context._options.params,  // Per-client params
-      params                               // API call params
+    {}, // New base object
+    topOptions, // Global params
+    parameters.context._options.params, // Per-client params
+    params // API call params
   );
 
   const media = params.media || {};
@@ -101,13 +105,15 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
   delete params.requestBody;
 
-  let authClient = params.auth || parameters.context._options.auth ||
-      (parameters.context.google ? parameters.context.google._options.auth :
-                                   null);
+  let authClient =
+    params.auth ||
+    parameters.context._options.auth ||
+    (parameters.context.google
+      ? parameters.context.google._options.auth
+      : null);
 
-  const defaultMime = typeof media.body === 'string' ?
-      'text/plain' :
-      'application/octet-stream';
+  const defaultMime =
+    typeof media.body === 'string' ? 'text/plain' : 'application/octet-stream';
   delete params.media;
   delete params.auth;
 
@@ -145,7 +151,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // myParams: ['one', 'two'] ---> 'myParams=one&myParams=two'
   // This serializer also encodes spaces in the querystring as `%20`,
   // whereas the default serializer in gaxios encodes to a `+`.
-  options.paramsSerializer = (params) => {
+  options.paramsSerializer = params => {
     return qs.stringify(params, {arrayFormat: 'repeat'});
   };
 
@@ -168,11 +174,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       // be implemented here.
       params.uploadType = 'multipart';
       const multipart = [
-        {'Content-Type': 'application/json', body: JSON.stringify(resource)}, {
+        {'Content-Type': 'application/json', body: JSON.stringify(resource)},
+        {
           'Content-Type':
-              media.mimeType || (resource && resource.mimeType) || defaultMime,
-          body: media.body  // can be a readable stream or raw string!
-        }
+            media.mimeType || (resource && resource.mimeType) || defaultMime,
+          body: media.body, // can be a readable stream or raw string!
+        },
       ];
       const boundary = uuid.v4();
       const finale = `--${boundary}--`;
@@ -181,14 +188,15 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
           this.push('\r\n');
           this.push(finale);
           callback();
-        }
+        },
       });
       const pStream = new ProgressStream();
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
-        const preamble =
-            `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+        const preamble = `--${boundary}\r\nContent-Type: ${
+          part['Content-Type']
+        }\r\n\r\n`;
         rStream.push(preamble);
         if (typeof part.body === 'string') {
           rStream.push(part.body);
@@ -227,17 +235,17 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     directives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
-      comment: 'gzip'
+      comment: 'gzip',
     });
     const userAgent = directives
-                          .map(d => {
-                            let line = `${d.product}/${d.version}`;
-                            if (d.comment) {
-                              line += ` (${d.comment})`;
-                            }
-                            return line;
-                          })
-                          .join(' ');
+      .map(d => {
+        let line = `${d.product}/${d.version}`;
+        if (d.comment) {
+          line += ` (${d.comment})`;
+        }
+        return line;
+      })
+      .join(' ');
     options.headers!['User-Agent'] = userAgent;
   }
 
@@ -245,7 +253,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // codes as errors.  This is a problem for HTTP 304s when used along
   // with an eTag.
   if (!options.validateStatus) {
-    options.validateStatus = (status) => {
+    options.validateStatus = status => {
       return (status >= 200 && status < 300) || status === 304;
     };
   }
@@ -257,9 +265,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // API call witht the global options configured at the API Context
   // level, or at the global level.
   const mergedOptions = Object.assign(
-      {}, (parameters.context.google ? parameters.context.google._options : {}),
-      parameters.context._options, options);
-  delete mergedOptions.auth;  // is overridden by our auth code
+    {},
+    parameters.context.google ? parameters.context.google._options : {},
+    parameters.context._options,
+    options
+  );
+  delete mergedOptions.auth; // is overridden by our auth code
 
   // Perform the HTTP request.  NOTE: this function used to return a
   // mikeal/request object. Since the transition to Axios, the method is
@@ -268,7 +279,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   if (authClient && typeof authClient === 'object') {
     return (authClient as OAuth2Client).request<T>(mergedOptions);
   } else {
-    return (new DefaultTransporter()).request<T>(mergedOptions);
+    return new DefaultTransporter().request<T>(mergedOptions);
   }
 }
 

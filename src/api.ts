@@ -23,7 +23,7 @@ export interface APIRequestParams<T = any> {
   requiredParams: string[];
   pathParams: string[];
   context: APIRequestContext;
-  mediaUrl?: string|null;
+  mediaUrl?: string | null;
 }
 
 export interface GoogleConfigurable {
@@ -40,7 +40,7 @@ export interface APIRequestContext {
  * and our `auth: OAuth2Client|string` options.
  */
 export interface GlobalOptions extends MethodOptions {
-  auth?: OAuth2Client|string;
+  auth?: OAuth2Client | string;
 }
 
 export interface MethodOptions extends GaxiosOptions {
@@ -66,8 +66,10 @@ export interface ServiceOptions extends GlobalOptions {
   version?: string;
 }
 
-export type BodyResponseCallback<T> =
-    (err: Error|null, res?: GaxiosResponse<T>|null) => void;
+export type BodyResponseCallback<T> = (
+  err: Error | null,
+  res?: GaxiosResponse<T> | null
+) => void;
 
 // tslint:disable-next-line: no-any
-export type APIEndpoint = Readonly<Endpoint&any>;
+export type APIEndpoint = Readonly<Endpoint & any>;
