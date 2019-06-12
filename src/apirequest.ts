@@ -194,9 +194,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       const isStream = isReadableStream(multipart[1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
-        const preamble = `--${boundary}\r\nContent-Type: ${
-          part['Content-Type']
-        }\r\n\r\n`;
+        const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
         rStream.push(preamble);
         if (typeof part.body === 'string') {
           rStream.push(part.body);
