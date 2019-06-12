@@ -14,18 +14,17 @@
 import * as fs from 'fs';
 import {Headers} from 'gaxios';
 import {DefaultTransporter} from 'google-auth-library';
-import * as pify from 'pify';
 import * as url from 'url';
 import * as util from 'util';
 
-import {GlobalOptions, ServiceOptions} from './api';
+import {GlobalOptions, ServiceOptions, APIRequestParams} from './api';
 import {createAPIRequest} from './apirequest';
 import {Endpoint} from './endpoint';
 import {Schema, Schemas} from './schema';
 
 export type EndpointCreator = (options: GlobalOptions, google: {}) => Endpoint;
 
-const fsp = pify(fs);
+const readFile = util.promisify(fs.readFile);
 
 export interface DiscoveryOptions {
   includePrivate?: boolean;
@@ -143,7 +142,7 @@ export class Discovery {
       const parts = url.parse(apiDiscoveryUrl);
       if (apiDiscoveryUrl && !parts.protocol) {
         this.log('Reading from file ' + apiDiscoveryUrl);
-        const file = await fsp.readFile(apiDiscoveryUrl, {encoding: 'utf8'});
+        const file = await readFile(apiDiscoveryUrl, {encoding: 'utf8'});
         return this.makeEndpoint(JSON.parse(file));
       } else {
         this.log('Requesting ' + apiDiscoveryUrl);
@@ -157,16 +156,15 @@ export class Discovery {
       this.log('Requesting ' + options.url);
       const url = options.url;
       delete options.url;
-      const parameters = {
+      const parameters: APIRequestParams = {
         options: {url, method: 'GET'},
         requiredParams: [],
         pathParams: [],
         params: options,
         context: {google: {_options: {}}, _options: {}},
       };
-      const pcr = pify(createAPIRequest);
-      const res = await pcr(parameters);
-      return this.makeEndpoint(res.data);
+      const res = await createAPIRequest(parameters);
+      return this.makeEndpoint(res.data as Schema);
     }
   }
 }
