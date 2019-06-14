@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [2.0.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.0...v2.0.1) (2019-06-14)
+
+
+### Bug Fixes
+
+* **deps:** bump minimum deps and remove pify ([#141](https://www.github.com/googleapis/nodejs-googleapis-common/issues/141)) ([26c3eeb](https://www.github.com/googleapis/nodejs-googleapis-common/commit/26c3eeb))
+
 ## [2.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v1.0.0...v2.0.0) (2019-05-09)
 
 
