@@ -199,5 +199,36 @@ describe('createAPIRequest', () => {
       });
       scope.done();
     });
+
+    it('should merge headers from global and local config', async () => {
+      const scope = nock(url)
+        .get('/')
+        .reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url,
+          headers: {
+            'Local-Header': 'local',
+          },
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {},
+          google: {
+            _options: {
+              headers: {
+                'Global-Header': 'global',
+              },
+            },
+          },
+        },
+      });
+      scope.done();
+      console.log(res.config.headers);
+      assert.strictEqual(res.config.headers!['Global-Header'], 'global');
+      assert.strictEqual(res.config.headers!['Local-Header'], 'local');
+    });
   });
 });

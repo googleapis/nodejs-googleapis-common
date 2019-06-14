@@ -17,6 +17,7 @@ import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
+import * as extend from 'extend';
 
 import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
@@ -225,7 +226,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.data = resource || undefined;
   }
 
-  options.headers = headers;
+  options.headers = extend(true, options.headers || {}, headers);
   options.params = params;
   if (!isBrowser()) {
     options.headers!['Accept-Encoding'] = 'gzip';
@@ -262,7 +263,8 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // Combine the GaxiosOptions options passed with this specific
   // API call witht the global options configured at the API Context
   // level, or at the global level.
-  const mergedOptions = Object.assign(
+  const mergedOptions = extend(
+    true,
     {},
     parameters.context.google ? parameters.context.google._options : {},
     parameters.context._options,
