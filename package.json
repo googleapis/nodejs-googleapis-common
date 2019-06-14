@@ -35,6 +35,7 @@
     "@compodoc/compodoc": "^1.1.9",
     "@types/chai": "^4.1.7",
     "@types/execa": "^0.9.0",
+    "@types/extend": "^3.0.1",
     "@types/mocha": "^5.2.7",
     "@types/mv": "^2.1.0",
     "@types/ncp": "^2.0.1",
@@ -71,6 +72,7 @@
     "webpack-cli": "^3.3.4"
   },
   "dependencies": {
+    "extend": "^3.0.2",
     "gaxios": "^2.0.1",
     "google-auth-library": "^4.2.0",
     "qs": "^6.7.0",
