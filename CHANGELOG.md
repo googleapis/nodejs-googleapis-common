@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [2.0.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.1...v2.0.2) (2019-06-14)
+
+
+### Bug Fixes
+
+* use deep merge for headers ([#142](https://www.github.com/googleapis/nodejs-googleapis-common/issues/142)) ([404fd19](https://www.github.com/googleapis/nodejs-googleapis-common/commit/404fd19))
+
 ### [2.0.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.0...v2.0.1) (2019-06-14)
 
 
