@@ -226,7 +226,6 @@ describe('createAPIRequest', () => {
         },
       });
       scope.done();
-      console.log(res.config.headers);
       assert.strictEqual(res.config.headers!['Global-Header'], 'global');
       assert.strictEqual(res.config.headers!['Local-Header'], 'local');
     });
