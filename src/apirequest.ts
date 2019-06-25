@@ -160,7 +160,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // query
   parameters.pathParams.forEach(param => {
     delete params[param];
-    if (parameters.context._options.params) {
+    if (
+      parameters.context &&
+      parameters.context._options &&
+      parameters.context._options.params
+    ) {
       delete parameters.context._options.params[param];
     }
   });
