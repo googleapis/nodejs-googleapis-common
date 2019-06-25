@@ -229,5 +229,30 @@ describe('createAPIRequest', () => {
       assert.strictEqual(res.config.headers!['Global-Header'], 'global');
       assert.strictEqual(res.config.headers!['Local-Header'], 'local');
     });
+
+    it('should remove path params from the querystring when set in API level options', async () => {
+      const optUrl = `${url}/projects/{projectId}`;
+      const projectId = 'not-a-project';
+      const path = `/projects/${projectId}`;
+      const scope = nock(url)
+        .get(path)
+        .reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {url: optUrl},
+        params: {},
+        requiredParams: [],
+        pathParams: ['projectId'],
+        context: {
+          _options: {
+            params: {
+              projectId,
+            },
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = `${url}/projects/${projectId}`;
+      assert.strictEqual(res.config.url, expectedUrl);
+    });
   });
 });
