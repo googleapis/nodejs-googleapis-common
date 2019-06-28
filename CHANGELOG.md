@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [2.0.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.2...v2.0.3) (2019-06-26)
+
+
+### Bug Fixes
+
+* remove path params when provided via API level options ([#147](https://www.github.com/googleapis/nodejs-googleapis-common/issues/147)) ([96d940a](https://www.github.com/googleapis/nodejs-googleapis-common/commit/96d940a))
+* **docs:** link to reference docs section on googleapis.dev ([#150](https://www.github.com/googleapis/nodejs-googleapis-common/issues/150)) ([3ac41da](https://www.github.com/googleapis/nodejs-googleapis-common/commit/3ac41da))
+
 ### [2.0.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.1...v2.0.2) (2019-06-14)
 
 
