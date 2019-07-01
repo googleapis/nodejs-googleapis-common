@@ -10,7 +10,6 @@
     "!build/src/**/*.map"
   ],
   "scripts": {
-    "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
     "test": "nyc mocha build/test",
@@ -19,8 +18,8 @@
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
-    "posttest": "npm run check",
-    "lint": "npm run check",
+    "posttest": "npm run lint",
+    "lint": "gts check",
     "samples-test": "mocha build/samples-test",
     "docs": "compodoc src/",
     "webpack": "webpack",
@@ -64,17 +63,17 @@
     "nock": "^10.0.6",
     "null-loader": "^3.0.0",
     "nyc": "^14.1.1",
-    "puppeteer": "^1.17.0",
+    "puppeteer": "^1.18.1",
     "source-map-support": "^0.5.12",
-    "ts-loader": "^6.0.2",
-    "typescript": "~3.5.1",
-    "webpack": "^4.33.0",
-    "webpack-cli": "^3.3.4"
+    "ts-loader": "^6.0.4",
+    "typescript": "~3.5.2",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5"
   },
   "dependencies": {
     "extend": "^3.0.2",
     "gaxios": "^2.0.1",
-    "google-auth-library": "^4.2.0",
+    "google-auth-library": "^4.2.5",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
     "uuid": "^3.3.2"

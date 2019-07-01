@@ -74,9 +74,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // Create a new params object so it can no longer be modified from outside
   // code Also support global and per-client params, but allow them to be
   // overriden per-request
-  const topOptions = (parameters.context.google && parameters.context.google._options && parameters.context.google._options.params)
-    ? parameters.context.google._options.params
-    : {};
+  const topOptions =
+    parameters.context.google &&
+    parameters.context.google._options &&
+    parameters.context.google._options.params
+      ? parameters.context.google._options.params
+      : {};
   params = Object.assign(
     {}, // New base object
     topOptions, // Global params
