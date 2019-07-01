@@ -1,6 +1,6 @@
 {
   "name": "googleapis-common",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A common tooling library used by the googleapis npm module. You probably don't want to use this directly.",
   "repository": "googleapis/nodejs-googleapis-common",
   "main": "build/src/index.js",

@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [2.0.4](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.3...v2.0.4) (2019-07-01)
+
+
+### Bug Fixes
+
+* added _options to topOptions parameters.context.google check ([#148](https://www.github.com/googleapis/nodejs-googleapis-common/issues/148)) ([da1e230](https://www.github.com/googleapis/nodejs-googleapis-common/commit/da1e230))
+* **deps:** bump the min required version of all deps ([#152](https://www.github.com/googleapis/nodejs-googleapis-common/issues/152)) ([7634004](https://www.github.com/googleapis/nodejs-googleapis-common/commit/7634004))
+
 ### [2.0.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.2...v2.0.3) (2019-06-26)
 
 
