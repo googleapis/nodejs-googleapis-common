@@ -17,9 +17,9 @@ import {
   GoogleAuthOptions,
   JWT,
   OAuth2Client,
+  ProjectIdCallback,
   UserRefreshClient,
 } from 'google-auth-library';
-import {ProjectIdCallback} from 'google-auth-library/build/src/auth/googleauth';
 
 export class AuthPlus extends GoogleAuth {
   // tslint:disable-next-line: variable-name
