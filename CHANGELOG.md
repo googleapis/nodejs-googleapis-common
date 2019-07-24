@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [3.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.4...v3.0.0) (2019-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* pulls in breaking API changes in google-auth-library. getProjectId() and getProjectId() have been modified to make the impact of these changes less noticeable on the legacy googleapis module (getClient() is idempotent, but getProjectId() will use the last configuration).
+
+### Features
+
+* expose GoogleAuth constructor on AuthPlus class ([#154](https://www.github.com/googleapis/nodejs-googleapis-common/issues/154)) ([7d7a961](https://www.github.com/googleapis/nodejs-googleapis-common/commit/7d7a961))
+
 ### [2.0.4](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.3...v2.0.4) (2019-07-01)
 
 
