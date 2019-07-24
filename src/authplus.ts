@@ -31,7 +31,7 @@ export class AuthPlus extends GoogleAuth {
   // tslint:disable-next-line: variable-name
   GoogleAuth = GoogleAuth;
 
-  private _cachedAuth: GoogleAuth | null = null;
+  private _cachedAuth?: GoogleAuth;
 
   /**
    * Override getClient(), memoizing an instance of auth for
