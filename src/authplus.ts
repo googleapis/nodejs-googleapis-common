@@ -11,7 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Compute, GoogleAuth, JWT, OAuth2Client} from 'google-auth-library';
+import {
+  Compute,
+  GoogleAuth,
+  GoogleAuthOptions,
+  JWT,
+  OAuth2Client,
+  ProjectIdCallback,
+  UserRefreshClient,
+} from 'google-auth-library';
 
 export class AuthPlus extends GoogleAuth {
   // tslint:disable-next-line: variable-name
@@ -20,4 +28,37 @@ export class AuthPlus extends GoogleAuth {
   Compute = Compute;
   // tslint:disable-next-line: variable-name
   OAuth2 = OAuth2Client;
+  // tslint:disable-next-line: variable-name
+  GoogleAuth = GoogleAuth;
+
+  private _cachedAuth?: GoogleAuth;
+
+  /**
+   * Override getClient(), memoizing an instance of auth for
+   * subsequent calls to getProjectId().
+   */
+  async getClient(
+    options?: GoogleAuthOptions
+  ): Promise<Compute | JWT | UserRefreshClient> {
+    this._cachedAuth = new GoogleAuth(options);
+    return this._cachedAuth.getClient();
+  }
+
+  /**
+   * Override getProjectId(), using the most recently configured
+   * auth instance when fetching projectId.
+   */
+  getProjectId(): Promise<string>;
+  getProjectId(callback: ProjectIdCallback): void;
+  getProjectId(callback?: ProjectIdCallback): Promise<string | null> | void {
+    if (callback) {
+      return this._cachedAuth
+        ? this._cachedAuth.getProjectId(callback)
+        : super.getProjectId(callback);
+    } else {
+      return this._cachedAuth
+        ? this._cachedAuth.getProjectId()
+        : super.getProjectId();
+    }
+  }
 }
