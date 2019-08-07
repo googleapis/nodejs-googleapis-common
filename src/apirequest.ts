@@ -123,6 +123,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   // Grab headers from user provided options
   const headers = params.headers || {};
+  populateAPIHeader(headers);
   delete params.headers;
 
   // Un-alias parameters that were modified due to conflicts with reserved names
@@ -306,4 +307,15 @@ class ProgressStream extends stream.Transform {
     this.push(chunk);
     callback();
   }
+}
+
+interface Headers {
+  // tslint:disable-next-line no-any
+  [index: string]: any;
+}
+
+function populateAPIHeader(headers: Headers) {
+  const pkg = require('../../package.json');
+  const nodeVersion = process.version.replace(/^v/, '');
+  headers['x-goog-api-client'] = `gdcl/${pkg.version} gl-node/${nodeVersion}`;
 }
