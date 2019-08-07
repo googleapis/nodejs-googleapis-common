@@ -146,7 +146,7 @@ describe('createAPIRequest', () => {
             this.req.headers['x-goog-api-client'],
             /gdcl\/[0-9]+\.[0-9]+\.[0-9]+ gl-node\/[0-9]+\.[0-9]+\.[0-9]+/
           );
-          return true;
+          return [200, ''];
         });
       const res = await createAPIRequest<FakeParams>({
         options: {url},
