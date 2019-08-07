@@ -149,12 +149,7 @@ describe('createAPIRequest', () => {
           return true;
         });
       const res = await createAPIRequest<FakeParams>({
-        options: {
-          url,
-          userAgentDirectives: [
-            {product: 'frog', version: '1.0', comment: 'jumps'},
-          ],
-        },
+        options: {url},
         params: {},
         requiredParams: [],
         pathParams: [],
