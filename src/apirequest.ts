@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosPromise} from 'gaxios';
+import {GaxiosPromise, Headers} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
 import * as qs from 'qs';
 import * as stream from 'stream';
@@ -309,13 +309,11 @@ class ProgressStream extends stream.Transform {
   }
 }
 
-interface Headers {
-  // tslint:disable-next-line no-any
-  [index: string]: any;
-}
-
 function populateAPIHeader(headers: Headers) {
-  const pkg = require('../../package.json');
-  const nodeVersion = process.version.replace(/^v/, '');
-  headers['x-goog-api-client'] = `gdcl/${pkg.version} gl-node/${nodeVersion}`;
+  // TODO: we should eventually think about adding browser support for this
+  // header, using the gl-web header:
+  if (!isBrowser()) {
+    const nodeVersion = process.version.replace(/^v/, '');
+    headers['x-goog-api-client'] = `gdcl/${pkg.version} gl-node/${nodeVersion}`;
+  }
 }
