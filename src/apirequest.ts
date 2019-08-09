@@ -311,7 +311,8 @@ class ProgressStream extends stream.Transform {
 
 function populateAPIHeader(headers: Headers) {
   // TODO: we should eventually think about adding browser support for this
-  // header, using the gl-web header:
+  // populating the gl-web header (web support should also be added to
+  // google-auth-library-nodejs).
   if (!isBrowser()) {
     const nodeVersion = process.version.replace(/^v/, '');
     headers['x-goog-api-client'] = `gdcl/${pkg.version} gl-node/${nodeVersion}`;
