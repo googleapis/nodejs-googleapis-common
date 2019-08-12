@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [3.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.0.0...v3.1.0) (2019-08-12)
+
+
+### Features
+
+* populate x-goog-api-client header ([#159](https://www.github.com/googleapis/nodejs-googleapis-common/issues/159)) ([0c8558e](https://www.github.com/googleapis/nodejs-googleapis-common/commit/0c8558e))
+
 ## [3.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v2.0.4...v3.0.0) (2019-07-24)
 
 
