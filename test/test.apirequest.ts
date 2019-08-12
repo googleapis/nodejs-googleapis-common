@@ -137,6 +137,26 @@ describe('createAPIRequest', () => {
       assert.match(userAgent, /frog\/1.0 \(jumps\)/);
       assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
     });
+
+    it('should populate x-goog-api-client', async () => {
+      const scope = nock(url)
+        .get('/')
+        .reply(function() {
+          assert.match(
+            this.req.headers['x-goog-api-client'][0],
+            /gdcl\/[\w.-]+ gl-node\/[\w.-]+ auth\/[\w.-]+$/
+          );
+          return [200, ''];
+        });
+      const res = await createAPIRequest<FakeParams>({
+        options: {url},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: fakeContext,
+      });
+      scope.done();
+    });
   });
 
   describe('mock stream', () => {
