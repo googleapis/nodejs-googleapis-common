@@ -144,7 +144,7 @@ describe('createAPIRequest', () => {
         .reply(function() {
           assert.match(
             this.req.headers['x-goog-api-client'][0],
-            /gdcl\/[\w.-]+ gl-node\/[\w.-]+ auth\/[\w.-]+$/
+            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/
           );
           return [200, ''];
         });
