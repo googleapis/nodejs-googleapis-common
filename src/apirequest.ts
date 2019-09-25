@@ -109,7 +109,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   let authClient =
     params.auth ||
     parameters.context._options.auth ||
-    (parameters.context.google
+    (parameters.context.google && parameters.context.google._options
       ? parameters.context.google._options.auth
       : null);
 
