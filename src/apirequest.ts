@@ -15,7 +15,7 @@
  */
 
 import {GaxiosPromise, Headers} from 'gaxios';
-import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
+import {DefaultTransporter, AuthClient} from 'google-auth-library';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
@@ -291,7 +291,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // now void.  This may be a source of confusion for users upgrading from
   // version 24.0 -> 25.0 or up.
   if (authClient && typeof authClient === 'object') {
-    return (authClient as OAuth2Client).request<T>(mergedOptions);
+    return (authClient as AuthClient).request<T>(mergedOptions);
   } else {
     return new DefaultTransporter().request<T>(mergedOptions);
   }
