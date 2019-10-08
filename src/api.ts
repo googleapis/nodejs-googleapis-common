@@ -45,6 +45,7 @@ export interface GlobalOptions extends MethodOptions {
 
 export interface MethodOptions extends GaxiosOptions {
   rootUrl?: string;
+  http2?: boolean;
   userAgentDirectives?: UserAgentDirective[];
 }
 

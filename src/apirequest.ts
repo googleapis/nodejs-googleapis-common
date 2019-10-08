@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosPromise, Headers} from 'gaxios';
+import {GaxiosPromise, Headers, GaxiosResponse} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
 import * as qs from 'qs';
 import * as stream from 'stream';
@@ -27,6 +27,7 @@ import {
 } from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
+import * as h2 from './h2moo';
 
 // tslint:disable-next-line no-var-requires
 const pkg = require('../../package.json');
@@ -72,7 +73,9 @@ export function createAPIRequest<T>(
   }
 }
 
-async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
+async function createAPIRequestAsync<T>(
+  parameters: APIRequestParams
+): Promise<GaxiosResponse> {
   const options = Object.assign({}, parameters.options);
 
   // Create a new params object so it can no longer be modified from outside
@@ -324,7 +327,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // now void.  This may be a source of confusion for users upgrading from
   // version 24.0 -> 25.0 or up.
   if (authClient && typeof authClient === 'object') {
-    return (authClient as OAuth2Client).request<T>(mergedOptions);
+    if (mergedOptions.http2) {
+      const authHeaders = await authClient.getRequestHeaders(mergedOptions.url);
+      const mooOpts = Object.assign({}, mergedOptions);
+      mooOpts.headers = Object.assign(mooOpts.headers, authHeaders);
+      return h2.request<T>(mooOpts);
+    } else {
+      return (authClient as OAuth2Client).request<T>(mergedOptions);
+    }
   } else {
     return new DefaultTransporter().request<T>(mergedOptions);
   }
