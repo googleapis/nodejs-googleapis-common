@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [3.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.0...v3.1.1) (2019-10-08)
+
+
+### Bug Fixes
+
+* allow for resource url parameter ([#178](https://www.github.com/googleapis/nodejs-googleapis-common/issues/178)) ([a3ddd5b](https://www.github.com/googleapis/nodejs-googleapis-common/commit/a3ddd5b))
+
 ## [3.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.0.0...v3.1.0) (2019-08-12)
 
 
