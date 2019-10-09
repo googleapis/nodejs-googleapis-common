@@ -118,6 +118,95 @@ describe('createAPIRequest', () => {
       assert(result);
     });
 
+    it('should not populate resource parameter in URL, if not required parameter', async () => {
+      const scope = nock(url)
+        .post('/')
+        .reply(200, fakeResponse);
+      const result = await createAPIRequest<FakeParams>({
+        options: {
+          url,
+          method: 'POST',
+        },
+        params: {
+          resource: {
+            foo: 'bar',
+          },
+        },
+        requiredParams: [],
+        pathParams: [],
+        context: fakeContext,
+      });
+      scope.done();
+      assert.strictEqual(result.data, fakeResponse as {});
+      assert(result);
+    });
+
+    it('should not populate resource parameter in URL, if it is an object', async () => {
+      const scope = nock(url)
+        .post('/')
+        .reply(200, fakeResponse);
+      try {
+        const result = await createAPIRequest<FakeParams>({
+          options: {
+            url,
+            method: 'POST',
+          },
+          params: {
+            resource: {
+              foo: 'bar',
+            },
+          },
+          requiredParams: ['resource'],
+          pathParams: [],
+          context: fakeContext,
+        });
+      } catch (err) {
+        assert.match(err.message, /Missing required parameters: resource/);
+      }
+    });
+
+    it('should not populate resource parameter in URL, if it is an object', async () => {
+      const scope = nock(url)
+        .post('/')
+        .reply(200, fakeResponse);
+      try {
+        const result = await createAPIRequest<FakeParams>({
+          options: {
+            url,
+            method: 'POST',
+          },
+          params: {
+            resource: {
+              foo: 'bar',
+            },
+          },
+          requiredParams: ['resource'],
+          pathParams: [],
+          context: fakeContext,
+        });
+      } catch (err) {
+        assert.match(err.message, /Missing required parameters: resource/);
+      }
+    });
+
+    it('should populate resource parameter in URL, if it is required', async () => {
+      const scope = nock(`${url}`)
+        .get(`/?resource=blerg`)
+        .reply(200, fakeResponse);
+      const result = await createAPIRequest<FakeParams>({
+        options: {url},
+        params: {
+          resource: 'blerg',
+        },
+        requiredParams: ['resource'],
+        pathParams: [],
+        context: fakeContext,
+      });
+      scope.done();
+      assert.strictEqual(result.data, fakeResponse as {});
+      assert(result);
+    });
+
     it('should include directives in the user agent', async () => {
       const scope = nock(url)
         .get('/')

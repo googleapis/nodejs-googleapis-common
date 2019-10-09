@@ -96,7 +96,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
    * In a previous version of this API, the request body was stuffed in a field
    * named `resource`.  This caused lots of problems, because it's not uncommon
    * to have an actual named parameter required which is also named `resource`.
-   * This mean that users would have to use `resource_` in those cases, which
+   * This meant that users would have to use `resource_` in those cases, which
    * pretty much nobody figures out on their own. The request body is now
    * documented as being in the `requestBody` property, but we also need to keep
    * using `resource` for reasons of back-compat. Cases that need to be covered
@@ -106,8 +106,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
    * - user provides just a `requestBody`
    * - user provides both a `requestBody` and a `resource`
    */
-  const resource = params.requestBody ? params.requestBody : params.resource;
-  if (!params.requestBody && params.resource) {
+  let resource = params.requestBody;
+  if (
+    !params.requestBody &&
+    params.resource &&
+    (!parameters.requiredParams.includes('resource') ||
+      typeof params.resource !== 'string')
+  ) {
+    resource = params.resource;
     delete params.resource;
   }
   delete params.requestBody;
