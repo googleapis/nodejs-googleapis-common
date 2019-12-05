@@ -78,19 +78,43 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // Create a new params object so it can no longer be modified from outside
   // code Also support global and per-client params, but allow them to be
   // overriden per-request
+  const globalParams =
+    parameters.context.google &&
+    parameters.context.google._options &&
+    parameters.context.google._options.params
+      ? parameters.context.google._options.params
+      : {};
+  const clientParams =
+    parameters.context &&
+    parameters.context._options &&
+    parameters.context._options.params
+      ? parameters.context._options.params
+      : {};
   const params = Object.assign(
     {}, // New base object
-    parameters.context?.google?._options?.params, // Global params
-    parameters.context?._options?.params, // Per-client params
+    globalParams, // Global params
+    clientParams, // Per-client params
     parameters.params // API call params
   );
 
   // Check for user specified user agents at all levels of config
+  const userAgentGlobal =
+    parameters.context.google &&
+    parameters.context.google._options &&
+    parameters.context.google._options.userAgentDirectives
+      ? parameters.context.google._options.userAgentDirectives
+      : [];
+  const userAgentClient =
+    parameters.context &&
+    parameters.context._options &&
+    parameters.context._options.userAgentDirectives
+      ? parameters.context._options.userAgentDirectives
+      : [];
   const userAgentDirectives: UserAgentDirective[] =
     Object.assign(
       [],
-      parameters.context?.google?._options?.userAgentDirectives,
-      parameters.context?._options?.userAgentDirectives,
+      userAgentGlobal,
+      userAgentClient,
       parameters.options.userAgentDirectives
     ) || [];
 
