@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [3.1.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.1...v3.1.2) (2019-12-05)
+
+
+### Bug Fixes
+
+* **deps:** pin TypeScript below 3.7.0 ([1a796e7](https://www.github.com/googleapis/nodejs-googleapis-common/commit/1a796e7d1fd98f2f3c0a38a78fc4f8845b416505))
+* **docs:** add jsdoc-region-tag plugin ([#185](https://www.github.com/googleapis/nodejs-googleapis-common/issues/185)) ([eddca9f](https://www.github.com/googleapis/nodejs-googleapis-common/commit/eddca9f48a8f7024ae507f7bbce8ceb18adc8f52))
+
 ### [3.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.0...v3.1.1) (2019-10-08)
 
 
