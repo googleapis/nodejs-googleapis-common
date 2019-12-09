@@ -1,6 +1,6 @@
 {
   "name": "googleapis-common",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "A common tooling library used by the googleapis npm module. You probably don't want to use this directly.",
   "repository": "googleapis/nodejs-googleapis-common",
   "main": "build/src/index.js",
@@ -63,17 +63,17 @@
     "nock": "^11.0.0-beta.31",
     "null-loader": "^3.0.0",
     "nyc": "^14.1.1",
-    "puppeteer": "^1.18.1",
+    "puppeteer": "^2.0.0",
     "source-map-support": "^0.5.12",
     "ts-loader": "^6.0.4",
-    "typescript": "~3.6.0",
+    "typescript": "3.6.4",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.5"
   },
   "dependencies": {
     "extend": "^3.0.2",
     "gaxios": "^2.0.1",
-    "google-auth-library": "^5.2.0",
+    "google-auth-library": "^5.6.1",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
     "uuid": "^3.3.2"

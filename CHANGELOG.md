@@ -4,6 +4,20 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [3.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.1...v3.2.0) (2019-12-05)
+
+
+### Features
+
+* **deps:** auth adds support for additional headers ([#195](https://www.github.com/googleapis/nodejs-googleapis-common/issues/195)) ([1e21283](https://www.github.com/googleapis/nodejs-googleapis-common/commit/1e212838695a6dab9d432e73ca7b014845929f50))
+
+
+### Bug Fixes
+
+* **deps:** pin TypeScript below 3.7.0 ([1a796e7](https://www.github.com/googleapis/nodejs-googleapis-common/commit/1a796e7d1fd98f2f3c0a38a78fc4f8845b416505))
+* **docs:** add jsdoc-region-tag plugin ([#185](https://www.github.com/googleapis/nodejs-googleapis-common/issues/185)) ([eddca9f](https://www.github.com/googleapis/nodejs-googleapis-common/commit/eddca9f48a8f7024ae507f7bbce8ceb18adc8f52))
+* include user agent for global and service level options ([#193](https://www.github.com/googleapis/nodejs-googleapis-common/issues/193)) ([c878f9c](https://www.github.com/googleapis/nodejs-googleapis-common/commit/c878f9cad06f932d8849e7db44ca9b0cea4900e3))
+
 ### [3.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.0...v3.1.1) (2019-10-08)
 
 

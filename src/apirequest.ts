@@ -1,18 +1,16 @@
-/**
- * Copyright 2016 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2016 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 import {GaxiosPromise, Headers} from 'gaxios';
 import {DefaultTransporter, AuthClient} from 'google-auth-library';
@@ -22,7 +20,11 @@ import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 import * as extend from 'extend';
 
-import {APIRequestParams, BodyResponseCallback} from './api';
+import {
+  APIRequestParams,
+  BodyResponseCallback,
+  UserAgentDirective,
+} from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 
@@ -71,24 +73,50 @@ export function createAPIRequest<T>(
 }
 
 async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
-  let params = parameters.params;
   const options = Object.assign({}, parameters.options);
 
   // Create a new params object so it can no longer be modified from outside
   // code Also support global and per-client params, but allow them to be
   // overriden per-request
-  const topOptions =
+  const globalParams =
     parameters.context.google &&
     parameters.context.google._options &&
     parameters.context.google._options.params
       ? parameters.context.google._options.params
       : {};
-  params = Object.assign(
+  const clientParams =
+    parameters.context &&
+    parameters.context._options &&
+    parameters.context._options.params
+      ? parameters.context._options.params
+      : {};
+  const params = Object.assign(
     {}, // New base object
-    topOptions, // Global params
-    parameters.context._options.params, // Per-client params
-    params // API call params
+    globalParams, // Global params
+    clientParams, // Per-client params
+    parameters.params // API call params
   );
+
+  // Check for user specified user agents at all levels of config
+  const userAgentGlobal =
+    parameters.context.google &&
+    parameters.context.google._options &&
+    parameters.context.google._options.userAgentDirectives
+      ? parameters.context.google._options.userAgentDirectives
+      : [];
+  const userAgentClient =
+    parameters.context &&
+    parameters.context._options &&
+    parameters.context._options.userAgentDirectives
+      ? parameters.context._options.userAgentDirectives
+      : [];
+  const userAgentDirectives: UserAgentDirective[] =
+    Object.assign(
+      [],
+      userAgentGlobal,
+      userAgentClient,
+      parameters.options.userAgentDirectives
+    ) || [];
 
   const media = params.media || {};
 
@@ -250,13 +278,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   options.params = params;
   if (!isBrowser()) {
     options.headers!['Accept-Encoding'] = 'gzip';
-    const directives = options.userAgentDirectives || [];
-    directives.push({
+    userAgentDirectives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
       comment: 'gzip',
     });
-    const userAgent = directives
+    const userAgent = userAgentDirectives
       .map(d => {
         let line = `${d.product}/${d.version}`;
         if (d.comment) {
