@@ -274,6 +274,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.data = resource || undefined;
   }
 
+  // Rewrite URL if rootUrl is globally set
+  if (parameters.context._options.rootUrl !== undefined) {
+      const path = parameters.url.slice(parameters.context._options.rootUrl.length);
+      parameters.url = (
+          parameters.context._options.rootUrl + '/' + path
+      ).replace(/([^:]\/)\/+/g, '$1');
+  };
+
   options.headers = extend(true, options.headers || {}, headers);
   options.params = params;
   if (!isBrowser()) {
