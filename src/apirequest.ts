@@ -188,6 +188,18 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     parameters.mediaUrl = urlTemplate.parse(parameters.mediaUrl).expand(params);
   }
 
+  // Rewrite url if rootUrl is globally set
+  if (
+    parameters.context._options.rootUrl !== undefined &&
+    options.url !== undefined
+  ) {
+    const path = options.url.slice(parameters.context._options.rootUrl.length);
+    options.url = (parameters.context._options.rootUrl + '/' + path).replace(
+      /([^:]\/)\/+/g,
+      '$1'
+    );
+  }
+
   // When forming the querystring, override the serializer so that array
   // values are serialized like this:
   // myParams: ['one', 'two'] ---> 'myParams=one&myParams=two'
@@ -273,14 +285,6 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   } else {
     options.data = resource || undefined;
   }
-
-  // Rewrite URL if rootUrl is globally set
-  if (parameters.context._options.rootUrl !== undefined) {
-      const path = parameters.url.slice(parameters.context._options.rootUrl.length);
-      parameters.url = (
-          parameters.context._options.rootUrl + '/' + path
-      ).replace(/([^:]\/)\/+/g, '$1');
-  };
 
   options.headers = extend(true, options.headers || {}, headers);
   options.params = params;
