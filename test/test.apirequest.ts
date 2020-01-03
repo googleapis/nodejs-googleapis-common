@@ -298,6 +298,32 @@ describe('createAPIRequest', () => {
       });
       scope.done();
     });
+
+    it('should rewrite url to match default rootUrl', async () => {
+      const rootUrl = 'http://www.googleapis.com/';
+      const path = '/api/service';
+      const normalize = (x: string) => x.replace(/([^:]\/)\/+/g, '$1');
+      const url = normalize('https://www.googleapis.com/' + path);
+      const scope = nock(rootUrl)
+        .get(path)
+        .reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url,
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            rootUrl,
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = normalize(rootUrl + path);
+      assert.strictEqual(res.config.url, expectedUrl);
+    });
   });
 
   describe('mock stream', () => {
