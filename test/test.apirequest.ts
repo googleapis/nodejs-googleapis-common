@@ -303,13 +303,12 @@ describe('createAPIRequest', () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';
       const normalize = (x: string) => x.replace(/([^:]\/)\/+/g, '$1');
-      const url = normalize('https://www.googleapis.com/' + path);
       const scope = nock(rootUrl)
         .get(path)
         .reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
-          url,
+          url: normalize('https://www.googleapis.com/' + path),
         },
         params: {},
         requiredParams: [],
