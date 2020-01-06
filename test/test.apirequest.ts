@@ -16,6 +16,7 @@ import {assert} from 'chai';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
+import {resolve} from 'url';
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
@@ -302,13 +303,12 @@ describe('createAPIRequest', () => {
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';
-      const normalize = (x: string) => x.replace(/([^:]\/)\/+/g, '$1');
       const scope = nock(rootUrl)
         .get(path)
         .reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
-          url: normalize('https://www.googleapis.com/' + path),
+          url: resolve('https://www.googleapis.com/', path),
         },
         params: {},
         requiredParams: [],
@@ -320,7 +320,7 @@ describe('createAPIRequest', () => {
         },
       });
       scope.done();
-      const expectedUrl = normalize(rootUrl + path);
+      const expectedUrl = 'http://www.googleapis.com/api/service';
       assert.strictEqual(res.config.url, expectedUrl);
     });
   });
