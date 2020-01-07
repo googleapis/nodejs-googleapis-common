@@ -1,0 +1,6 @@
+{
+  "intelli-espower-loader": true,
+  "require": ["source-map-support/register"],
+  "throw-deprecation": true,
+  "timeout": 10000
+}
