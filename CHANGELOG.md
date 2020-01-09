@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [3.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.0...v3.2.1) (2020-01-09)
+
+
+### Bug Fixes
+
+* support rootUrl as global option ([ca51783](https://www.github.com/googleapis/nodejs-googleapis-common/commit/ca5178382046e1f1d365cd37d60bb508febf3db8))
+
 ## [3.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.1...v3.2.0) (2019-12-05)
 
 
