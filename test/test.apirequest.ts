@@ -16,6 +16,7 @@ import {assert} from 'chai';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
+import {resolve} from 'url';
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
@@ -297,6 +298,30 @@ describe('createAPIRequest', () => {
         context: fakeContext,
       });
       scope.done();
+    });
+
+    it('should rewrite url to match default rootUrl', async () => {
+      const rootUrl = 'http://www.googleapis.com/';
+      const path = '/api/service';
+      const scope = nock(rootUrl)
+        .get(path)
+        .reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url: resolve('https://www.googleapis.com/', path),
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            rootUrl,
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = 'http://www.googleapis.com/api/service';
+      assert.strictEqual(res.config.url, expectedUrl);
     });
   });
 
