@@ -27,7 +27,7 @@ import {
 } from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
-import {resolve} from 'url'
+import {resolve} from 'url';
 
 // tslint:disable-next-line no-var-requires
 const pkg = require('../../package.json');
@@ -195,7 +195,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.url !== undefined
   ) {
     const path = options.url.slice(parameters.context._options.rootUrl.length);
-    options.url = resolve(parameters.context._options.rootUrl, path)
+    options.url = resolve(parameters.context._options.rootUrl, path);
   }
 
   // When forming the querystring, override the serializer so that array
