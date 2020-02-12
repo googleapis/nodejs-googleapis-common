@@ -25,7 +25,8 @@
     "webpack": "webpack",
     "browser-test": "karma start",
     "docs-test": "linkinator docs",
-    "predocs-test": "npm run docs"
+    "predocs-test": "npm run docs",
+    "prelint": "cd samples; npm link ../"
   },
   "keywords": [],
   "author": "Google LLC",
