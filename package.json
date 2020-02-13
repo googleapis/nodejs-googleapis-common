@@ -10,7 +10,6 @@
     "!build/src/**/*.map"
   ],
   "scripts": {
-    "clean": "gts clean",
     "compile": "tsc -p .",
     "test": "c8 mocha build/test",
     "system-test": "mocha build/system-test",
@@ -18,14 +17,14 @@
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
-    "posttest": "npm run lint",
     "lint": "gts check",
     "samples-test": "mocha build/samples-test",
     "docs": "compodoc src/",
     "webpack": "webpack",
     "browser-test": "karma start",
     "docs-test": "linkinator docs",
-    "predocs-test": "npm run docs"
+    "predocs-test": "npm run docs",
+    "prelint": "cd samples; npm link ../; npm i"
   },
   "keywords": [],
   "author": "Google LLC",
