@@ -41,7 +41,7 @@
     "@types/qs": "^6.5.3",
     "@types/tmp": "0.1.0",
     "@types/url-template": "^2.0.28",
-    "@types/uuid": "^3.4.4",
+    "@types/uuid": "^7.0.0",
     "chai": "^4.2.0",
     "codecov": "^3.5.0",
     "gts": "^1.0.0",
@@ -73,7 +73,7 @@
     "google-auth-library": "^5.6.1",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
-    "uuid": "^3.3.2"
+    "uuid": "^7.0.0"
   },
   "engines": {
     "node": ">=8.10.0"
