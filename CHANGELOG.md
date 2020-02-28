@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [3.2.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.1...v3.2.2) (2020-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v7 ([25a40a5](https://www.github.com/googleapis/nodejs-googleapis-common/commit/25a40a58afe3a9aa16d3c5946c362b0f1a22d6a5))
+
 ### [3.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.0...v3.2.1) (2020-01-09)
 
 
