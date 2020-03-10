@@ -326,13 +326,10 @@ describe('createAPIRequest', () => {
   });
 
   describe('mock stream', () => {
-    let totalBytesSent: number;
-    let totalBytesReceived = 0;
-    const requestBody = {};
-    beforeEach(() => {
-      totalBytesReceived = 0;
-    });
     it('should pass all chunks', async () => {
+      let totalBytesSent = 0;
+      let totalBytesReceived = 0;
+      const requestBody = {};
       const fStream = new FakeReadable();
       fStream.on('progress', (currentBytesSent: number) => {
         totalBytesSent = currentBytesSent;
@@ -370,6 +367,9 @@ describe('createAPIRequest', () => {
     });
 
     it('should pass all chunks, when uploadType set to multipart', async () => {
+      let totalBytesSent = 0;
+      let totalBytesReceived = 0;
+      const requestBody = {};
       const fStream = new FakeReadable();
       fStream.on('progress', (currentBytesSent: number) => {
         totalBytesSent = currentBytesSent;
