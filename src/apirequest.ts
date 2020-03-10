@@ -240,7 +240,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
         },
       ];
       // There are cases where a multi-part upload may not have a resource,
-      // e.g., when an RPC like youtube.thumbnails sets the uploadType field:
+      // e.g., when the RPC youtube.thumbnails sets a video's thumbnail image.
       if (resource) {
         multipart.unshift({
           'Content-Type': 'application/json',
