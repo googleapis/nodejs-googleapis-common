@@ -228,7 +228,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   if (parameters.mediaUrl && media.body) {
     options.url = parameters.mediaUrl;
-    if (resource || parameters.options.uploadType === 'multipart') {
+    if (resource || parameters.options.multipart === true) {
       // gaxios doesn't support multipart/related uploads, so it has to
       // be implemented here.
       params.uploadType = 'multipart';

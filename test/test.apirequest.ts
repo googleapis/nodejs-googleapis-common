@@ -366,7 +366,7 @@ describe('createAPIRequest', () => {
       assert.strictEqual(totalBytesSent, totalBytesReceived);
     });
 
-    it('should pass all chunks, when uploadType set to multipart', async () => {
+    it('should pass all chunks, when multipart=true', async () => {
       let totalBytesSent = 0;
       let totalBytesReceived = 0;
       const requestBody = {};
@@ -395,7 +395,7 @@ describe('createAPIRequest', () => {
         },
       };
       await createAPIRequest<FakeParams>({
-        options: {url, uploadType: 'multipart'},
+        options: {url, multipart: true},
         params: {
           media,
           auth,
