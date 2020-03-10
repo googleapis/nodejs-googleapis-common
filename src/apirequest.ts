@@ -228,18 +228,25 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   if (parameters.mediaUrl && media.body) {
     options.url = parameters.mediaUrl;
-    if (resource) {
+    if (resource || parameters.options.uploadType === 'multipart') {
       // gaxios doesn't support multipart/related uploads, so it has to
       // be implemented here.
       params.uploadType = 'multipart';
       const multipart = [
-        {'Content-Type': 'application/json', body: JSON.stringify(resource)},
         {
           'Content-Type':
             media.mimeType || (resource && resource.mimeType) || defaultMime,
           body: media.body, // can be a readable stream or raw string!
         },
       ];
+      // There are cases where a multi-part upload may not have a resource,
+      // e.g., when an RPC like youtube.thumbnails sets the uploadType field:
+      if (resource) {
+        multipart.unshift({
+          'Content-Type': 'application/json',
+          body: JSON.stringify(resource),
+        });
+      }
       const boundary = uuid.v4();
       const finale = `--${boundary}--`;
       const rStream = new stream.PassThrough({
@@ -250,7 +257,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
         },
       });
       const pStream = new ProgressStream();
-      const isStream = isReadableStream(multipart[1].body);
+      const isStream = isReadableStream(multipart[multipart.length - 1].body);
       headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
       for (const part of multipart) {
         const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;

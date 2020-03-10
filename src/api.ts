@@ -46,6 +46,7 @@ export interface GlobalOptions extends MethodOptions {
 export interface MethodOptions extends GaxiosOptions {
   rootUrl?: string;
   userAgentDirectives?: UserAgentDirective[];
+  uploadType?: string;
 }
 
 /**

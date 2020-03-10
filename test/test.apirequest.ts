@@ -328,31 +328,32 @@ describe('createAPIRequest', () => {
   describe('mock stream', () => {
     let totalBytesSent: number;
     let totalBytesReceived = 0;
-    const fStream = new FakeReadable();
-    fStream.on('progress', (currentBytesSent: number) => {
-      totalBytesSent = currentBytesSent;
-    });
-
     const requestBody = {};
-    const media = {
-      mimeType: 'application/octet-stream',
-      body: fStream,
-    };
-    const auth = {
-      request: (opts: GlobalOptions & MethodOptions) => {
-        const contentType = opts.headers!['Content-Type'];
-        const boundary = `--${contentType.substring(
-          contentType.indexOf('boundary=') + 9
-        )}--`;
-        const rStream = new FakeWritable(boundary, {highWaterMark: 400});
-        rStream.on('progress', (currentBytesReceived: number) => {
-          totalBytesReceived += currentBytesReceived;
-        });
-        opts.data.pipe(rStream);
-      },
-    };
-
+    beforeEach(() => {
+      totalBytesReceived = 0;
+    });
     it('should pass all chunks', async () => {
+      const fStream = new FakeReadable();
+      fStream.on('progress', (currentBytesSent: number) => {
+        totalBytesSent = currentBytesSent;
+      });
+      const media = {
+        mimeType: 'application/octet-stream',
+        body: fStream,
+      };
+      const auth = {
+        request: (opts: GlobalOptions & MethodOptions) => {
+          const contentType = opts.headers!['Content-Type'];
+          const boundary = `--${contentType.substring(
+            contentType.indexOf('boundary=') + 9
+          )}--`;
+          const rStream = new FakeWritable(boundary, {highWaterMark: 400});
+          rStream.on('progress', (currentBytesReceived: number) => {
+            totalBytesReceived += currentBytesReceived;
+          });
+          opts.data.pipe(rStream);
+        },
+      };
       await createAPIRequest<FakeParams>({
         options: {url},
         params: {
@@ -366,6 +367,46 @@ describe('createAPIRequest', () => {
         mediaUrl: 'https://example.com',
       });
       assert.strictEqual(totalBytesSent, totalBytesReceived);
+    });
+
+    it('should pass all chunks, when uploadType set to multipart', async () => {
+      const fStream = new FakeReadable();
+      fStream.on('progress', (currentBytesSent: number) => {
+        totalBytesSent = currentBytesSent;
+      });
+      const media = {
+        mimeType: 'application/octet-stream',
+        body: fStream,
+      };
+      const auth = {
+        request: (opts: GlobalOptions & MethodOptions) => {
+          const contentType = opts.headers!['Content-Type'];
+          const boundary = `--${contentType.substring(
+            contentType.indexOf('boundary=') + 9
+          )}--`;
+          const rStream = new FakeWritable(boundary, {highWaterMark: 400});
+          // The stream content is written immediately when uploadType is
+          // set to 'multipart'.
+          rStream.startParsed = true;
+          rStream.on('progress', (currentBytesReceived: number) => {
+            totalBytesReceived += currentBytesReceived;
+          });
+          opts.data.pipe(rStream);
+        },
+      };
+      await createAPIRequest<FakeParams>({
+        options: {url, uploadType: 'multipart'},
+        params: {
+          media,
+          auth,
+        },
+        requiredParams: [],
+        pathParams: [],
+        context: fakeContext,
+        mediaUrl: 'https://example.com',
+      });
+      assert.strictEqual(totalBytesSent, 100000);
+      assert(totalBytesReceived >= 100000);
     });
   });
 
