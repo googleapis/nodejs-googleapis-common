@@ -69,7 +69,7 @@
   },
   "dependencies": {
     "extend": "^3.0.2",
-    "gaxios": "^2.0.1",
+    "gaxios": "^3.0.0",
     "google-auth-library": "^5.6.1",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
