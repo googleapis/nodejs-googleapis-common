@@ -182,7 +182,7 @@ describe('createAPIRequest', () => {
 
     it('should populate resource parameter in URL, if it is required', async () => {
       const scope = nock(`${url}`)
-        .get(`/?resource=blerg`)
+        .get('/?resource=blerg')
         .reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
