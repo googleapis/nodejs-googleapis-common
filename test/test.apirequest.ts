@@ -16,7 +16,7 @@ import {assert} from 'chai';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
-import {resolve} from 'url';
+import resolve = require('url');
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
@@ -102,9 +102,7 @@ describe('createAPIRequest', () => {
      */
 
     it('should create a valid API request', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).get('/').reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -118,9 +116,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if not required parameter', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).post('/').reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -141,9 +137,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).post('/').reply(200, fakeResponse);
       try {
         const result = await createAPIRequest<FakeParams>({
           options: {
@@ -165,9 +159,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).post('/').reply(200, fakeResponse);
       try {
         const result = await createAPIRequest<FakeParams>({
           options: {
@@ -190,7 +182,7 @@ describe('createAPIRequest', () => {
 
     it('should populate resource parameter in URL, if it is required', async () => {
       const scope = nock(`${url}`)
-        .get(`/?resource=blerg`)
+        .get('/?resource=blerg')
         .reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
@@ -207,9 +199,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should include directives in the user agent with local config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -230,9 +220,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should include directives in the user agent with per-service config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -254,9 +242,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should include directives in the user agent with global config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -283,7 +269,7 @@ describe('createAPIRequest', () => {
     it('should populate x-goog-api-client', async () => {
       const scope = nock(url)
         .get('/')
-        .reply(function() {
+        .reply(function () {
           assert.match(
             this.req.headers['x-goog-api-client'][0],
             /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/
@@ -303,12 +289,10 @@ describe('createAPIRequest', () => {
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';
-      const scope = nock(rootUrl)
-        .get(path)
-        .reply(200);
+      const scope = nock(rootUrl).get(path).reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
-          url: resolve('https://www.googleapis.com/', path),
+          url: resolve.resolve('https://www.googleapis.com/', path),
         },
         params: {},
         requiredParams: [],
@@ -371,11 +355,7 @@ describe('createAPIRequest', () => {
 
   describe('options', () => {
     it('should retry GET requests by default', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(500)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(500).get('/').reply(200);
       await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -387,9 +367,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should merge headers from global and local config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -420,9 +398,7 @@ describe('createAPIRequest', () => {
       const optUrl = `${url}/projects/{projectId}`;
       const projectId = 'not-a-project';
       const path = `/projects/${projectId}`;
-      const scope = nock(url)
-        .get(path)
-        .reply(200);
+      const scope = nock(url).get(path).reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url: optUrl},
         params: {},
