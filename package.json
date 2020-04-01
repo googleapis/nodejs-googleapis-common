@@ -70,8 +70,8 @@
   "dependencies": {
     "execa": "^4.0.0",
     "extend": "^3.0.2",
-    "gaxios": "^2.0.1",
-    "google-auth-library": "^5.6.1",
+    "gaxios": "^3.0.0",
+    "google-auth-library": "^6.0.0",
     "qs": "^6.7.0",
     "tmp": "^0.1.0",
     "url-template": "^2.0.8",
