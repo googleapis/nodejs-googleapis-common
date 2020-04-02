@@ -5,10 +5,6 @@
   "engines": {
     "node": ">=8"
   },
-  "files": [
-    "*.js",
-    "!test/"
-  ],
   "repository": "googleapis/nodejs-googleapis-common",
   "private": true,
   "scripts": {
