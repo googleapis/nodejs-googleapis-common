@@ -1,4 +1,4 @@
-// Copyright 2014-2016, Google, Inc.
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 import * as fs from 'fs';
 import {Headers} from 'gaxios';
 import {DefaultTransporter} from 'google-auth-library';
-import * as url from 'url';
+import resolve = require('url');
 import * as util from 'util';
 
 import {GlobalOptions, ServiceOptions, APIRequestParams} from './api';
@@ -139,7 +139,7 @@ export class Discovery {
     apiDiscoveryUrl: string | {url: string}
   ): Promise<EndpointCreator> {
     if (typeof apiDiscoveryUrl === 'string') {
-      const parts = url.parse(apiDiscoveryUrl);
+      const parts = resolve.parse(apiDiscoveryUrl);
       if (apiDiscoveryUrl && !parts.protocol) {
         this.log('Reading from file ' + apiDiscoveryUrl);
         const file = await readFile(apiDiscoveryUrl, {encoding: 'utf8'});

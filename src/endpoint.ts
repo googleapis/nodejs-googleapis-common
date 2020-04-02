@@ -1,4 +1,4 @@
-// Copyright 2018, Google, LLC.
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -49,7 +49,9 @@ export class Endpoint implements Target, APIRequestContext {
     this.applyMethodsFromSchema(target, rootSchema, schema, context);
     if (schema.resources) {
       for (const resourceName in schema.resources) {
-        if (schema.resources.hasOwnProperty(resourceName)) {
+        if (
+          Object.prototype.hasOwnProperty.call(schema.resources, resourceName)
+        ) {
           const resource = schema.resources[resourceName];
           if (!target[resourceName]) {
             target[resourceName] = {};
@@ -77,7 +79,7 @@ export class Endpoint implements Target, APIRequestContext {
   ) {
     if (schema.methods) {
       for (const name in schema.methods) {
-        if (schema.methods.hasOwnProperty(name)) {
+        if (Object.prototype.hasOwnProperty.call(schema.methods, name)) {
           const method = schema.methods[name];
           target[name] = this.makeMethod(rootSchema, method, context);
         }

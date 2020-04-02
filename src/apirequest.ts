@@ -1,10 +1,9 @@
-// Copyright 2016 Google LLC
-//
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,9 +26,10 @@ import {
 } from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
-import {resolve} from 'url';
 
-// tslint:disable-next-line no-var-requires
+import resolve = require('url');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
 function isReadableStream(obj: stream.Readable | string) {
@@ -195,7 +195,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.url !== undefined
   ) {
     const path = options.url.slice(parameters.context._options.rootUrl.length);
-    options.url = resolve(parameters.context._options.rootUrl, path);
+    options.url = resolve.resolve(parameters.context._options.rootUrl, path);
   }
 
   // When forming the querystring, override the serializer so that array
