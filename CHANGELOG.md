@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.2...v4.0.0) (2020-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* require node 10 in engines field (see: https://github.com/googleapis/nodejs-googleapis-common/pull/239) (#240)
+
+### Features
+
+* require node 10 in engines field (see: https://github.com/googleapis/nodejs-googleapis-common/pull/239) ([#240](https://www.github.com/googleapis/nodejs-googleapis-common/issues/240)) ([f210ec1](https://www.github.com/googleapis/nodejs-googleapis-common/commit/f210ec13976567ed41101b3bd85f810d51faa8a8))
+
 ### [3.2.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.1...v3.2.2) (2020-02-28)
 
 
