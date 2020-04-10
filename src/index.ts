@@ -11,7 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export {OAuth2Client} from 'google-auth-library';
+export {
+  OAuth2Client,
+  JWT,
+  Compute,
+  UserRefreshClient,
+  DefaultTransporter,
+} from 'google-auth-library';
+export {GaxiosPromise} from 'gaxios';
 export {
   APIEndpoint,
   APIRequestContext,

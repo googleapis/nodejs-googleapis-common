@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {assert} from 'chai';
+import * as assert from 'assert';
+import {describe, it, afterEach} from 'mocha';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
@@ -137,9 +138,8 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url).post('/').reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -153,15 +153,12 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url).post('/').reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -175,9 +172,7 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should populate resource parameter in URL, if it is required', async () => {
@@ -215,8 +210,8 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with per-service config', async () => {
@@ -237,8 +232,8 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with global config', async () => {
@@ -262,21 +257,22 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should populate x-goog-api-client', async () => {
       const scope = nock(url)
         .get('/')
         .reply(function () {
-          assert.match(
-            this.req.headers['x-goog-api-client'][0],
-            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/
+          assert.ok(
+            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/.test(
+              this.req.headers['x-goog-api-client'][0]
+            )
           );
           return [200, ''];
         });
-      const res = await createAPIRequest<FakeParams>({
+      await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
         requiredParams: [],

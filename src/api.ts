@@ -16,7 +16,7 @@ import {OAuth2Client} from 'google-auth-library';
 
 import {Endpoint} from './endpoint';
 
-// tslint:disable-next-line no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface APIRequestParams<T = any> {
   options: MethodOptions;
   params: T;
@@ -71,5 +71,5 @@ export type BodyResponseCallback<T> = (
   res?: GaxiosResponse<T> | null
 ) => void;
 
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type APIEndpoint = Readonly<Endpoint & any>;

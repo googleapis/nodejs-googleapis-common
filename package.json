@@ -29,9 +29,16 @@
   "keywords": [],
   "author": "Google LLC",
   "license": "Apache-2.0",
+  "dependencies": {
+    "extend": "^3.0.2",
+    "gaxios": "^3.0.0",
+    "google-auth-library": "^6.0.0",
+    "qs": "^6.7.0",
+    "url-template": "^2.0.8",
+    "uuid": "^7.0.0"
+  },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.9",
-    "@types/chai": "^4.1.7",
     "@types/execa": "^0.9.0",
     "@types/extend": "^3.0.1",
     "@types/mocha": "^7.0.0",
@@ -43,8 +50,8 @@
     "@types/url-template": "^2.0.28",
     "@types/uuid": "^7.0.0",
     "c8": "^7.0.0",
-    "chai": "^4.2.0",
     "codecov": "^3.5.0",
+    "execa": "^4.0.0",
     "gts": "^2.0.0-alpha.9",
     "is-docker": "^2.0.0",
     "karma": "^5.0.0",
@@ -62,20 +69,11 @@
     "nock": "^12.0.0",
     "null-loader": "^3.0.0",
     "puppeteer": "^2.0.0",
+    "tmp": "^0.1.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.8.3",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.5"
-  },
-  "dependencies": {
-    "execa": "^4.0.0",
-    "extend": "^3.0.2",
-    "gaxios": "^3.0.0",
-    "google-auth-library": "^6.0.0",
-    "qs": "^6.7.0",
-    "tmp": "^0.1.0",
-    "url-template": "^2.0.8",
-    "uuid": "^7.0.0"
   },
   "engines": {
     "node": ">=10"
