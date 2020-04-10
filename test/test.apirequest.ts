@@ -210,8 +210,8 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with per-service config', async () => {
@@ -232,8 +232,8 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with global config', async () => {
@@ -257,17 +257,18 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should populate x-goog-api-client', async () => {
       const scope = nock(url)
         .get('/')
         .reply(function () {
-          assert.match(
-            this.req.headers['x-goog-api-client'][0],
-            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/
+          assert.ok(
+            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/.test(
+              this.req.headers['x-goog-api-client'][0]
+            )
           );
           return [200, ''];
         });
