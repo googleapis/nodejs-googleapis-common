@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {assert} from 'chai';
+import * as assert from 'assert';
+import {describe, it, afterEach} from 'mocha';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
@@ -137,9 +138,8 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url).post('/').reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -153,15 +153,12 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url).post('/').reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -175,9 +172,7 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should populate resource parameter in URL, if it is required', async () => {
@@ -276,7 +271,7 @@ describe('createAPIRequest', () => {
           );
           return [200, ''];
         });
-      const res = await createAPIRequest<FakeParams>({
+      await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
         requiredParams: [],

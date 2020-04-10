@@ -90,7 +90,7 @@ export class Discovery {
     const versionIndex: {
       [index: string]: {[index: string]: EndpointCreator};
     } = {};
-    // tslint:disable-next-line no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apisIndex: {[index: string]: any} = {};
     for (const set of apis) {
       if (!apisIndex[set.api.name]) {
@@ -108,9 +108,7 @@ export class Discovery {
             throw new Error('Argument error: Accepts only string or object');
           }
           try {
-            const ep =
-              // tslint:disable-next-line: no-any
-              set.endpointCreator(options as GlobalOptions, this as any);
+            const ep = set.endpointCreator(options as GlobalOptions, this);
             return Object.freeze(ep); // create new & freeze
           } catch (e) {
             throw new Error(

@@ -16,7 +16,7 @@ import {GoogleConfigurable, ServiceOptions} from '.';
 export function getAPI<T>(
   api: string,
   options: ServiceOptions | string,
-  // tslint:disable-next-line no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   versions: {[index: string]: any},
   context?: GoogleConfigurable
 ) {

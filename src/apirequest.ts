@@ -346,7 +346,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
  */
 class ProgressStream extends stream.Transform {
   bytesRead = 0;
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _transform(chunk: any, encoding: string, callback: Function) {
     this.bytesRead += chunk.length;
     this.emit('progress', this.bytesRead);

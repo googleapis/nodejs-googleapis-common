@@ -22,7 +22,7 @@ export interface Target {
 
 export class Endpoint implements Target, APIRequestContext {
   _options: GlobalOptions;
-  // tslint:disable-next-line no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   google: any;
   [index: string]: {};
 
