@@ -1,6 +1,13 @@
 {
-  "updateTime": "2020-03-22T11:29:35.070913Z",
+  "updateTime": "2020-04-10T19:37:29.268531Z",
   "sources": [
+    {
+      "git": {
+        "name": ".",
+        "remote": "https://github.com/googleapis/nodejs-googleapis-common.git",
+        "sha": "84de80c469f8e078114f07e5dfbb8282f4fbf31a"
+      }
+    },
     {
       "git": {
         "name": "synthtool",
