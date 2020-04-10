@@ -1,11 +1,11 @@
 {
-  "updateTime": "2020-04-10T17:46:58.346920Z",
+  "updateTime": "2020-04-10T17:47:12.099043Z",
   "sources": [
     {
       "git": {
         "name": ".",
         "remote": "https://github.com/googleapis/nodejs-googleapis-common.git",
-        "sha": "84de80c469f8e078114f07e5dfbb8282f4fbf31a"
+        "sha": "0a8d6e1250dab02dde74397b3118c3759d01557d"
       }
     },
     {
