@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.0.0...v4.1.0) (2020-04-12)
+
+
+### Features
+
+* export additional types ([#256](https://www.github.com/googleapis/nodejs-googleapis-common/issues/256)) ([0534203](https://www.github.com/googleapis/nodejs-googleapis-common/commit/0534203a80fa88b3224bc9da22d2be4a2cb21796))
+
 ## [4.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.2...v4.0.0) (2020-04-05)
 
 
