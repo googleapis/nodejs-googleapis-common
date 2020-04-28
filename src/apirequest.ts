@@ -32,6 +32,10 @@ import resolve = require('url');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
+interface Multipart {
+  'Content-Type': string;
+  body: any;
+}
 function isReadableStream(obj: stream.Readable | string) {
   return obj instanceof stream.Readable && typeof obj._read === 'function';
 }
@@ -226,55 +230,81 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     authClient = undefined;
   }
 
+  function multipartUpload(multipart: Multipart[]) {
+    const boundary = uuid.v4();
+    const finale = `--${boundary}--`;
+    const rStream = new stream.PassThrough({
+      flush(callback) {
+        this.push('\r\n');
+        this.push(finale);
+        callback();
+      },
+    });
+    const pStream = new ProgressStream();
+    const isStream = isReadableStream(multipart[1].body);
+    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    for (const part of multipart) {
+      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      rStream.push(preamble);
+      if (typeof part.body === 'string') {
+        rStream.push(part.body);
+        rStream.push('\r\n');
+      } else {
+        // Gaxios does not natively support onUploadProgress in node.js.
+        // Pipe through the pStream first to read the number of bytes read
+        // for the purpose of tracking progress.
+        pStream.on('progress', bytesRead => {
+          if (options.onUploadProgress) {
+            options.onUploadProgress({bytesRead});
+          }
+        });
+        part.body.pipe(pStream).pipe(rStream);
+      }
+    }
+    if (!isStream) {
+      rStream.push(finale);
+      rStream.push(null);
+    }
+    options.data = rStream;
+  }
+
+  function browserMultipartUpload(multipart: Multipart[]) {
+    const boundary = uuid.v4();
+    const finale = `--${boundary}--`;
+    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+
+    let content = '';
+    for (const part of multipart) {
+      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      content += preamble;
+      if (typeof part.body === 'string') {
+        content += part.body;
+        content += '\r\n';
+      }
+    }
+    content += finale;
+    options.data = content;
+  }
+
   if (parameters.mediaUrl && media.body) {
     options.url = parameters.mediaUrl;
     if (resource) {
-      // gaxios doesn't support multipart/related uploads, so it has to
-      // be implemented here.
       params.uploadType = 'multipart';
       const multipart = [
         {'Content-Type': 'application/json', body: JSON.stringify(resource)},
         {
           'Content-Type':
             media.mimeType || (resource && resource.mimeType) || defaultMime,
-          body: media.body, // can be a readable stream or raw string!
+          body: media.body,
         },
       ];
-      const boundary = uuid.v4();
-      const finale = `--${boundary}--`;
-      const rStream = new stream.PassThrough({
-        flush(callback) {
-          this.push('\r\n');
-          this.push(finale);
-          callback();
-        },
-      });
-      const pStream = new ProgressStream();
-      const isStream = isReadableStream(multipart[1].body);
-      headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
-      for (const part of multipart) {
-        const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
-        rStream.push(preamble);
-        if (typeof part.body === 'string') {
-          rStream.push(part.body);
-          rStream.push('\r\n');
-        } else {
-          // Gaxios does not natively support onUploadProgress in node.js.
-          // Pipe through the pStream first to read the number of bytes read
-          // for the purpose of tracking progress.
-          pStream.on('progress', bytesRead => {
-            if (options.onUploadProgress) {
-              options.onUploadProgress({bytesRead});
-            }
-          });
-          part.body.pipe(pStream).pipe(rStream);
-        }
+      if (!isBrowser()) {
+        // gaxios doesn't support multipart/related uploads, so it has to
+        // be implemented here.
+        multipartUpload(multipart);
+      } else {
+        browserMultipartUpload(multipart);
       }
-      if (!isStream) {
-        rStream.push(finale);
-        rStream.push(null);
-      }
-      options.data = rStream;
     } else {
       params.uploadType = 'media';
       Object.assign(headers, {'Content-Type': media.mimeType || defaultMime});
