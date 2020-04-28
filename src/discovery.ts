@@ -1,4 +1,4 @@
-// Copyright 2014-2016, Google, Inc.
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 import * as fs from 'fs';
 import {Headers} from 'gaxios';
 import {DefaultTransporter} from 'google-auth-library';
-import * as url from 'url';
+import resolve = require('url');
 import * as util from 'util';
 
 import {GlobalOptions, ServiceOptions, APIRequestParams} from './api';
@@ -90,7 +90,7 @@ export class Discovery {
     const versionIndex: {
       [index: string]: {[index: string]: EndpointCreator};
     } = {};
-    // tslint:disable-next-line no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const apisIndex: {[index: string]: any} = {};
     for (const set of apis) {
       if (!apisIndex[set.api.name]) {
@@ -108,9 +108,7 @@ export class Discovery {
             throw new Error('Argument error: Accepts only string or object');
           }
           try {
-            const ep =
-              // tslint:disable-next-line: no-any
-              set.endpointCreator(options as GlobalOptions, this as any);
+            const ep = set.endpointCreator(options as GlobalOptions, this);
             return Object.freeze(ep); // create new & freeze
           } catch (e) {
             throw new Error(
@@ -139,7 +137,7 @@ export class Discovery {
     apiDiscoveryUrl: string | {url: string}
   ): Promise<EndpointCreator> {
     if (typeof apiDiscoveryUrl === 'string') {
-      const parts = url.parse(apiDiscoveryUrl);
+      const parts = resolve.parse(apiDiscoveryUrl);
       if (apiDiscoveryUrl && !parts.protocol) {
         this.log('Reading from file ' + apiDiscoveryUrl);
         const file = await readFile(apiDiscoveryUrl, {encoding: 'utf8'});

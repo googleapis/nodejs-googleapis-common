@@ -1,10 +1,9 @@
-// Copyright 2016 Google LLC
-//
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +27,9 @@ import {
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 
-// tslint:disable-next-line no-var-requires
+import resolve = require('url');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
 function isReadableStream(obj: stream.Readable | string) {
@@ -188,6 +189,15 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     parameters.mediaUrl = urlTemplate.parse(parameters.mediaUrl).expand(params);
   }
 
+  // Rewrite url if rootUrl is globally set
+  if (
+    parameters.context._options.rootUrl !== undefined &&
+    options.url !== undefined
+  ) {
+    const path = options.url.slice(parameters.context._options.rootUrl.length);
+    options.url = resolve.resolve(parameters.context._options.rootUrl, path);
+  }
+
   // When forming the querystring, override the serializer so that array
   // values are serialized like this:
   // myParams: ['one', 'two'] ---> 'myParams=one&myParams=two'
@@ -336,7 +346,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
  */
 class ProgressStream extends stream.Transform {
   bytesRead = 0;
-  // tslint:disable-next-line: no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _transform(chunk: any, encoding: string, callback: Function) {
     this.bytesRead += chunk.length;
     this.emit('progress', this.bytesRead);

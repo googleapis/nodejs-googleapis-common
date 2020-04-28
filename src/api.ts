@@ -1,4 +1,4 @@
-// Copyright 2018, Google, LLC.
+// Copyright 2020 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,7 +16,7 @@ import {AuthClient} from 'google-auth-library';
 
 import {Endpoint} from './endpoint';
 
-// tslint:disable-next-line no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface APIRequestParams<T = any> {
   options: MethodOptions;
   params: T;
@@ -71,5 +71,5 @@ export type BodyResponseCallback<T> = (
   res?: GaxiosResponse<T> | null
 ) => void;
 
-// tslint:disable-next-line: no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type APIEndpoint = Readonly<Endpoint & any>;

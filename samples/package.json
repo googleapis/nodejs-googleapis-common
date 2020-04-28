@@ -5,15 +5,19 @@
   "engines": {
     "node": ">=8"
   },
+  "files": [
+    "*.js",
+    "!test/"
+  ],
   "repository": "googleapis/nodejs-googleapis-common",
   "private": true,
   "scripts": {
     "test": "echo \"There are no sample tests 👻\""
   },
   "dependencies": {
-    "googleapis-common": "^3.2.0"
+    "googleapis-common": "^4.1.0"
   },
   "devDependencies": {
-    "mocha": "^6.0.0"
+    "mocha": "^7.0.0"
   }
 }

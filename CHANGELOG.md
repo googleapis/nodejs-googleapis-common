@@ -4,6 +4,38 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.0.0...v4.1.0) (2020-04-12)
+
+
+### Features
+
+* export additional types ([#256](https://www.github.com/googleapis/nodejs-googleapis-common/issues/256)) ([0534203](https://www.github.com/googleapis/nodejs-googleapis-common/commit/0534203a80fa88b3224bc9da22d2be4a2cb21796))
+
+## [4.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.2...v4.0.0) (2020-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* require node 10 in engines field (see: https://github.com/googleapis/nodejs-googleapis-common/pull/239) (#240)
+
+### Features
+
+* require node 10 in engines field (see: https://github.com/googleapis/nodejs-googleapis-common/pull/239) ([#240](https://www.github.com/googleapis/nodejs-googleapis-common/issues/240)) ([f210ec1](https://www.github.com/googleapis/nodejs-googleapis-common/commit/f210ec13976567ed41101b3bd85f810d51faa8a8))
+
+### [3.2.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.1...v3.2.2) (2020-02-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v7 ([25a40a5](https://www.github.com/googleapis/nodejs-googleapis-common/commit/25a40a58afe3a9aa16d3c5946c362b0f1a22d6a5))
+
+### [3.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.2.0...v3.2.1) (2020-01-09)
+
+
+### Bug Fixes
+
+* support rootUrl as global option ([ca51783](https://www.github.com/googleapis/nodejs-googleapis-common/commit/ca5178382046e1f1d365cd37d60bb508febf3db8))
+
 ## [3.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v3.1.1...v3.2.0) (2019-12-05)
 
 

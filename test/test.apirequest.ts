@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {assert} from 'chai';
+import * as assert from 'assert';
+import {describe, it, afterEach} from 'mocha';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
+import resolve = require('url');
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
@@ -101,9 +103,7 @@ describe('createAPIRequest', () => {
      */
 
     it('should create a valid API request', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).get('/').reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -117,9 +117,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if not required parameter', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
+      const scope = nock(url).post('/').reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -140,11 +138,8 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -158,17 +153,12 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      const scope = nock(url)
-        .post('/')
-        .reply(200, fakeResponse);
-      try {
-        const result = await createAPIRequest<FakeParams>({
+      assert.rejects(async () => {
+        await createAPIRequest<FakeParams>({
           options: {
             url,
             method: 'POST',
@@ -182,14 +172,12 @@ describe('createAPIRequest', () => {
           pathParams: [],
           context: fakeContext,
         });
-      } catch (err) {
-        assert.match(err.message, /Missing required parameters: resource/);
-      }
+      }, /Missing required parameters: resource/);
     });
 
     it('should populate resource parameter in URL, if it is required', async () => {
       const scope = nock(`${url}`)
-        .get(`/?resource=blerg`)
+        .get('/?resource=blerg')
         .reply(200, fakeResponse);
       const result = await createAPIRequest<FakeParams>({
         options: {url},
@@ -206,9 +194,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should include directives in the user agent with local config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -224,14 +210,12 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with per-service config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -248,14 +232,12 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should include directives in the user agent with global config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -275,21 +257,22 @@ describe('createAPIRequest', () => {
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
       const userAgent = res.config.headers!['User-Agent'];
-      assert.match(userAgent, /frog\/1.0 \(jumps\)/);
-      assert.match(userAgent, /google-api-nodejs-client\/.* \(gzip\)/);
+      assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
+      assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
 
     it('should populate x-goog-api-client', async () => {
       const scope = nock(url)
         .get('/')
-        .reply(function() {
-          assert.match(
-            this.req.headers['x-goog-api-client'][0],
-            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/
+        .reply(function () {
+          assert.ok(
+            /gdcl\/[\w.-]+ gl-node\/[0-9]+\.[\w.-]+ auth\/[\w.-]+$/.test(
+              this.req.headers['x-goog-api-client'][0]
+            )
           );
           return [200, ''];
         });
-      const res = await createAPIRequest<FakeParams>({
+      await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
         requiredParams: [],
@@ -297,6 +280,28 @@ describe('createAPIRequest', () => {
         context: fakeContext,
       });
       scope.done();
+    });
+
+    it('should rewrite url to match default rootUrl', async () => {
+      const rootUrl = 'http://www.googleapis.com/';
+      const path = '/api/service';
+      const scope = nock(rootUrl).get(path).reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url: resolve.resolve('https://www.googleapis.com/', path),
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            rootUrl,
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = 'http://www.googleapis.com/api/service';
+      assert.strictEqual(res.config.url, expectedUrl);
     });
   });
 
@@ -346,11 +351,7 @@ describe('createAPIRequest', () => {
 
   describe('options', () => {
     it('should retry GET requests by default', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(500)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(500).get('/').reply(200);
       await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -362,9 +363,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should merge headers from global and local config', async () => {
-      const scope = nock(url)
-        .get('/')
-        .reply(200);
+      const scope = nock(url).get('/').reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
           url,
@@ -395,9 +394,7 @@ describe('createAPIRequest', () => {
       const optUrl = `${url}/projects/{projectId}`;
       const projectId = 'not-a-project';
       const path = `/projects/${projectId}`;
-      const scope = nock(url)
-        .get(path)
-        .reply(200);
+      const scope = nock(url).get(path).reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {url: optUrl},
         params: {},
