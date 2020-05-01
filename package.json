@@ -37,7 +37,7 @@
     "google-auth-library": "^6.0.0",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
-    "uuid": "^7.0.0"
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.9",
