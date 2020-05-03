@@ -54,7 +54,7 @@
     "c8": "^7.0.0",
     "codecov": "^3.5.0",
     "execa": "^4.0.0",
-    "gts": "^2.0.0-alpha.9",
+    "gts": "^2.0.0",
     "is-docker": "^2.0.0",
     "karma": "^5.0.0",
     "karma-chrome-launcher": "^3.0.0",
