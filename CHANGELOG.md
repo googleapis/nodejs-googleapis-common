@@ -4,6 +4,14 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [4.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.0...v4.1.1) (2020-05-04)
+
+
+### Bug Fixes
+
+* provide mechanism for multipart uploads from browser context ([#274](https://www.github.com/googleapis/nodejs-googleapis-common/issues/274)) ([282bf22](https://www.github.com/googleapis/nodejs-googleapis-common/commit/282bf224471f4ba581e8fc43935411a842510180))
+* **deps:** update dependency uuid to v8 ([#278](https://www.github.com/googleapis/nodejs-googleapis-common/issues/278)) ([f242874](https://www.github.com/googleapis/nodejs-googleapis-common/commit/f242874ab03569064c3b6ce13b00465d4cb5aeb7))
+
 ## [4.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.0.0...v4.1.0) (2020-04-12)
 
 
