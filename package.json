@@ -1,6 +1,6 @@
 {
   "name": "googleapis-common",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "A common tooling library used by the googleapis npm module. You probably don't want to use this directly.",
   "repository": "googleapis/nodejs-googleapis-common",
   "main": "build/src/index.js",
@@ -54,7 +54,7 @@
     "c8": "^7.0.0",
     "codecov": "^3.5.0",
     "execa": "^4.0.0",
-    "gts": "^2.0.0-alpha.9",
+    "gts": "^2.0.0",
     "is-docker": "^2.0.0",
     "karma": "^5.0.0",
     "karma-chrome-launcher": "^3.0.0",
