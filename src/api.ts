@@ -48,6 +48,10 @@ export interface MethodOptions extends GaxiosOptions {
   userAgentDirectives?: UserAgentDirective[];
 }
 
+export interface StreamMethodOptions extends MethodOptions {
+  responseType: 'stream';
+}
+
 /**
  * An additional directive to add to the user agent header.
  * Directives come in the form of:
