@@ -27,6 +27,7 @@ export {
   GlobalOptions,
   GoogleConfigurable,
   MethodOptions,
+  StreamMethodOptions,
   ServiceOptions,
 } from './api';
 export {getAPI} from './apiIndex';
