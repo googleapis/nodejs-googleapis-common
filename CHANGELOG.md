@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.1...v4.2.0) (2020-05-26)
+
+
+### Features
+
+* add stream method options interface ([#283](https://www.github.com/googleapis/nodejs-googleapis-common/issues/283)) ([a455680](https://www.github.com/googleapis/nodejs-googleapis-common/commit/a4556800fbb39fb7a38733ad4e433d2b0cc7fcda))
+
 ### [4.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.0...v4.1.1) (2020-05-04)
 
 
