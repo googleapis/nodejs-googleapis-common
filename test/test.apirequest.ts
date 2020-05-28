@@ -412,5 +412,31 @@ describe('createAPIRequest', () => {
       const expectedUrl = `${url}/projects/${projectId}`;
       assert.strictEqual(res.config.url, expectedUrl);
     });
+
+    it('should persist path params set at the API level', async () => {
+      const optUrl = `${url}/projects/{projectId}`;
+      const projectId = 'not-a-project';
+      const path = `/projects/${projectId}`;
+      const scope = nock(url).get(path).twice().reply(200);
+      const params = {
+        options: {url: optUrl},
+        params: {},
+        requiredParams: [],
+        pathParams: ['projectId'],
+        context: {
+          _options: {
+            params: {
+              projectId,
+            },
+          },
+        },
+      };
+      const expectedUrl = `${url}/projects/${projectId}`;
+      const res1 = await createAPIRequest<FakeParams>(params);
+      assert.strictEqual(res1.config.url, expectedUrl);
+      const res2 = await createAPIRequest<FakeParams>(params);
+      assert.strictEqual(res2.config.url, expectedUrl);
+      scope.done();
+    });
   });
 });
