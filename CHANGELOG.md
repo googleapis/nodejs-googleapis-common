@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [4.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.0...v4.2.1) (2020-06-02)
+
+
+### Bug Fixes
+
+* ensure options changes do not leak upstream ([#285](https://www.github.com/googleapis/nodejs-googleapis-common/issues/285)) ([8d4de8a](https://www.github.com/googleapis/nodejs-googleapis-common/commit/8d4de8a03b56d1063aac5f072436917247afc9f1))
+
 ## [4.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.1...v4.2.0) (2020-05-26)
 
 
