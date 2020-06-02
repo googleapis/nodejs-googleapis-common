@@ -19,11 +19,7 @@ import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 import * as extend from 'extend';
 
-import {
-  APIRequestParams,
-  BodyResponseCallback,
-  UserAgentDirective,
-} from './api';
+import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 
@@ -79,14 +75,14 @@ export function createAPIRequest<T>(
 
 async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // Combine the GaxiosOptions options passed with this specific
-  // API call witht the global options configured at the API Context
+  // API call with the global options configured at the API Context
   // level, or at the global level.
   const options = extend(
     true,
-    {},
-    parameters.context.google?._options || {},
-    parameters.context._options || {},
-    parameters.options
+    {}, // Ensure we don't leak settings upstream
+    parameters.context.google?._options || {}, // Google level options
+    parameters.context._options || {}, // Per-API options
+    parameters.options // API call params
   );
 
   const params = extend(
@@ -96,14 +92,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     parameters.params // API call params
   );
 
-  // Check for user specified user agents at all levels of config
-  const userAgentDirectives: UserAgentDirective[] =
-    Object.assign(
-      [],
-      options.userAgentDirectives,
-      parameters.options.userAgentDirectives
-    ) || [];
-
+  options.userAgentDirectives = options.userAgentDirectives || [];
   const media = params.media || {};
 
   /**
@@ -284,12 +273,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   options.params = params;
   if (!isBrowser()) {
     options.headers!['Accept-Encoding'] = 'gzip';
-    userAgentDirectives.push({
+    options.userAgentDirectives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
       comment: 'gzip',
     });
-    const userAgent = userAgentDirectives
+    const userAgent = options.userAgentDirectives
       .map(d => {
         let line = `${d.product}/${d.version}`;
         if (d.comment) {
