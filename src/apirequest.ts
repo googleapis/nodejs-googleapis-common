@@ -32,8 +32,17 @@ interface Multipart {
   'Content-Type': string;
   body: string | stream.Readable;
 }
-function isReadableStream(obj: stream.Readable | string) {
-  return obj instanceof stream.Readable && typeof obj._read === 'function';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isReadableStream(obj: any) {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    typeof obj.pipe === 'function' &&
+    obj.readable !== false &&
+    typeof obj._read === 'function' &&
+    typeof obj._readableState === 'object'
+  );
 }
 
 function getMissingParams(params: SchemaParameters, required: string[]) {
