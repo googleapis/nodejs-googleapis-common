@@ -4,6 +4,18 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.3.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.1...v4.3.0) (2020-06-03)
+
+
+### Features
+
+* allow passing a GoogleAuth instance ([#287](https://www.github.com/googleapis/nodejs-googleapis-common/issues/287)) ([c8e9f3b](https://www.github.com/googleapis/nodejs-googleapis-common/commit/c8e9f3b9636d9b6ce176396cc7b273c107168eec))
+
+
+### Bug Fixes
+
+* expand definition of a stream ([#289](https://www.github.com/googleapis/nodejs-googleapis-common/issues/289)) ([2010721](https://www.github.com/googleapis/nodejs-googleapis-common/commit/20107219a757cf234be9432def49e0644cbd7a79))
+
 ### [4.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.0...v4.2.1) (2020-06-02)
 
 
