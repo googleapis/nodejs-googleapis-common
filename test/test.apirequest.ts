@@ -17,11 +17,13 @@ import {describe, it, afterEach} from 'mocha';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
-import resolve = require('url');
+import {URL} from 'url';
+import * as sinon from 'sinon';
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
-import { GoogleAuth } from '../src';
+import {GoogleAuth} from 'google-auth-library';
+import {GaxiosResponse} from 'gaxios';
 
 interface MyWritableOptions {
   highWaterMark?: number;
@@ -92,8 +94,10 @@ interface FakeParams {
   bar: string;
 }
 describe('createAPIRequest', () => {
+  const sandbox = sinon.createSandbox();
   afterEach(() => {
     nock.cleanAll();
+    sandbox.restore();
   });
 
   describe('instantiation', () => {
@@ -286,10 +290,11 @@ describe('createAPIRequest', () => {
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';
+      const url = new URL(path, 'https://www.googleapis.com');
       const scope = nock(rootUrl).get(path).reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
-          url: resolve.resolve('https://www.googleapis.com/', path),
+          url: url.href,
         },
         params: {},
         requiredParams: [],
@@ -441,7 +446,8 @@ describe('createAPIRequest', () => {
     });
 
     it('should allow passing a GoogleAuth param for auth', async () => {
-      const scope = nock(url).get('/').reply(200);
+      const auth = new GoogleAuth();
+      const stub = sandbox.stub(auth, 'request').resolves({} as GaxiosResponse);
       await createAPIRequest<FakeParams>({
         options: {url},
         params: {},
@@ -449,11 +455,11 @@ describe('createAPIRequest', () => {
         pathParams: [],
         context: {
           _options: {
-            auth: new GoogleAuth(),
+            auth,
           },
         },
       });
-      scope.done();
+      assert.ok(stub.calledOnce);
     });
   });
 });
