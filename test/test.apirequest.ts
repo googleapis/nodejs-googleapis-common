@@ -21,6 +21,7 @@ import resolve = require('url');
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
+import { GoogleAuth } from '../src';
 
 interface MyWritableOptions {
   highWaterMark?: number;
@@ -436,6 +437,22 @@ describe('createAPIRequest', () => {
       assert.strictEqual(res1.config.url, expectedUrl);
       const res2 = await createAPIRequest<FakeParams>(params);
       assert.strictEqual(res2.config.url, expectedUrl);
+      scope.done();
+    });
+
+    it('should allow passing a GoogleAuth param for auth', async () => {
+      const scope = nock(url).get('/').reply(200);
+      await createAPIRequest<FakeParams>({
+        options: {url},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            auth: new GoogleAuth(),
+          },
+        },
+      });
       scope.done();
     });
   });

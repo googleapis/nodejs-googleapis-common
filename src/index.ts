@@ -17,6 +17,7 @@ export {
   Compute,
   UserRefreshClient,
   DefaultTransporter,
+  GoogleAuth,
 } from 'google-auth-library';
 export {GaxiosPromise} from 'gaxios';
 export {
