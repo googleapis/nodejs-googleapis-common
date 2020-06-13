@@ -21,7 +21,7 @@ interface FakeParams {
   foo: string;
   bar: string;
 }
-describe.only('http2', () => {
+describe('http2', () => {
   const auth = new GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/cloud-platform'],
   });
@@ -76,7 +76,7 @@ describe.only('http2', () => {
     assert(result.data);
   });
 
-  it.only('should return a stream if asked nicely', async () => {
+  it('should return a stream if asked nicely', async () => {
     const url = 'https://storage.googleapis.com/storage/v1/b';
     const projectId = await auth.getProjectId();
     const result = await createAPIRequest<FakeParams>({

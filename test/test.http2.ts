@@ -43,7 +43,7 @@ class FakeClient extends EventEmitter {
   };
 }
 
-describe.only('http2', () => {
+describe('http2', () => {
   const auth = new GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/cloud-platform'],
   });
