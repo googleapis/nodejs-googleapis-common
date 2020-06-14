@@ -30,11 +30,12 @@ module.exports = {
     child_process: 'empty',
     fs: 'empty',
     crypto: 'empty',
+    http2: 'empty',
   },
   module: {
     rules: [
       {
-        test: /src\/crypto\/node\/crypto/,
+        test: /src\/http2/,
         use: 'null-loader',
       },
       {
