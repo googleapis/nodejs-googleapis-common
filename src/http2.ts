@@ -112,7 +112,6 @@ export async function request<T>(
 
   return new Promise((resolve, reject) => {
     req
-      .on('data', d => chunks.push(d))
       .on('response', headers => {
         res.headers = headers;
         res.status = Number(headers[HTTP2_HEADER_STATUS]);
@@ -125,38 +124,36 @@ export async function request<T>(
           resolve(res);
           return;
         }
+        stream
+          .on('data', d => {
+            chunks.push(d);
+          })
+          .on('error', err => {
+            reject(err);
+            return;
+          })
+          .on('end', () => {
+            let data = Buffer.concat(chunks).toString('utf8');
+            try {
+              data = JSON.parse(data);
+            } catch {
+              // assume we got text back
+            }
+            res.data = (data as {}) as T;
+            if (!opts.validateStatus!(res.status)) {
+              let message = `Request failed with status code ${res.status}. `;
+              if (res.data && typeof res.data === 'object') {
+                const body = util.inspect(res.data, {depth: 5});
+                message = `${message}\n'${body}`;
+              }
+              reject(new GaxiosError<T>(message, opts, res));
+            }
+            resolve(res);
+            return;
+          });
       })
       .on('error', e => {
         reject(e);
-        return;
-      })
-      .on('end', () => {
-        const allChunks = Buffer.concat(chunks);
-        // TODO: Currently, this code is double buffering responses by storing
-        // the entire buffer contents in memory, and then piping that through
-        // gunzipSync. This should be changed to pipe the data towards a stream,
-        // and to not use the `Sync` method.
-        let data = '';
-        if (res.headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
-          data = zlib.gunzipSync(allChunks).toString('utf8');
-        } else {
-          data = allChunks.toString('utf8');
-        }
-        res.data = JSON.parse(data);
-
-        if (!opts.validateStatus!(res.status)) {
-          let message = `Request failed with status code ${res.status}. `;
-          if (res.data && typeof res.data === 'object') {
-            message =
-              message +
-              '\n' +
-              util.inspect(res.data, {
-                depth: 5,
-              });
-          }
-          reject(new GaxiosError<T>(message, opts, res));
-        }
-        resolve(res);
         return;
       });
 

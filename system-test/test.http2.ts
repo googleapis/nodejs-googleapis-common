@@ -92,10 +92,7 @@ describe('http2', () => {
       pathParams: [],
       context,
     });
-    console.log(result.data);
+    assert.ok(result.data);
     assert(result.data instanceof stream.Readable);
-    for await (const d of result.data) {
-      console.log(d.toString('utf8'));
-    }
   });
 });

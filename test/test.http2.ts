@@ -18,7 +18,7 @@ import {describe, it, before, beforeEach} from 'mocha';
 import {gzipSync} from 'zlib';
 import * as proxyquire from 'proxyquire';
 import * as sinon from 'sinon';
-import {Readable} from 'stream';
+import {Duplex, Readable} from 'stream';
 import {EventEmitter} from 'events';
 import {GaxiosResponse} from 'gaxios';
 import * as http2Types from '../src/http2';
@@ -67,15 +67,16 @@ describe('http2', () => {
     });
   });
 
-  let requestStream: Readable;
+  let requestStream: Duplex;
   beforeEach(() => {
     // Create a naive ClientHttp2Session that returns an empty stream.
     // `requestStream` is visible to tests can poke at it.
     connectStub = () => {
       const client = new FakeClient();
       client.request = () => {
-        requestStream = new Readable();
+        requestStream = new Duplex();
         requestStream._read = () => {};
+        requestStream._write = () => {};
         return requestStream;
       };
       return client;
@@ -220,5 +221,100 @@ describe('http2', () => {
     requestStream.push(Buffer.from('{}'));
     requestStream.push(null);
     await assert.rejects(resPromise, /status code 418/);
+  });
+
+  it('should allow posting an object', async () => {
+    let requestStream!: Duplex;
+    let writtenTo = false;
+    const data = {
+      hello: 'world',
+    };
+    connectStub = () => {
+      const client = new FakeClient();
+      client.request = (headers: coreHttp2.OutgoingHttpHeaders) => {
+        assert.strictEqual(headers[HTTP2_HEADER_METHOD], 'POST');
+        requestStream = new Duplex();
+        requestStream._read = () => {};
+        requestStream._write = (chunk: Buffer) => {
+          writtenTo = true;
+          const localData = JSON.parse(chunk.toString('utf8'));
+          assert.deepStrictEqual(localData, data);
+        };
+        return requestStream;
+      };
+      return client;
+    };
+    const resPromise = http2.request({
+      url,
+      method: 'POST',
+      data,
+    });
+    requestStream.emit('response', {[HTTP2_HEADER_STATUS]: 202});
+    requestStream.push(null);
+    await resPromise;
+    assert(writtenTo);
+  });
+
+  it('should allow putting a string', async () => {
+    let requestStream!: Duplex;
+    let writtenTo = false;
+    const data = 'boop';
+    connectStub = () => {
+      const client = new FakeClient();
+      client.request = (headers: coreHttp2.OutgoingHttpHeaders) => {
+        assert.strictEqual(headers[HTTP2_HEADER_METHOD], 'PUT');
+        requestStream = new Duplex();
+        requestStream._read = () => {};
+        requestStream._write = (chunk: Buffer) => {
+          writtenTo = true;
+          const localData = chunk.toString('utf8');
+          assert.deepStrictEqual(localData, data);
+        };
+        return requestStream;
+      };
+      return client;
+    };
+    const resPromise = http2.request({
+      url,
+      method: 'PUT',
+      data,
+    });
+    requestStream.emit('response', {[HTTP2_HEADER_STATUS]: 200});
+    requestStream.push(null);
+    await resPromise;
+    assert(writtenTo);
+  });
+
+  it('should allow posting via stream', async () => {
+    let requestStream!: Duplex;
+    let writtenTo = false;
+    const data = new Readable();
+    data._read = () => {};
+    connectStub = () => {
+      const client = new FakeClient();
+      client.request = (headers: coreHttp2.OutgoingHttpHeaders) => {
+        assert.strictEqual(headers[HTTP2_HEADER_METHOD], 'POST');
+        requestStream = new Duplex();
+        requestStream._read = () => {};
+        requestStream._write = (chunk: Buffer) => {
+          writtenTo = true;
+          const localData = chunk.toString('utf8');
+          assert.deepStrictEqual(localData, 'boop');
+        };
+        return requestStream;
+      };
+      return client;
+    };
+    const resPromise = http2.request({
+      url,
+      method: 'POST',
+      data,
+    });
+    data.push('boop');
+    data.push(null);
+    requestStream.emit('response', {[HTTP2_HEADER_STATUS]: 200});
+    requestStream.push(null);
+    await resPromise;
+    assert(writtenTo);
   });
 });
