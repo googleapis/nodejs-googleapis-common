@@ -96,8 +96,18 @@ export async function request<T>(
   const headers = Object.assign({}, opts.headers, {
     [HTTP2_HEADER_PATH]: pathWithQs,
     [HTTP2_HEADER_METHOD]: config.method || 'GET',
-    [HTTP2_HEADER_CONTENT_TYPE]: 'application/json',
   });
+
+  // NOTE: This is working around an upstream bug in `apirequest.ts`. The
+  // request path assumes that the `content-type` header is going to be set in
+  // the underlying HTTP Client. This hack provides bug for bug compatability
+  // with this bug in gaxios:
+  // https://github.com/googleapis/gaxios/blob/master/src/gaxios.ts#L202
+  if (!headers[HTTP2_HEADER_CONTENT_TYPE]) {
+    if (opts.responseType !== 'text') {
+      headers[HTTP2_HEADER_CONTENT_TYPE] = 'application/json';
+    }
+  }
 
   const req = session.client.request(headers);
   const chunks: Buffer[] = [];
@@ -133,13 +143,23 @@ export async function request<T>(
             return;
           })
           .on('end', () => {
-            let data = Buffer.concat(chunks).toString('utf8');
-            try {
-              data = JSON.parse(data);
-            } catch {
-              // assume we got text back
+            const buf = Buffer.concat(chunks);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let data: any = buf;
+            if (buf) {
+              if (opts.responseType === 'json') {
+                try {
+                  data = JSON.parse(buf.toString('utf8'));
+                } catch {
+                  data = buf.toString('utf8');
+                }
+              } else if (opts.responseType === 'text') {
+                data = buf.toString('utf8');
+              } else if (opts.responseType === 'arraybuffer') {
+                data = buf.buffer;
+              }
+              res.data = (data as {}) as T;
             }
-            res.data = (data as {}) as T;
             if (!opts.validateStatus!(res.status)) {
               let message = `Request failed with status code ${res.status}. `;
               if (res.data && typeof res.data === 'object') {
