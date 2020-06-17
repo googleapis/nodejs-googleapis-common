@@ -30,7 +30,7 @@ import resolve = require('url');
 const pkg = require('../../package.json');
 
 interface Multipart {
-  'Content-Type': string;
+  'content-type': string;
   body: string | stream.Readable;
 }
 
@@ -207,9 +207,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     });
     const pStream = new ProgressStream();
     const isStream = isReadableStream(multipart[1].body);
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       rStream.push(preamble);
       if (typeof part.body === 'string') {
         rStream.push(part.body);
@@ -236,11 +236,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   function browserMultipartUpload(multipart: Multipart[]) {
     const boundary = uuid.v4();
     const finale = `--${boundary}--`;
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
 
     let content = '';
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       content += preamble;
       if (typeof part.body === 'string') {
         content += part.body;
@@ -256,9 +256,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (resource) {
       params.uploadType = 'multipart';
       const multipart = [
-        {'Content-Type': 'application/json', body: JSON.stringify(resource)},
+        {'content-type': 'application/json', body: JSON.stringify(resource)},
         {
-          'Content-Type':
+          'content-type':
             media.mimeType || (resource && resource.mimeType) || defaultMime,
           body: media.body,
         },
@@ -272,7 +272,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       }
     } else {
       params.uploadType = 'media';
-      Object.assign(headers, {'Content-Type': media.mimeType || defaultMime});
+      Object.assign(headers, {'content-type': media.mimeType || defaultMime});
       options.data = media.body;
     }
   } else {

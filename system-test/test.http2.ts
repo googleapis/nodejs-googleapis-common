@@ -95,4 +95,42 @@ describe('http2', () => {
     assert.ok(result.data);
     assert(result.data instanceof stream.Readable);
   });
+
+  it('should handle multi-part uploads', async () => {
+    const url = 'https://storage.googleapis.com/storage/v1/b/el-gato/o';
+    const result = await createAPIRequest<FakeParams>({
+      options: {
+        url,
+        http2: true,
+        method: 'POST',
+      },
+      params: {
+        requestBody: {
+          name: 'Test',
+          mimeType: 'text/plain',
+        },
+        media: {
+          mimeType: 'text/plain',
+          body: 'Hello World',
+        },
+      },
+      mediaUrl: 'https://www.googleapis.com/upload/storage/v1/b/el-gato/o',
+      requiredParams: [],
+      pathParams: [],
+      context,
+    });
+    assert.ok(result.data);
+    assert.strictEqual(result.status, 200);
+    await createAPIRequest<FakeParams>({
+      options: {
+        url: url + '/Test',
+        http2: true,
+        method: 'DELETE',
+      },
+      params: {},
+      requiredParams: [],
+      pathParams: [],
+      context,
+    });
+  });
 });
