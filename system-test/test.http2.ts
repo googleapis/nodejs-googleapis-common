@@ -97,7 +97,8 @@ describe('http2', () => {
   });
 
   it('should handle multi-part uploads', async () => {
-    const url = 'https://storage.googleapis.com/storage/v1/b/el-gato/o';
+    const projectId = await auth.getProjectId();
+    const url = `https://storage.googleapis.com/storage/v1/b/${projectId}/o`;
     const result = await createAPIRequest<FakeParams>({
       options: {
         url,
@@ -114,7 +115,7 @@ describe('http2', () => {
           body: 'Hello World',
         },
       },
-      mediaUrl: 'https://www.googleapis.com/upload/storage/v1/b/el-gato/o',
+      mediaUrl: `https://www.googleapis.com/upload/storage/v1/b/${projectId}/o`,
       requiredParams: [],
       pathParams: [],
       context,
