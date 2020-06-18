@@ -11,6 +11,7 @@
     "system-test/*.ts",
     "samples-test/*.ts",
     "browser-test/*.ts",
-    "browser-test/**/*.ts"
+    "browser-test/**/*.ts",
+    "benchmark/*.ts"
   ]
 }

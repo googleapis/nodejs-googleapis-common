@@ -22,6 +22,7 @@ import * as extend from 'extend';
 import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
+import * as h2 from './http2';
 
 import resolve = require('url');
 
@@ -29,7 +30,7 @@ import resolve = require('url');
 const pkg = require('../../package.json');
 
 interface Multipart {
-  'Content-Type': string;
+  'content-type': string;
   body: string | stream.Readable;
 }
 
@@ -206,9 +207,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     });
     const pStream = new ProgressStream();
     const isStream = isReadableStream(multipart[1].body);
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       rStream.push(preamble);
       if (typeof part.body === 'string') {
         rStream.push(part.body);
@@ -235,11 +236,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   function browserMultipartUpload(multipart: Multipart[]) {
     const boundary = uuid.v4();
     const finale = `--${boundary}--`;
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
 
     let content = '';
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       content += preamble;
       if (typeof part.body === 'string') {
         content += part.body;
@@ -255,9 +256,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (resource) {
       params.uploadType = 'multipart';
       const multipart = [
-        {'Content-Type': 'application/json', body: JSON.stringify(resource)},
+        {'content-type': 'application/json', body: JSON.stringify(resource)},
         {
-          'Content-Type':
+          'content-type':
             media.mimeType || (resource && resource.mimeType) || defaultMime,
           body: media.body,
         },
@@ -271,7 +272,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       }
     } else {
       params.uploadType = 'media';
-      Object.assign(headers, {'Content-Type': media.mimeType || defaultMime});
+      Object.assign(headers, {'content-type': media.mimeType || defaultMime});
       options.data = media.body;
     }
   } else {
@@ -317,7 +318,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // now void.  This may be a source of confusion for users upgrading from
   // version 24.0 -> 25.0 or up.
   if (authClient && typeof authClient === 'object') {
-    return (authClient as OAuth2Client).request<T>(options);
+    if (options.http2) {
+      const authHeaders = await authClient.getRequestHeaders(options.url);
+      const mooOpts = Object.assign({}, options);
+      mooOpts.headers = Object.assign(mooOpts.headers, authHeaders);
+      return h2.request<T>(mooOpts);
+    } else {
+      return (authClient as OAuth2Client).request<T>(options);
+    }
   } else {
     return new DefaultTransporter().request<T>(options);
   }

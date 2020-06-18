@@ -35,8 +35,7 @@ describe('pack and install', () => {
    * Create a staging directory with temp fixtures used to test on a fresh
    * application.
    */
-  before('should be able to use the d.ts', async function () {
-    this.timeout(40000);
+  before('should be able to use the d.ts', async () => {
     console.log(`${__filename} staging area: ${stagingPath}`);
     await execa('npm', ['pack'], {stdio: 'inherit'});
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
@@ -53,7 +52,7 @@ describe('pack and install', () => {
     const bundle = path.join(stagingPath, 'dist', 'bundle.min.js');
     const stat = fs.statSync(bundle);
     assert(stat.size < 256 * 1024);
-  }).timeout(20000);
+  });
 
   /**
    * CLEAN UP - remove the staging directory when done.

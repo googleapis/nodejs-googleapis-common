@@ -326,7 +326,7 @@ describe('createAPIRequest', () => {
     };
     const auth = {
       request: (opts: GlobalOptions & MethodOptions) => {
-        const contentType = opts.headers!['Content-Type'];
+        const contentType = opts.headers!['content-type'];
         const boundary = `--${contentType.substring(
           contentType.indexOf('boundary=') + 9
         )}--`;
