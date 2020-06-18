@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.4.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.3.0...v4.4.0) (2020-06-18)
+
+
+### Features
+
+* add experimental http/2 support ([#293](https://www.github.com/googleapis/nodejs-googleapis-common/issues/293)) ([4d33ffa](https://www.github.com/googleapis/nodejs-googleapis-common/commit/4d33ffa237e53f6beb88a4e32d6cc7f31f05a8d6))
+
 ## [4.3.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.1...v4.3.0) (2020-06-03)
 
 
