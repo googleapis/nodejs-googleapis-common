@@ -117,7 +117,7 @@ describe('http2', () => {
           body: 'Hello World',
         },
       },
-      mediaUrl: `https://www.googleapis.com/upload/storage/v1/b/${projectId}/o`,
+      mediaUrl: `https://storage.googleapis.com/upload/storage/v1/b/${projectId}/o`,
       requiredParams: [],
       pathParams: [],
       context,

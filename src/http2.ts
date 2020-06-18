@@ -37,7 +37,7 @@ const DEBUG = !!process.env.HTTP2_DEBUG;
  * @private
  */
 export interface SessionData {
-  client: http2.ClientHttp2Session;
+  session: http2.ClientHttp2Session;
   timeoutHandle?: NodeJS.Timer;
 }
 
@@ -73,18 +73,18 @@ export async function request<T>(
   const url = new URL(opts.url!);
 
   // Check for an existing session to this host, or go create a new one.
-  const session = _getClient(url.host);
+  const sessionData = _getClient(url.host);
 
   // Since we're using this session, clear the timeout handle to ensure
   // it stays in memory and connected for a while further.
-  if (session.timeoutHandle !== undefined) {
-    clearTimeout(session.timeoutHandle);
+  if (sessionData.timeoutHandle !== undefined) {
+    clearTimeout(sessionData.timeoutHandle);
   }
 
   // Assemble the querystring based on config.params.  We're using the
   // `qs` module to make life a little easier.
   let pathWithQs = url.pathname;
-  if (config.params) {
+  if (config.params && Object.keys(config.params).length > 0) {
     const q = qs.stringify(opts.params);
     pathWithQs += `?${q}`;
   }
@@ -109,73 +109,80 @@ export async function request<T>(
     }
   }
 
-  const req = session.client.request(headers);
-  const chunks: Buffer[] = [];
   const res: GaxiosResponse<T> = {
     config,
-    request: (req as {}) as GaxiosXMLHttpRequest,
+    request: {} as GaxiosXMLHttpRequest,
     headers: [],
     status: 0,
     data: {} as T,
     statusText: '',
   };
-
+  const chunks: Buffer[] = [];
+  const session = sessionData.session;
+  let req: http2.ClientHttp2Stream;
   return new Promise((resolve, reject) => {
-    req
-      .on('response', headers => {
-        res.headers = headers;
-        res.status = Number(headers[HTTP2_HEADER_STATUS]);
-        let stream: Readable = req;
-        if (headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
-          stream = req.pipe(zlib.createGunzip());
-        }
-        if (opts.responseType === 'stream') {
-          res.data = (stream as {}) as T;
-          resolve(res);
-          return;
-        }
-        stream
-          .on('data', d => {
-            chunks.push(d);
-          })
-          .on('error', err => {
-            reject(err);
-            return;
-          })
-          .on('end', () => {
-            const buf = Buffer.concat(chunks);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let data: any = buf;
-            if (buf) {
-              if (opts.responseType === 'json') {
-                try {
-                  data = JSON.parse(buf.toString('utf8'));
-                } catch {
-                  data = buf.toString('utf8');
-                }
-              } else if (opts.responseType === 'text') {
-                data = buf.toString('utf8');
-              } else if (opts.responseType === 'arraybuffer') {
-                data = buf.buffer;
-              }
-              res.data = (data as {}) as T;
-            }
-            if (!opts.validateStatus!(res.status)) {
-              let message = `Request failed with status code ${res.status}. `;
-              if (res.data && typeof res.data === 'object') {
-                const body = util.inspect(res.data, {depth: 5});
-                message = `${message}\n'${body}`;
-              }
-              reject(new GaxiosError<T>(message, opts, res));
-            }
+    try {
+      req = session
+        .request(headers)
+        .on('response', headers => {
+          res.headers = headers;
+          res.status = Number(headers[HTTP2_HEADER_STATUS]);
+          let stream: Readable = req;
+          if (headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
+            stream = req.pipe(zlib.createGunzip());
+          }
+          if (opts.responseType === 'stream') {
+            res.data = (stream as {}) as T;
             resolve(res);
             return;
-          });
-      })
-      .on('error', e => {
-        reject(e);
-        return;
-      });
+          }
+          stream
+            .on('data', d => {
+              chunks.push(d);
+            })
+            .on('error', err => {
+              reject(err);
+              return;
+            })
+            .on('end', () => {
+              const buf = Buffer.concat(chunks);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              let data: any = buf;
+              if (buf) {
+                if (opts.responseType === 'json') {
+                  try {
+                    data = JSON.parse(buf.toString('utf8'));
+                  } catch {
+                    data = buf.toString('utf8');
+                  }
+                } else if (opts.responseType === 'text') {
+                  data = buf.toString('utf8');
+                } else if (opts.responseType === 'arraybuffer') {
+                  data = buf.buffer;
+                }
+                res.data = (data as {}) as T;
+              }
+              if (!opts.validateStatus!(res.status)) {
+                let message = `Request failed with status code ${res.status}. `;
+                if (res.data && typeof res.data === 'object') {
+                  const body = util.inspect(res.data, {depth: 5});
+                  message = `${message}\n'${body}`;
+                }
+                reject(new GaxiosError<T>(message, opts, res));
+              }
+              resolve(res);
+              return;
+            });
+        })
+        .on('error', e => {
+          reject(e);
+          return;
+        });
+    } catch (e) {
+      closeSession(url);
+      reject(e);
+    }
+    res.request = (req as {}) as GaxiosXMLHttpRequest;
 
     // If data was provided, write it to the request in the form of
     // a stream, string data, or a basic object.
@@ -196,13 +203,8 @@ export async function request<T>(
     // a nice round number, and I don't know what would be a better
     // choice. Keeping this channel open will hold a file descriptor
     // which will prevent the process from exiting.
-    session.timeoutHandle = setTimeout(() => {
-      session.client.close(() => {
-        if (DEBUG) {
-          console.error(`Closing ${url.host}`);
-        }
-        delete sessions[url.host];
-      });
+    sessionData.timeoutHandle = setTimeout(() => {
+      closeSession(url);
     }, 500);
   });
 }
@@ -224,8 +226,8 @@ function _getClient(host: string): SessionData {
     if (DEBUG) {
       console.log(`Creating client for ${host}`);
     }
-    const client = http2.connect(`https://${host}`);
-    client
+    const session = http2.connect(`https://${host}`);
+    session
       .on('error', e => {
         console.error(`*ERROR*: ${e}`);
         delete sessions[host];
@@ -234,11 +236,38 @@ function _getClient(host: string): SessionData {
         console.error(`*GOAWAY*: ${errorCode} : ${lastStreamId}`);
         delete sessions[host];
       });
-    sessions[host] = {client};
+    sessions[host] = {session};
   } else {
     if (DEBUG) {
       console.log(`Used cached client for ${host}`);
     }
   }
   return sessions[host];
+}
+
+export async function closeSession(url: URL) {
+  const sessionData = sessions[url.host];
+  if (!sessionData) {
+    return;
+  }
+  const {session} = sessionData;
+  delete sessions[url.host];
+  if (DEBUG) {
+    console.error(`Closing ${url.host}`);
+  }
+  session.close(() => {
+    if (DEBUG) {
+      console.error(`Closed ${url.host}`);
+    }
+  });
+  setTimeout(() => {
+    if (session && !session.destroyed) {
+      if (DEBUG) {
+        console.log(`Forcing close ${url.host}`);
+      }
+      if (session) {
+        session.destroy();
+      }
+    }
+  }, 1000);
 }

@@ -41,6 +41,7 @@ class FakeClient extends EventEmitter {
   close = (callback: Function) => {
     callback();
   };
+  destroy = () => {};
 }
 
 describe('http2', () => {
@@ -164,7 +165,7 @@ describe('http2', () => {
     requestStream.push(Buffer.from('{}'));
     requestStream.push(null);
     await resPromise;
-    http2.sessions['example.com'].client.emit('error', new Error('😱'));
+    http2.sessions['example.com'].session.emit('error', new Error('😱'));
     assert.strictEqual(Object.keys(http2.sessions).length, 0);
   });
 
@@ -176,7 +177,7 @@ describe('http2', () => {
     requestStream.push(Buffer.from('{}'));
     requestStream.push(null);
     await resPromise;
-    http2.sessions['example.com'].client.emit('goaway');
+    http2.sessions['example.com'].session.emit('goaway');
     assert.strictEqual(Object.keys(http2.sessions).length, 0);
   });
 
