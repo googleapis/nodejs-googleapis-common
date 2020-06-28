@@ -14,14 +14,31 @@
 
 import * as assert from 'assert';
 import {describe, it} from 'mocha';
-import {AuthPlus} from '../src/authplus';
+import * as proxyquire from 'proxyquire';
+import * as AuthPlus from '../src/authplus';
 
 describe(__filename, () => {
+  const AuthyPlus: typeof AuthPlus = proxyquire('../src/authplus', {
+    'google-auth-library': {
+      GoogleAuth: class {
+        async getClient() {
+          return {};
+        }
+      },
+    },
+  });
+
   it('should expose auth classes', () => {
-    const auth = new AuthPlus();
+    const auth = new AuthyPlus.AuthPlus();
     assert.ok(auth.JWT);
     assert.ok(auth.Compute);
     assert.ok(auth.OAuth2);
     assert.ok(auth.GoogleAuth);
+  });
+
+  it('should get a new client', async () => {
+    const auth = new AuthyPlus.AuthPlus();
+    const client = await auth.getClient();
+    assert.deepStrictEqual(client, {});
   });
 });

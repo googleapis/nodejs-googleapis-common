@@ -13,11 +13,62 @@
 // limitations under the License.
 
 import * as assert from 'assert';
-import {describe, it} from 'mocha';
-import * as discovery from '../src/discovery';
+import {describe, it, afterEach} from 'mocha';
+import {Discovery} from '../src/discovery';
+import * as nock from 'nock';
+
+nock.disableNetConnect();
 
 describe(__filename, () => {
-  it('should should export common interfaces', () => {
-    assert.ok(discovery);
+  afterEach(() => {
+    nock.cleanAll();
+  });
+  it('should discover an API', async () => {
+    const discoUrl = 'http://test.local';
+    const scope = nock(discoUrl)
+      .get('/')
+      .replyWithFile(200, './test/fixtures/compute-v1.json');
+    const disco = new Discovery({});
+    const makeEndpoint = await disco.discoverAPI(discoUrl);
+    const endpoint = makeEndpoint({}, {});
+    assert.ok(endpoint.zones);
+    scope.done();
+  });
+  it('should discover an API through second weird path', async () => {
+    const discoUrl = 'http://test.local';
+    const scope = nock(discoUrl)
+      .get('/')
+      .replyWithFile(200, './test/fixtures/compute-v1.json');
+    const disco = new Discovery({});
+    const makeEndpoint = await disco.discoverAPI({url: discoUrl});
+    const endpoint = makeEndpoint({}, {});
+    assert.ok(endpoint.zones);
+    scope.done();
+  });
+  it('should discover all APIs', async () => {
+    const discoUrl = 'http://test.local';
+    const scopes = [
+      nock(discoUrl)
+        .get('/')
+        .reply(200, {
+          items: [
+            {
+              name: 'compute',
+              version: 'v1',
+              discoveryRestUrl: `${discoUrl}/compute-v1`,
+            },
+          ],
+        }),
+      nock(discoUrl)
+        .get('/compute-v1')
+        .replyWithFile(200, './test/fixtures/compute-v1.json'),
+    ];
+    const disco = new Discovery({});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res: any = await disco.discoverAllAPIs(discoUrl);
+    const compute = res['compute'];
+    const endpoint = compute('v1');
+    assert.ok(endpoint.zones);
+    scopes.forEach(x => x.done());
   });
 });
