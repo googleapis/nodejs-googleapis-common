@@ -22,13 +22,9 @@ import {
 } from 'google-auth-library';
 
 export class AuthPlus extends GoogleAuth {
-  // tslint:disable-next-line: variable-name
   JWT = JWT;
-  // tslint:disable-next-line: variable-name
   Compute = Compute;
-  // tslint:disable-next-line: variable-name
   OAuth2 = OAuth2Client;
-  // tslint:disable-next-line: variable-name
   GoogleAuth = GoogleAuth;
 
   private _cachedAuth?: GoogleAuth;
