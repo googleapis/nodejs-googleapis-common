@@ -28,7 +28,9 @@
     "predocs-test": "npm run docs",
     "prelint": "cd samples; npm link ../; npm install",
     "clean": "gts clean",
-    "precompile": "gts clean"
+    "precompile": "gts clean",
+    "api-extractor": "api-extractor run --local",
+    "api-documenter": "api-documenter yaml --input-folder=temp"
   },
   "keywords": [],
   "author": "Google LLC",
@@ -82,7 +84,9 @@
     "ts-loader": "^8.0.0",
     "typescript": "^3.8.3",
     "webpack": "^4.35.0",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.5",
+    "@microsoft/api-documenter": "^7.8.10",
+    "@microsoft/api-extractor": "^7.8.10"
   },
   "engines": {
     "node": ">=10.10.0"
