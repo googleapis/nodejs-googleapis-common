@@ -19,13 +19,10 @@ import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
 import * as extend from 'extend';
 
-import {
-  APIRequestParams,
-  BodyResponseCallback,
-  UserAgentDirective,
-} from './api';
+import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
+import * as h2 from './http2';
 
 import resolve = require('url');
 
@@ -33,11 +30,20 @@ import resolve = require('url');
 const pkg = require('../../package.json');
 
 interface Multipart {
-  'Content-Type': string;
-  body: any;
+  'content-type': string;
+  body: string | stream.Readable;
 }
-function isReadableStream(obj: stream.Readable | string) {
-  return obj instanceof stream.Readable && typeof obj._read === 'function';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isReadableStream(obj: any) {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    typeof obj.pipe === 'function' &&
+    obj.readable !== false &&
+    typeof obj._read === 'function' &&
+    typeof obj._readableState === 'object'
+  );
 }
 
 function getMissingParams(params: SchemaParameters, required: string[]) {
@@ -78,51 +84,25 @@ export function createAPIRequest<T>(
 }
 
 async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
-  const options = Object.assign({}, parameters.options);
+  // Combine the GaxiosOptions options passed with this specific
+  // API call with the global options configured at the API Context
+  // level, or at the global level.
+  const options = extend(
+    true,
+    {}, // Ensure we don't leak settings upstream
+    parameters.context.google?._options || {}, // Google level options
+    parameters.context._options || {}, // Per-API options
+    parameters.options // API call params
+  );
 
-  // Create a new params object so it can no longer be modified from outside
-  // code Also support global and per-client params, but allow them to be
-  // overriden per-request
-  const globalParams =
-    parameters.context.google &&
-    parameters.context.google._options &&
-    parameters.context.google._options.params
-      ? parameters.context.google._options.params
-      : {};
-  const clientParams =
-    parameters.context &&
-    parameters.context._options &&
-    parameters.context._options.params
-      ? parameters.context._options.params
-      : {};
-  const params = Object.assign(
+  const params = extend(
+    true,
     {}, // New base object
-    globalParams, // Global params
-    clientParams, // Per-client params
+    options.params, // Combined global/per-api params
     parameters.params // API call params
   );
 
-  // Check for user specified user agents at all levels of config
-  const userAgentGlobal =
-    parameters.context.google &&
-    parameters.context.google._options &&
-    parameters.context.google._options.userAgentDirectives
-      ? parameters.context.google._options.userAgentDirectives
-      : [];
-  const userAgentClient =
-    parameters.context &&
-    parameters.context._options &&
-    parameters.context._options.userAgentDirectives
-      ? parameters.context._options.userAgentDirectives
-      : [];
-  const userAgentDirectives: UserAgentDirective[] =
-    Object.assign(
-      [],
-      userAgentGlobal,
-      userAgentClient,
-      parameters.options.userAgentDirectives
-    ) || [];
-
+  options.userAgentDirectives = options.userAgentDirectives || [];
   const media = params.media || {};
 
   /**
@@ -151,12 +131,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
   delete params.requestBody;
 
-  let authClient =
-    params.auth ||
-    parameters.context._options.auth ||
-    (parameters.context.google
-      ? parameters.context.google._options.auth
-      : null);
+  let authClient = params.auth || options.auth;
 
   const defaultMime =
     typeof media.body === 'string' ? 'text/plain' : 'application/octet-stream';
@@ -211,18 +186,8 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     return qs.stringify(params, {arrayFormat: 'repeat'});
   };
 
-  // delete path parameters from the params object so they do not end up in
-  // query
-  parameters.pathParams.forEach(param => {
-    delete params[param];
-    if (
-      parameters.context &&
-      parameters.context._options &&
-      parameters.context._options.params
-    ) {
-      delete parameters.context._options.params[param];
-    }
-  });
+  // delete path params from the params object so they do not end up in query
+  parameters.pathParams.forEach(param => delete params[param]);
 
   // if authClient is actually a string, use it as an API KEY
   if (typeof authClient === 'string') {
@@ -242,9 +207,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     });
     const pStream = new ProgressStream();
     const isStream = isReadableStream(multipart[1].body);
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       rStream.push(preamble);
       if (typeof part.body === 'string') {
         rStream.push(part.body);
@@ -271,11 +236,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   function browserMultipartUpload(multipart: Multipart[]) {
     const boundary = uuid.v4();
     const finale = `--${boundary}--`;
-    headers['Content-Type'] = `multipart/related; boundary=${boundary}`;
+    headers['content-type'] = `multipart/related; boundary=${boundary}`;
 
     let content = '';
     for (const part of multipart) {
-      const preamble = `--${boundary}\r\nContent-Type: ${part['Content-Type']}\r\n\r\n`;
+      const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       content += preamble;
       if (typeof part.body === 'string') {
         content += part.body;
@@ -291,9 +256,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (resource) {
       params.uploadType = 'multipart';
       const multipart = [
-        {'Content-Type': 'application/json', body: JSON.stringify(resource)},
+        {'content-type': 'application/json', body: JSON.stringify(resource)},
         {
-          'Content-Type':
+          'content-type':
             media.mimeType || (resource && resource.mimeType) || defaultMime,
           body: media.body,
         },
@@ -307,7 +272,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
       }
     } else {
       params.uploadType = 'media';
-      Object.assign(headers, {'Content-Type': media.mimeType || defaultMime});
+      Object.assign(headers, {'content-type': media.mimeType || defaultMime});
       options.data = media.body;
     }
   } else {
@@ -318,12 +283,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   options.params = params;
   if (!isBrowser()) {
     options.headers!['Accept-Encoding'] = 'gzip';
-    userAgentDirectives.push({
+    options.userAgentDirectives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
       comment: 'gzip',
     });
-    const userAgent = userAgentDirectives
+    const userAgent = options.userAgentDirectives
       .map(d => {
         let line = `${d.product}/${d.version}`;
         if (d.comment) {
@@ -346,27 +311,23 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   // Retry by default
   options.retry = options.retry === undefined ? true : options.retry;
-
-  // Combine the GaxiosOptions options passed with this specific
-  // API call witht the global options configured at the API Context
-  // level, or at the global level.
-  const mergedOptions = extend(
-    true,
-    {},
-    parameters.context.google ? parameters.context.google._options : {},
-    parameters.context._options,
-    options
-  );
-  delete mergedOptions.auth; // is overridden by our auth code
+  delete options.auth; // is overridden by our auth code
 
   // Perform the HTTP request.  NOTE: this function used to return a
   // mikeal/request object. Since the transition to Axios, the method is
   // now void.  This may be a source of confusion for users upgrading from
   // version 24.0 -> 25.0 or up.
   if (authClient && typeof authClient === 'object') {
-    return (authClient as OAuth2Client).request<T>(mergedOptions);
+    if (options.http2) {
+      const authHeaders = await authClient.getRequestHeaders(options.url);
+      const mooOpts = Object.assign({}, options);
+      mooOpts.headers = Object.assign(mooOpts.headers, authHeaders);
+      return h2.request<T>(mooOpts);
+    } else {
+      return (authClient as OAuth2Client).request<T>(options);
+    }
   } else {
-    return new DefaultTransporter().request<T>(mergedOptions);
+    return new DefaultTransporter().request<T>(options);
   }
 }
 

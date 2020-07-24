@@ -17,6 +17,7 @@ export {
   Compute,
   UserRefreshClient,
   DefaultTransporter,
+  GoogleAuth,
 } from 'google-auth-library';
 export {GaxiosPromise} from 'gaxios';
 export {
@@ -27,6 +28,7 @@ export {
   GlobalOptions,
   GoogleConfigurable,
   MethodOptions,
+  StreamMethodOptions,
   ServiceOptions,
 } from './api';
 export {getAPI} from './apiIndex';

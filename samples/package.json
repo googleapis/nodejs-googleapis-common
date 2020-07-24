@@ -15,9 +15,9 @@
     "test": "echo \"There are no sample tests 👻\""
   },
   "dependencies": {
-    "googleapis-common": "^4.1.0"
+    "googleapis-common": "^4.4.0"
   },
   "devDependencies": {
-    "mocha": "^7.0.0"
+    "mocha": "^8.0.0"
   }
 }

@@ -17,10 +17,13 @@ import {describe, it, afterEach} from 'mocha';
 import * as crypto from 'crypto';
 import * as nock from 'nock';
 import * as stream from 'stream';
-import resolve = require('url');
+import {URL} from 'url';
+import * as sinon from 'sinon';
 
 import {GlobalOptions, MethodOptions} from '../src/api';
 import {createAPIRequest} from '../src/apirequest';
+import {GoogleAuth} from 'google-auth-library';
+import {GaxiosResponse} from 'gaxios';
 
 interface MyWritableOptions {
   highWaterMark?: number;
@@ -91,8 +94,10 @@ interface FakeParams {
   bar: string;
 }
 describe('createAPIRequest', () => {
+  const sandbox = sinon.createSandbox();
   afterEach(() => {
     nock.cleanAll();
+    sandbox.restore();
   });
 
   describe('instantiation', () => {
@@ -285,10 +290,11 @@ describe('createAPIRequest', () => {
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';
+      const url = new URL(path, 'https://www.googleapis.com');
       const scope = nock(rootUrl).get(path).reply(200);
       const res = await createAPIRequest<FakeParams>({
         options: {
-          url: resolve.resolve('https://www.googleapis.com/', path),
+          url: url.href,
         },
         params: {},
         requiredParams: [],
@@ -320,7 +326,7 @@ describe('createAPIRequest', () => {
     };
     const auth = {
       request: (opts: GlobalOptions & MethodOptions) => {
-        const contentType = opts.headers!['Content-Type'];
+        const contentType = opts.headers!['content-type'];
         const boundary = `--${contentType.substring(
           contentType.indexOf('boundary=') + 9
         )}--`;
@@ -411,6 +417,49 @@ describe('createAPIRequest', () => {
       scope.done();
       const expectedUrl = `${url}/projects/${projectId}`;
       assert.strictEqual(res.config.url, expectedUrl);
+    });
+
+    it('should persist path params set at the API level', async () => {
+      const optUrl = `${url}/projects/{projectId}`;
+      const projectId = 'not-a-project';
+      const path = `/projects/${projectId}`;
+      const scope = nock(url).get(path).twice().reply(200);
+      const params = {
+        options: {url: optUrl},
+        params: {},
+        requiredParams: [],
+        pathParams: ['projectId'],
+        context: {
+          _options: {
+            params: {
+              projectId,
+            },
+          },
+        },
+      };
+      const expectedUrl = `${url}/projects/${projectId}`;
+      const res1 = await createAPIRequest<FakeParams>(params);
+      assert.strictEqual(res1.config.url, expectedUrl);
+      const res2 = await createAPIRequest<FakeParams>(params);
+      assert.strictEqual(res2.config.url, expectedUrl);
+      scope.done();
+    });
+
+    it('should allow passing a GoogleAuth param for auth', async () => {
+      const auth = new GoogleAuth();
+      const stub = sandbox.stub(auth, 'request').resolves({} as GaxiosResponse);
+      await createAPIRequest<FakeParams>({
+        options: {url},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            auth,
+          },
+        },
+      });
+      assert.ok(stub.calledOnce);
     });
   });
 });

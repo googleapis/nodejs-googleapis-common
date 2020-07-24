@@ -4,6 +4,47 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [4.4.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.3.0...v4.4.0) (2020-06-18)
+
+
+### Features
+
+* add experimental http/2 support ([#293](https://www.github.com/googleapis/nodejs-googleapis-common/issues/293)) ([4d33ffa](https://www.github.com/googleapis/nodejs-googleapis-common/commit/4d33ffa237e53f6beb88a4e32d6cc7f31f05a8d6))
+
+## [4.3.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.1...v4.3.0) (2020-06-03)
+
+
+### Features
+
+* allow passing a GoogleAuth instance ([#287](https://www.github.com/googleapis/nodejs-googleapis-common/issues/287)) ([c8e9f3b](https://www.github.com/googleapis/nodejs-googleapis-common/commit/c8e9f3b9636d9b6ce176396cc7b273c107168eec))
+
+
+### Bug Fixes
+
+* expand definition of a stream ([#289](https://www.github.com/googleapis/nodejs-googleapis-common/issues/289)) ([2010721](https://www.github.com/googleapis/nodejs-googleapis-common/commit/20107219a757cf234be9432def49e0644cbd7a79))
+
+### [4.2.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.2.0...v4.2.1) (2020-06-02)
+
+
+### Bug Fixes
+
+* ensure options changes do not leak upstream ([#285](https://www.github.com/googleapis/nodejs-googleapis-common/issues/285)) ([8d4de8a](https://www.github.com/googleapis/nodejs-googleapis-common/commit/8d4de8a03b56d1063aac5f072436917247afc9f1))
+
+## [4.2.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.1...v4.2.0) (2020-05-26)
+
+
+### Features
+
+* add stream method options interface ([#283](https://www.github.com/googleapis/nodejs-googleapis-common/issues/283)) ([a455680](https://www.github.com/googleapis/nodejs-googleapis-common/commit/a4556800fbb39fb7a38733ad4e433d2b0cc7fcda))
+
+### [4.1.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.1.0...v4.1.1) (2020-05-04)
+
+
+### Bug Fixes
+
+* provide mechanism for multipart uploads from browser context ([#274](https://www.github.com/googleapis/nodejs-googleapis-common/issues/274)) ([282bf22](https://www.github.com/googleapis/nodejs-googleapis-common/commit/282bf224471f4ba581e8fc43935411a842510180))
+* **deps:** update dependency uuid to v8 ([#278](https://www.github.com/googleapis/nodejs-googleapis-common/issues/278)) ([f242874](https://www.github.com/googleapis/nodejs-googleapis-common/commit/f242874ab03569064c3b6ce13b00465d4cb5aeb7))
+
 ## [4.1.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.0.0...v4.1.0) (2020-04-12)
 
 
