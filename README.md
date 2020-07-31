@@ -14,6 +14,9 @@
 A common tooling library used by the googleapis npm module. You probably don't want to use this directly.
 
 
+A comprehensive list of changes in each version may be found in
+[the CHANGELOG](https://github.com/googleapis/nodejs-googleapis-common/blob/master/CHANGELOG.md).
+
 
 
 * [github.com/googleapis/nodejs-googleapis-common](https://github.com/googleapis/nodejs-googleapis-common)
