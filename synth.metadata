@@ -4,14 +4,14 @@
       "git": {
         "name": ".",
         "remote": "https://github.com/googleapis/nodejs-googleapis-common.git",
-        "sha": "6e867a16e80c8deddd1082622ceeced85dd32e46"
+        "sha": "3ea5c6315264cdd41c32dc8ac7d6b3a6e2329da9"
       }
     },
     {
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "5936421202fb53ed4641bcb824017dd393a3dbcc"
+        "sha": "94421c47802f56a44c320257b2b4c190dc7d6b68"
       }
     }
   ]
