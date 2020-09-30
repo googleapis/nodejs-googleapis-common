@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [4.4.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.0...v4.4.1) (2020-09-30)
+
+
+### Bug Fixes
+
+* **deps:** gaxios ([#329](https://www.github.com/googleapis/nodejs-googleapis-common/issues/329)) ([5a15848](https://www.github.com/googleapis/nodejs-googleapis-common/commit/5a158482dd207f94ae7a19741967c5db7eb8c1ec))
+
 ## [4.4.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.3.0...v4.4.0) (2020-06-18)
 
 
