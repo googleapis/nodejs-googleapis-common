@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [4.4.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.2...v4.4.3) (2020-10-29)
+
+
+### Bug Fixes
+
+* **types:** add supportsMediaDownload flag to MethodSchema ([#345](https://www.github.com/googleapis/nodejs-googleapis-common/issues/345)) ([3f8617f](https://www.github.com/googleapis/nodejs-googleapis-common/commit/3f8617f6314778e49420094688b5324e258d2b6e))
+
 ### [4.4.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.1...v4.4.2) (2020-10-22)
 
 
