@@ -37,6 +37,12 @@ accept your pull requests.
 1.  Title your pull request following [Conventional Commits](https://www.conventionalcommits.org/) styling.
 1.  Submit a pull request.
 
+### Before you begin
+
+1.  [Select or create a Cloud Platform project][projects]. 
+1.  [Set up authentication with a service account][auth] so you can access the
+    API from your local workstation.
+
 ## Running the tests
 
 1.  [Prepare your environment for Node.js setup][setup].
@@ -63,3 +69,7 @@ accept your pull requests.
         npm run fix
 
 [setup]: https://cloud.google.com/nodejs/docs/setup
+[projects]: https://console.cloud.google.com/project
+[billing]: https://support.google.com/cloud/answer/6293499#enable-billing
+
+[auth]: https://cloud.google.com/docs/authentication/getting-started
