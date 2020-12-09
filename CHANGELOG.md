@@ -4,6 +4,27 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [4.4.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.2...v4.4.3) (2020-10-29)
+
+
+### Bug Fixes
+
+* **types:** add supportsMediaDownload flag to MethodSchema ([#345](https://www.github.com/googleapis/nodejs-googleapis-common/issues/345)) ([3f8617f](https://www.github.com/googleapis/nodejs-googleapis-common/commit/3f8617f6314778e49420094688b5324e258d2b6e))
+
+### [4.4.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.1...v4.4.2) (2020-10-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gaxios to v4 ([#339](https://www.github.com/googleapis/nodejs-googleapis-common/issues/339)) ([5943bdf](https://www.github.com/googleapis/nodejs-googleapis-common/commit/5943bdfb58d595d8c67f5c559e5992a5462d8149))
+
+### [4.4.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.0...v4.4.1) (2020-09-30)
+
+
+### Bug Fixes
+
+* **deps:** gaxios ([#329](https://www.github.com/googleapis/nodejs-googleapis-common/issues/329)) ([5a15848](https://www.github.com/googleapis/nodejs-googleapis-common/commit/5a158482dd207f94ae7a19741967c5db7eb8c1ec))
+
 ## [4.4.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.3.0...v4.4.0) (2020-06-18)
 
 

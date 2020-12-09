@@ -28,30 +28,32 @@ module.exports = {
   },
   node: {
     child_process: 'empty',
-    fs: 'empty',
     crypto: 'empty',
+    fs: 'empty',
     http2: 'empty',
+    net: 'empty',
+    tls: 'empty',
   },
   module: {
     rules: [
       {
-        test: /src\/http2/,
+        test: /src(\/|\\)http2/,
         use: 'null-loader',
       },
       {
-        test: /node_modules\/https-proxy-agent\//,
+        test: /node_modules(\/|\\)https-proxy-agent(\/|\\)/,
         use: 'null-loader',
       },
       {
-        test: /node_modules\/gtoken\//,
+        test: /node_modules(\/|\\)gtoken(\/|\\)/,
         use: 'null-loader',
       },
       {
-        test: /node_modules\/pkginfo\//,
+        test: /node_modules(\/|\\)pkginfo(\/|\\)/,
         use: 'null-loader',
       },
       {
-        test: /node_modules\/semver\//,
+        test: /node_modules(\/|\\)semver(\/|\\)/,
         use: 'null-loader',
       },
       {
