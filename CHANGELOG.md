@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [5.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.3...v5.0.0) (2021-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* use WHATWG URL API to rewrite rootUrl correctly (#352)
+
+### Bug Fixes
+
+* use WHATWG URL API to rewrite rootUrl correctly ([#352](https://www.github.com/googleapis/nodejs-googleapis-common/issues/352)) ([4c59147](https://www.github.com/googleapis/nodejs-googleapis-common/commit/4c59147fc62cc3a2098d4ce5e21555e15e946147))
+
 ### [4.4.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.2...v4.4.3) (2020-10-29)
 
 
