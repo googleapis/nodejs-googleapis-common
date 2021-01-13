@@ -287,6 +287,61 @@ describe('createAPIRequest', () => {
       scope.done();
     });
 
+    it('should rewrite url using google level rootUrl', async () => {
+      const rootUrl = 'http://www.googleapis.com/';
+      const path = '/api/service';
+      const url = new URL(path, 'https://www.googleapis.com');
+      const scope = nock(rootUrl).get(path).reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url: url.href,
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {},
+          google: {
+            _options: {
+              rootUrl: rootUrl,
+            },
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = 'http://www.googleapis.com/api/service';
+      assert.strictEqual(res.config.url, expectedUrl);
+    });
+
+    it('should rewrite url using pre-API level rootUrl over google level rootUrl', async () => {
+      const googleRootUrl = 'http://www.googleapis.com/';
+      const preApiRootUrl = 'https://my.domain.cc/';
+      const path = '/api/service';
+      const url = new URL(path, 'https://www.googleapis.com');
+      const scope = nock(preApiRootUrl).get(path).reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url: url.href,
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            rootUrl: preApiRootUrl,
+          },
+          google: {
+            _options: {
+              rootUrl: googleRootUrl,
+            },
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = 'https://my.domain.cc/api/service';
+      assert.strictEqual(res.config.url, expectedUrl);
+    });
+
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';

@@ -167,13 +167,10 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
 
   // Rewrite url if rootUrl is globally set
-  if (
-    parameters.context._options.rootUrl !== undefined &&
-    options.url !== undefined
-  ) {
+  if (options.rootUrl !== undefined && options.url !== undefined) {
     const originalUrl = new URL(options.url);
     const path = originalUrl.href.substr(originalUrl.origin.length);
-    options.url = new URL(path, parameters.context._options.rootUrl).href;
+    options.url = new URL(path, options.rootUrl).href;
   }
 
   // When forming the querystring, override the serializer so that array
