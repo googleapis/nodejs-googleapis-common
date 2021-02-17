@@ -12,7 +12,11 @@
 // limitations under the License.
 
 import {GaxiosOptions, GaxiosResponse} from 'gaxios';
-import {OAuth2Client, GoogleAuth} from 'google-auth-library';
+import {
+  OAuth2Client,
+  GoogleAuth,
+  BaseExternalAccountClient,
+} from 'google-auth-library';
 
 import {Endpoint} from './endpoint';
 
@@ -40,7 +44,7 @@ export interface APIRequestContext {
  * and our `auth` options.
  */
 export interface GlobalOptions extends MethodOptions {
-  auth?: GoogleAuth | OAuth2Client | string;
+  auth?: GoogleAuth | OAuth2Client | BaseExternalAccountClient | string;
 }
 
 export interface MethodOptions extends GaxiosOptions {
