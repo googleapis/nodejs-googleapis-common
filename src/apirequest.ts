@@ -24,8 +24,6 @@ import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 import * as h2 from './http2';
 
-import resolve = require('url');
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
 
@@ -173,8 +171,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     parameters.context._options.rootUrl !== undefined &&
     options.url !== undefined
   ) {
-    const path = options.url.slice(parameters.context._options.rootUrl.length);
-    options.url = resolve.resolve(parameters.context._options.rootUrl, path);
+    const originalUrl = new URL(options.url);
+    const path = originalUrl.href.substr(originalUrl.origin.length);
+    options.url = new URL(path, parameters.context._options.rootUrl).href;
   }
 
   // When forming the querystring, override the serializer so that array

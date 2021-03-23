@@ -18,6 +18,10 @@ export {
   UserRefreshClient,
   DefaultTransporter,
   GoogleAuth,
+  ExternalAccountClient,
+  BaseExternalAccountClient,
+  IdentityPoolClient,
+  AwsClient,
 } from 'google-auth-library';
 export {GaxiosPromise} from 'gaxios';
 export {

@@ -12,9 +12,13 @@
 // limitations under the License.
 
 import {
+  AwsClient,
+  BaseExternalAccountClient,
   Compute,
+  ExternalAccountClient,
   GoogleAuth,
   GoogleAuthOptions,
+  IdentityPoolClient,
   JWT,
   OAuth2Client,
   ProjectIdCallback,
@@ -26,6 +30,9 @@ export class AuthPlus extends GoogleAuth {
   Compute = Compute;
   OAuth2 = OAuth2Client;
   GoogleAuth = GoogleAuth;
+  AwsClient = AwsClient;
+  IdentityPoolClient = IdentityPoolClient;
+  ExternalAccountClient = ExternalAccountClient;
 
   private _cachedAuth?: GoogleAuth;
 
@@ -35,7 +42,7 @@ export class AuthPlus extends GoogleAuth {
    */
   async getClient(
     options?: GoogleAuthOptions
-  ): Promise<Compute | JWT | UserRefreshClient> {
+  ): Promise<Compute | JWT | UserRefreshClient | BaseExternalAccountClient> {
     this._cachedAuth = new GoogleAuth(options);
     return this._cachedAuth.getClient();
   }

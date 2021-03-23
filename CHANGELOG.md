@@ -4,6 +4,24 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [5.0.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.0...v5.0.1) (2021-02-11)
+
+
+### Bug Fixes
+
+* update google-auth-library to v7.0.2 ([#364](https://www.github.com/googleapis/nodejs-googleapis-common/issues/364)) ([fd4eac7](https://www.github.com/googleapis/nodejs-googleapis-common/commit/fd4eac78c10a75dd5785ac00ad827d5078c598ac))
+
+## [5.0.0](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.3...v5.0.0) (2021-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* use WHATWG URL API to rewrite rootUrl correctly (#352)
+
+### Bug Fixes
+
+* use WHATWG URL API to rewrite rootUrl correctly ([#352](https://www.github.com/googleapis/nodejs-googleapis-common/issues/352)) ([4c59147](https://www.github.com/googleapis/nodejs-googleapis-common/commit/4c59147fc62cc3a2098d4ce5e21555e15e946147))
+
 ### [4.4.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v4.4.2...v4.4.3) (2020-10-29)
 
 

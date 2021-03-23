@@ -34,6 +34,9 @@ describe(__filename, () => {
     assert.ok(auth.Compute);
     assert.ok(auth.OAuth2);
     assert.ok(auth.GoogleAuth);
+    assert.ok(auth.AwsClient);
+    assert.ok(auth.IdentityPoolClient);
+    assert.ok(auth.ExternalAccountClient);
   });
 
   it('should get a new client', async () => {

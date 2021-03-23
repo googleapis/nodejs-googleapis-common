@@ -309,6 +309,29 @@ describe('createAPIRequest', () => {
       const expectedUrl = 'http://www.googleapis.com/api/service';
       assert.strictEqual(res.config.url, expectedUrl);
     });
+
+    it('should rewrite url to match default rootUrl of different length', async () => {
+      const rootUrl = 'https://my.domain.cc/';
+      const path = '/api/service';
+      const url = new URL(path, 'https://www.googleapis.com');
+      const scope = nock(rootUrl).get(path).reply(200);
+      const res = await createAPIRequest<FakeParams>({
+        options: {
+          url: url.href,
+        },
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            rootUrl,
+          },
+        },
+      });
+      scope.done();
+      const expectedUrl = 'https://my.domain.cc/api/service';
+      assert.strictEqual(res.config.url, expectedUrl);
+    });
   });
 
   describe('mock stream', () => {
