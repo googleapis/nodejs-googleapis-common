@@ -23,7 +23,15 @@ export {
   IdentityPoolClient,
   AwsClient,
 } from 'google-auth-library';
-export {GaxiosPromise} from 'gaxios';
+export {
+  GaxiosPromise,
+  Gaxios,
+  GaxiosError,
+  GaxiosOptions,
+  GaxiosResponse,
+  Headers,
+  RetryConfig,
+} from 'gaxios';
 export {
   APIEndpoint,
   APIRequestContext,
