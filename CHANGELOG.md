@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [5.0.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.1...v5.0.2) (2021-03-24)
+
+
+### Bug Fixes
+
+* export additional gaxios types ([#368](https://www.github.com/googleapis/nodejs-googleapis-common/issues/368)) ([14a99eb](https://www.github.com/googleapis/nodejs-googleapis-common/commit/14a99eb878d0d2a09773ec325769b54b2e818886))
+
 ### [5.0.1](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.0...v5.0.1) (2021-02-11)
 
 
