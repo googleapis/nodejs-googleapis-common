@@ -1,6 +1,6 @@
 {
   "name": "googleapis-common",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "A common tooling library used by the googleapis npm module. You probably don't want to use this directly.",
   "repository": "googleapis/nodejs-googleapis-common",
   "main": "build/src/index.js",
@@ -74,7 +74,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "linkinator": "^2.0.0",
-    "mocha": "^8.0.0",
+    "mocha": "^8.3.2",
     "mv": "^2.1.1",
     "ncp": "^2.0.0",
     "nock": "^13.0.0",
