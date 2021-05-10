@@ -132,7 +132,7 @@ export async function request<T>(
             stream = req.pipe(zlib.createGunzip());
           }
           if (opts.responseType === 'stream') {
-            res.data = (stream as {}) as T;
+            res.data = stream as {} as T;
             resolve(res);
             return;
           }
@@ -160,7 +160,7 @@ export async function request<T>(
                 } else if (opts.responseType === 'arraybuffer') {
                   data = buf.buffer;
                 }
-                res.data = (data as {}) as T;
+                res.data = data as {} as T;
               }
               if (!opts.validateStatus!(res.status)) {
                 let message = `Request failed with status code ${res.status}. `;
@@ -182,7 +182,7 @@ export async function request<T>(
       closeSession(url);
       reject(e);
     }
-    res.request = (req as {}) as GaxiosXMLHttpRequest;
+    res.request = req as {} as GaxiosXMLHttpRequest;
 
     // If data was provided, write it to the request in the form of
     // a stream, string data, or a basic object.
