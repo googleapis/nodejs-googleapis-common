@@ -28,9 +28,7 @@
     "predocs-test": "npm run docs",
     "prelint": "cd samples; npm link ../; npm install",
     "clean": "gts clean",
-    "precompile": "gts clean",
-    "api-extractor": "api-extractor run --local",
-    "api-documenter": "api-documenter yaml --input-folder=temp"
+    "precompile": "gts clean"
   },
   "keywords": [],
   "author": "Google LLC",
@@ -45,8 +43,6 @@
   },
   "devDependencies": {
     "@compodoc/compodoc": "^1.1.9",
-    "@microsoft/api-documenter": "^7.8.10",
-    "@microsoft/api-extractor": "^7.8.10",
     "@types/execa": "^0.9.0",
     "@types/extend": "^3.0.1",
     "@types/mocha": "^8.0.0",
