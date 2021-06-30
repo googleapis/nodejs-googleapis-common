@@ -46,7 +46,6 @@ export interface SessionData {
  * @private
  */
 export const sessions: {[index: string]: SessionData} = {};
-let warned = false;
 
 /**
  * Public method to make an http2 request.
@@ -55,17 +54,6 @@ let warned = false;
 export async function request<T>(
   config: GaxiosOptions
 ): Promise<GaxiosResponse<T>> {
-  // Make sure users know this API is unstable
-  if (!warned) {
-    const message = `
-      The HTTP/2 API in googleapis is unstable! This is an early implementation
-      that should not be used in production.  It may change in unpredictable
-      ways. Please only use this for experimentation.
-    `;
-    process.emitWarning(message, 'GOOG_HTTP2');
-    warned = true;
-  }
-
   const opts = extend(true, {}, config);
   opts.validateStatus = opts.validateStatus || validateStatus;
   opts.responseType = opts.responseType || 'json';
