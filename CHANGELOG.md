@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [5.0.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.2...v5.0.3) (2021-07-07)
+
+
+### Bug Fixes
+
+* mark the HTTP/2 support as stable ([#401](https://www.github.com/googleapis/nodejs-googleapis-common/issues/401)) ([1e0735b](https://www.github.com/googleapis/nodejs-googleapis-common/commit/1e0735baa4a9df24e4a9323cfbba6a82ce2e738b))
+
 ### [5.0.2](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.1...v5.0.2) (2021-03-24)
 
 
