@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [5.0.4](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.3...v5.0.4) (2021-08-04)
+
+
+### Bug Fixes
+
+* **auth:** include impersonated client ([#408](https://www.github.com/googleapis/nodejs-googleapis-common/issues/408)) ([9941ad9](https://www.github.com/googleapis/nodejs-googleapis-common/commit/9941ad931d9bfd5da61b94840d9309b1ae45ddd0))
+
 ### [5.0.3](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.2...v5.0.3) (2021-07-07)
 
 
