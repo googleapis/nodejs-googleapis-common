@@ -19,6 +19,7 @@ import {
   GoogleAuth,
   GoogleAuthOptions,
   IdentityPoolClient,
+  Impersonated,
   JWT,
   OAuth2Client,
   ProjectIdCallback,
@@ -42,7 +43,9 @@ export class AuthPlus extends GoogleAuth {
    */
   async getClient(
     options?: GoogleAuthOptions
-  ): Promise<Compute | JWT | UserRefreshClient | BaseExternalAccountClient> {
+  ): Promise<
+    Compute | JWT | UserRefreshClient | BaseExternalAccountClient | Impersonated
+  > {
     this._cachedAuth = new GoogleAuth(options);
     return this._cachedAuth.getClient();
   }
