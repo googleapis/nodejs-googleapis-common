@@ -17,7 +17,7 @@ A common tooling library used by the googleapis npm module. You probably don't w
 A comprehensive list of changes in each version may be found in
 [the CHANGELOG](https://github.com/googleapis/nodejs-googleapis-common/blob/master/CHANGELOG.md).
 
-
+* [Google APIs Common Module Node.js Client API Reference][client-docs]
 
 * [github.com/googleapis/nodejs-googleapis-common](https://github.com/googleapis/nodejs-googleapis-common)
 
@@ -49,6 +49,9 @@ npm install googleapis-common
 
 
 
+
+The [Google APIs Common Module Node.js Client API Reference][client-docs] documentation
+also contains samples.
 
 ## Supported Node.js Versions
 
@@ -106,7 +109,7 @@ Apache Version 2.0
 
 See [LICENSE](https://github.com/googleapis/nodejs-googleapis-common/blob/master/LICENSE)
 
-
+[client-docs]: https://cloud.google.com/nodejs/docs/reference/googleapis-common/latest
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
