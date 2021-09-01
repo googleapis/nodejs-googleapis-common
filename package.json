@@ -60,7 +60,7 @@
     "execa": "^5.0.0",
     "gts": "^2.0.0",
     "http2spy": "^2.0.0",
-    "is-docker": "^2.0.0",
+    "is-docker": "^3.0.0",
     "karma": "^6.0.0",
     "karma-chrome-launcher": "^3.0.0",
     "karma-coverage": "^2.0.0",
