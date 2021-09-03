@@ -90,7 +90,7 @@ export async function request<T>(
   // request path assumes that the `content-type` header is going to be set in
   // the underlying HTTP Client. This hack provides bug for bug compatability
   // with this bug in gaxios:
-  // https://github.com/googleapis/gaxios/blob/master/src/gaxios.ts#L202
+  // https://github.com/googleapis/gaxios/blob/main/src/gaxios.ts#L202
   if (!headers[HTTP2_HEADER_CONTENT_TYPE]) {
     if (opts.responseType !== 'text') {
       headers[HTTP2_HEADER_CONTENT_TYPE] = 'application/json';
