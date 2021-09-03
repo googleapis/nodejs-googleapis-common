@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+### [5.0.5](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.4...v5.0.5) (2021-09-03)
+
+
+### Bug Fixes
+
+* **build:** migrate to main branch ([#414](https://www.github.com/googleapis/nodejs-googleapis-common/issues/414)) ([c49262d](https://www.github.com/googleapis/nodejs-googleapis-common/commit/c49262d0d2d013469b3502de5c0cb7d6753b033d))
+
 ### [5.0.4](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.3...v5.0.4) (2021-08-04)
 
 
