@@ -8,5 +8,5 @@
   "default_version": "v1",
   "client_documentation": "https://cloud.google.com/nodejs/docs/reference/googleapis-common/latest",
   "api_shortname": "googleapis-common",
-  "library_type": ""
+  "library_type": "CORE"
 }
