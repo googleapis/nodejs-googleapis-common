@@ -4,9 +4,8 @@
 
 # [Google APIs Common Module: Node.js Client](https://github.com/googleapis/nodejs-googleapis-common)
 
-
+[![release level](https://img.shields.io/badge/release%20level-stable-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
 [![npm version](https://img.shields.io/npm/v/googleapis-common.svg)](https://www.npmjs.org/package/googleapis-common)
-[![codecov](https://img.shields.io/codecov/c/github/googleapis/nodejs-googleapis-common/main.svg?style=flat)](https://codecov.io/gh/googleapis/nodejs-googleapis-common)
 
 
 
