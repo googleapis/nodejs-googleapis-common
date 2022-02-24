@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [5.1.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v5.0.5...v5.1.0) (2022-02-22)
+
+
+### Features
+
+* **deps:** Update `google-auth-library` to `v7.14.0` ([#446](https://github.com/googleapis/nodejs-googleapis-common/issues/446)) ([c9369d9](https://github.com/googleapis/nodejs-googleapis-common/commit/c9369d9e95795bb974a5a7eb60d32fc4c3e94a2b))
+
 ### [5.0.5](https://www.github.com/googleapis/nodejs-googleapis-common/compare/v5.0.4...v5.0.5) (2021-09-03)
 
 
