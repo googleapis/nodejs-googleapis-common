@@ -38,7 +38,7 @@
     "gaxios": "^4.0.0",
     "google-auth-library": "^7.14.0",
     "qs": "^6.7.0",
-    "url-template": "^2.0.8",
+    "url-template": "^3.0.0",
     "uuid": "^8.0.0"
   },
   "devDependencies": {
