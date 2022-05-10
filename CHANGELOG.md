@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [6.0.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v5.1.0...v6.0.0) (2022-05-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* update library to use Node 12 (#466)
+
+### Build System
+
+* update library to use Node 12 ([#466](https://github.com/googleapis/nodejs-googleapis-common/issues/466)) ([c7dc14f](https://github.com/googleapis/nodejs-googleapis-common/commit/c7dc14f0302db5ca99b8cb15e5e2e570d164baef))
+
 ## [5.1.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v5.0.5...v5.1.0) (2022-02-22)
 
 
