@@ -36,7 +36,7 @@ export function getAPI<T>(
     return Object.freeze(ep) as T;
   } catch (e) {
     throw new Error(
-      `Unable to load endpoint ${api}("${version}"): ${e.message}`
+      `Unable to load endpoint ${api}("${version}"): ${(e as Error).message}`
     );
   }
 }
