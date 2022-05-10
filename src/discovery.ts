@@ -116,7 +116,7 @@ export class Discovery {
                 'Unable to load endpoint %s("%s"): %s',
                 set.api.name,
                 version,
-                e.message
+                (e as Error).message
               )
             );
           }
@@ -134,7 +134,7 @@ export class Discovery {
    * @returns A promise that resolves with a function that creates the endpoint
    */
   async discoverAPI(
-    apiDiscoveryUrl: string | {url: string}
+    apiDiscoveryUrl: string | {url?: string}
   ): Promise<EndpointCreator> {
     if (typeof apiDiscoveryUrl === 'string') {
       const parts = resolve.parse(apiDiscoveryUrl);
