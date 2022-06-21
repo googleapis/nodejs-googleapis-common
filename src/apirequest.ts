@@ -320,7 +320,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (options.http2) {
       const authHeaders = await authClient.getRequestHeaders(options.url);
       const mooOpts = Object.assign({}, options);
-      mooOpts.headers = Object.assign(mooOpts.headers, authHeaders);
+      mooOpts.headers = Object.assign(mooOpts.headers!, authHeaders);
       return h2.request<T>(mooOpts);
     } else {
       return (authClient as OAuth2Client).request<T>(options);
