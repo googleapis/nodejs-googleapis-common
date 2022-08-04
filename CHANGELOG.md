@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [6.0.1](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.0...v6.0.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* **deps:** update gaxios to 5.0.1 ([#474](https://github.com/googleapis/nodejs-googleapis-common/issues/474)) ([2ec0be4](https://github.com/googleapis/nodejs-googleapis-common/commit/2ec0be4f5e29041ce5c47e22ca00695b1adaeaa7))
+
 ## [6.0.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v5.1.0...v6.0.0) (2022-05-10)
 
 
