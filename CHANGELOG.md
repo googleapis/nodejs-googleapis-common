@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [6.0.2](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.1...v6.0.2) (2022-08-23)
+
+
+### Bug Fixes
+
+* remove pip install statements ([#1546](https://github.com/googleapis/nodejs-googleapis-common/issues/1546)) ([#478](https://github.com/googleapis/nodejs-googleapis-common/issues/478)) ([18626d8](https://github.com/googleapis/nodejs-googleapis-common/commit/18626d8d7ba03f41582aec8756e48a3c47f1a6a9))
+
 ## [6.0.1](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.0...v6.0.1) (2022-08-04)
 
 
