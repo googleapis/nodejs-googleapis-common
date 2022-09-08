@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [6.0.3](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.2...v6.0.3) (2022-09-08)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency uuid to v9 ([#482](https://github.com/googleapis/nodejs-googleapis-common/issues/482)) ([267426d](https://github.com/googleapis/nodejs-googleapis-common/commit/267426dee5a8247638e35b191ee5b4e0b3694c4d))
+
 ## [6.0.2](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.1...v6.0.2) (2022-08-23)
 
 
