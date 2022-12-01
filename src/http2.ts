@@ -73,7 +73,8 @@ export async function request<T>(
   // `qs` module to make life a little easier.
   let pathWithQs = url.pathname;
   if (config.params && Object.keys(config.params).length > 0) {
-    const q = qs.stringify(opts.params);
+    const serializer = config.paramsSerializer || qs.stringify;
+    const q = serializer(opts.params);
     pathWithQs += `?${q}`;
   }
 
