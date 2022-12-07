@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [6.0.4](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.3...v6.0.4) (2022-12-06)
+
+
+### Bug Fixes
+
+* Http2: use paramsSerializer from config if available to properly serialize array parameters ([#492](https://github.com/googleapis/nodejs-googleapis-common/issues/492)) ([f4c36b8](https://github.com/googleapis/nodejs-googleapis-common/commit/f4c36b88a77f1fb9b2338dbd929440b9c04d7507))
+
 ## [6.0.3](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.2...v6.0.3) (2022-09-08)
 
 
