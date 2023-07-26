@@ -271,7 +271,7 @@ describe('createAPIRequest', () => {
         .get('/')
         .reply(function () {
           assert.ok(
-            /gdcl\/[\w.-]+ gl-node\/.test(
+            /gdcl\/[\w.-]+ gl-node\//.test(
               this.req.headers['x-goog-api-client'][0]
             )
           );
