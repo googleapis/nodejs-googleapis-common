@@ -47,7 +47,7 @@ export class AuthPlus extends GoogleAuth {
     Compute | JWT | UserRefreshClient | BaseExternalAccountClient | Impersonated
   > {
     this._cachedAuth = new GoogleAuth(options);
-    return this._cachedAuth.getClient() as unknown as OAuth2Client;
+    return this._cachedAuth.getClient() as any;
   }
 
   /**
