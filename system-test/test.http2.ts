@@ -17,6 +17,7 @@ import {describe, it, before} from 'mocha';
 import {APIRequestContext, GoogleAuth, createAPIRequest} from '../src';
 import * as stream from 'stream';
 import * as uuid from 'uuid';
+import {OAuth2Client} from 'google-auth-library';
 
 interface FakeParams {
   foo: string;
