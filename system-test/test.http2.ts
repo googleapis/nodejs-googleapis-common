@@ -36,7 +36,7 @@ describe('http2', () => {
     const client = await auth.getClient();
     context = {
       _options: {
-        auth: client,
+        auth: client as OAuth2Client,
       },
     };
   });
