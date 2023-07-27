@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [7.0.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.4...v7.0.0) (2023-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* update to Node 14 ([#516](https://github.com/googleapis/nodejs-googleapis-common/issues/516))
+
+### Miscellaneous Chores
+
+* Update to Node 14 ([#516](https://github.com/googleapis/nodejs-googleapis-common/issues/516)) ([437d5f1](https://github.com/googleapis/nodejs-googleapis-common/commit/437d5f18245f12dea8c93ca8ece51204260c3e8b))
+
 ## [6.0.4](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.3...v6.0.4) (2022-12-06)
 
 
