@@ -27,7 +27,9 @@ describe(__filename, () => {
     const discoUrl = 'http://test.local';
     const scope = nock(discoUrl)
       .get('/')
-      .replyWithFile(200, './test/fixtures/compute-v1.json');
+      .replyWithFile(200, './test/fixtures/compute-v1.json', {
+        'Content-Type': 'application/json',
+      });
     const disco = new Discovery({});
     const makeEndpoint = await disco.discoverAPI(discoUrl);
     const endpoint = makeEndpoint({}, {});
@@ -38,7 +40,9 @@ describe(__filename, () => {
     const discoUrl = 'http://test.local';
     const scope = nock(discoUrl)
       .get('/')
-      .replyWithFile(200, './test/fixtures/compute-v1.json');
+      .replyWithFile(200, './test/fixtures/compute-v1.json', {
+        'Content-Type': 'application/json',
+      });
     const disco = new Discovery({});
     const makeEndpoint = await disco.discoverAPI({url: discoUrl});
     const endpoint = makeEndpoint({}, {});
@@ -61,7 +65,9 @@ describe(__filename, () => {
         }),
       nock(discoUrl)
         .get('/compute-v1')
-        .replyWithFile(200, './test/fixtures/compute-v1.json'),
+        .replyWithFile(200, './test/fixtures/compute-v1.json', {
+          'Content-Type': 'application/json',
+        }),
     ];
     const disco = new Discovery({});
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
