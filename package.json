@@ -35,8 +35,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "extend": "^3.0.2",
-    "gaxios": "^5.0.1",
-    "google-auth-library": "^8.0.2",
+    "gaxios": "^6.0.3",
+    "google-auth-library": "^9.0.0",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
     "uuid": "^9.0.0"
@@ -58,7 +58,7 @@
     "c8": "^8.0.0",
     "codecov": "^3.5.0",
     "execa": "^5.0.0",
-    "gts": "^3.1.0",
+    "gts": "^5.0.0",
     "http2spy": "^2.0.0",
     "is-docker": "^2.0.0",
     "karma": "^6.0.0",
@@ -80,11 +80,11 @@
     "sinon": "^15.0.0",
     "tmp": "^0.2.0",
     "ts-loader": "^8.0.0",
-    "typescript": "^4.6.4",
+    "typescript": "5.1.6",
     "webpack": "^5.30.0",
     "webpack-cli": "^4.0.0"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }
