@@ -38,7 +38,7 @@ const DEBUG = !!process.env.HTTP2_DEBUG;
  */
 export interface SessionData {
   session: http2.ClientHttp2Session;
-  timeoutHandle?: NodeJS.Timer;
+  timeoutHandle?: NodeJS.Timeout;
 }
 
 /**
