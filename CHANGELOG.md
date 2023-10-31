@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [7.0.1](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.0.0...v7.0.1) (2023-10-31)
+
+
+### Bug Fixes
+
+* `Timeout` type ([#528](https://github.com/googleapis/nodejs-googleapis-common/issues/528)) ([788344f](https://github.com/googleapis/nodejs-googleapis-common/commit/788344f822d83587c8322d01c6e4cd3abfceefa9))
+
 ## [7.0.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v6.0.4...v7.0.0) (2023-07-27)
 
 
