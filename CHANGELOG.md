@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [7.1.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.0.1...v7.1.0) (2024-03-21)
+
+
+### Features
+
+* Add universe support to googleapis libraries ([#548](https://github.com/googleapis/nodejs-googleapis-common/issues/548)) ([dfd4b0d](https://github.com/googleapis/nodejs-googleapis-common/commit/dfd4b0d0a37fa9cf3f6599ba28bac817d28c96c8))
+
 ## [7.0.1](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.0.0...v7.0.1) (2023-10-31)
 
 
