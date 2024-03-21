@@ -485,4 +485,265 @@ describe('createAPIRequest', () => {
       assert.ok(stub.calledOnce);
     });
   });
+
+  describe('TPC', () => {
+    it('should allow setting universeDomain', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      const expectedUniverseUrl =
+        'https://api.universe.com/path?param=value#extra';
+      const auth = new GoogleAuth();
+      const getUniverseDomainStub = sandbox
+        .stub(auth, 'getUniverseDomain')
+        .resolves('universe.com');
+      sandbox.stub(auth, 'getRequestHeaders').resolves({});
+      const requestStub = sandbox
+        .stub(auth, 'request')
+        .resolves({data: fakeResponse} as GaxiosResponse);
+      const result = await createAPIRequest<FakeParams>({
+        options: {url: gduUrl},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            universeDomain: 'universe.com',
+            auth,
+          },
+        },
+      });
+      assert.strictEqual(result.data, fakeResponse as {});
+      assert.ok(getUniverseDomainStub.calledOnce);
+      assert.ok(requestStub.calledOnce);
+      assert.strictEqual(
+        requestStub.getCall(0).args[0].url,
+        expectedUniverseUrl
+      );
+      assert(result);
+    });
+
+    it('should allow setting universe_domain', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      const expectedUniverseUrl =
+        'https://api.universe.com/path?param=value#extra';
+      const auth = new GoogleAuth();
+      const getUniverseDomainStub = sandbox
+        .stub(auth, 'getUniverseDomain')
+        .resolves('universe.com');
+      sandbox.stub(auth, 'getRequestHeaders').resolves({});
+      const requestStub = sandbox
+        .stub(auth, 'request')
+        .resolves({data: fakeResponse} as GaxiosResponse);
+      const result = await createAPIRequest<FakeParams>({
+        options: {url: gduUrl},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: {
+          _options: {
+            universe_domain: 'universe.com',
+            auth,
+          },
+        },
+      });
+      assert.strictEqual(result.data, fakeResponse as {});
+      assert.ok(getUniverseDomainStub.calledOnce);
+      assert.ok(requestStub.calledOnce);
+      assert.strictEqual(
+        requestStub.getCall(0).args[0].url,
+        expectedUniverseUrl
+      );
+      assert(result);
+    });
+
+    it('should disallow setting both universeDomain and universe_domain', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      assert.rejects(
+        createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              universe_domain: 'universe1.com',
+              universeDomain: 'universe2.com',
+            },
+          },
+        }),
+        (err: Error) => {
+          assert.ok(err.message.includes('but not both'));
+          return true;
+        }
+      );
+    });
+
+    if (typeof process === 'object' && typeof process.env === 'object') {
+      it('should allow setting GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', async () => {
+        const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+        process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'universe.com';
+        const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+        const expectedUniverseUrl =
+          'https://api.universe.com/path?param=value#extra';
+        const auth = new GoogleAuth();
+        const getUniverseDomainStub = sandbox
+          .stub(auth, 'getUniverseDomain')
+          .resolves('universe.com');
+        sandbox.stub(auth, 'getRequestHeaders').resolves({});
+        const requestStub = sandbox
+          .stub(auth, 'request')
+          .resolves({data: fakeResponse} as GaxiosResponse);
+        const result = await createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              auth,
+            },
+          },
+        });
+        if (saved) {
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+        } else {
+          delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+        }
+        assert.strictEqual(result.data, fakeResponse as {});
+        assert.ok(getUniverseDomainStub.calledOnce);
+        assert.ok(requestStub.calledOnce);
+        assert.strictEqual(
+          requestStub.getCall(0).args[0].url,
+          expectedUniverseUrl
+        );
+        assert(result);
+      });
+
+      it('configuration in code has priority over GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', async () => {
+        const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+        process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'wrong-universe.com';
+        const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+        const expectedUniverseUrl =
+          'https://api.universe.com/path?param=value#extra';
+        const auth = new GoogleAuth();
+        const getUniverseDomainStub = sandbox
+          .stub(auth, 'getUniverseDomain')
+          .resolves('universe.com');
+        sandbox.stub(auth, 'getRequestHeaders').resolves({});
+        const requestStub = sandbox
+          .stub(auth, 'request')
+          .resolves({data: fakeResponse} as GaxiosResponse);
+        const result = await createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              universeDomain: 'universe.com',
+              auth,
+            },
+          },
+        });
+        if (saved) {
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+        } else {
+          delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+        }
+        assert.strictEqual(result.data, fakeResponse as {});
+        assert.ok(getUniverseDomainStub.calledOnce);
+        assert.ok(requestStub.calledOnce);
+        assert.strictEqual(
+          requestStub.getCall(0).args[0].url,
+          expectedUniverseUrl
+        );
+        assert(result);
+      });
+    }
+
+    it('should validate universe domain received from auth library', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      const auth = new GoogleAuth();
+      sandbox.stub(auth, 'getUniverseDomain').resolves('wrong-universe.com');
+      await assert.rejects(
+        createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              universeDomain: 'universe.com',
+              auth,
+            },
+          },
+        }),
+        (err: Error) => {
+          assert.ok(
+            err.message.includes(
+              'The configured universe domain (universe.com) does not match the universe domain ' +
+                'found in the credentials (wrong-universe.com)'
+            )
+          );
+          return true;
+        }
+      );
+    });
+
+    it('should not leak TPC universe credentials to googleapis.com universe', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      const auth = new GoogleAuth();
+      sandbox.stub(auth, 'getUniverseDomain').resolves('wrong-universe.com');
+      await assert.rejects(
+        createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              auth,
+            },
+          },
+        }),
+        (err: Error) => {
+          assert.ok(
+            err.message.includes(
+              'The configured universe domain (googleapis.com) does not match the universe domain ' +
+                'found in the credentials (wrong-universe.com)'
+            )
+          );
+          return true;
+        }
+      );
+    });
+
+    it('should not leak googleapis.com credentials to TPC universe', async () => {
+      const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
+      const auth = new GoogleAuth();
+      sandbox.stub(auth, 'getUniverseDomain').resolves('googleapis.com');
+      await assert.rejects(
+        createAPIRequest<FakeParams>({
+          options: {url: gduUrl},
+          params: {},
+          requiredParams: [],
+          pathParams: [],
+          context: {
+            _options: {
+              universe_domain: 'wrong-universe.com',
+              auth,
+            },
+          },
+        }),
+        (err: Error) => {
+          assert.ok(
+            err.message.includes(
+              'The configured universe domain (wrong-universe.com) does not match the universe domain ' +
+                'found in the credentials (googleapis.com)'
+            )
+          );
+          return true;
+        }
+      );
+    });
+  });
 });

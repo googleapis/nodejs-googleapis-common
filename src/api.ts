@@ -45,6 +45,8 @@ export interface APIRequestContext {
  */
 export interface GlobalOptions extends MethodOptions {
   auth?: GoogleAuth | OAuth2Client | BaseExternalAccountClient | string;
+  universeDomain?: string;
+  universe_domain?: string;
 }
 
 export interface MethodOptions extends GaxiosOptions {

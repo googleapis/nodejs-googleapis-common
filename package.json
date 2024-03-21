@@ -36,7 +36,7 @@
   "dependencies": {
     "extend": "^3.0.2",
     "gaxios": "^6.0.3",
-    "google-auth-library": "^9.0.0",
+    "google-auth-library": "^9.7.0",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
     "uuid": "^9.0.0"
@@ -69,7 +69,7 @@
     "karma-mocha": "^2.0.0",
     "karma-remap-coverage": "^0.1.5",
     "karma-sourcemap-loader": "^0.4.0",
-    "karma-webpack": "^5.0.0",
+    "karma-webpack": "^4.0.0",
     "linkinator": "^3.1.0",
     "mocha": "^9.2.2",
     "mv": "^2.1.1",
@@ -82,7 +82,7 @@
     "tmp": "^0.2.0",
     "ts-loader": "^8.0.0",
     "typescript": "5.1.6",
-    "webpack": "^5.30.0",
+    "webpack": "^4.0.0",
     "webpack-cli": "^4.0.0"
   },
   "engines": {

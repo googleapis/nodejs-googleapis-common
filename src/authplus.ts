@@ -47,6 +47,7 @@ export class AuthPlus extends GoogleAuth {
     Compute | JWT | UserRefreshClient | BaseExternalAccountClient | Impersonated
   > {
     this._cachedAuth = new GoogleAuth(options);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this._cachedAuth.getClient() as any;
   }
 
