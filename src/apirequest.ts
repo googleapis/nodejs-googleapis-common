@@ -160,7 +160,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   // Parse urls
   if (options.url) {
-    options.url = urlTemplate.parse(options.url).expand(params);
+    let url = options.url;
+    if (typeof url === 'object') {
+      url = url.toString();
+    }
+    options.url = urlTemplate.parse(url).expand(params);
   }
   if (parameters.mediaUrl) {
     parameters.mediaUrl = urlTemplate.parse(parameters.mediaUrl).expand(params);
@@ -312,11 +316,52 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   options.retry = options.retry === undefined ? true : options.retry;
   delete options.auth; // is overridden by our auth code
 
+  // Determine TPC universe
+  if (
+    options.universeDomain &&
+    options.universe_domain &&
+    options.universeDomain !== options.universe_domain
+  ) {
+    throw new Error(
+      'Please set either universe_domain or universeDomain, but not both.'
+    );
+  }
+  const universeDomainEnvVar =
+    typeof process === 'object' && typeof process.env === 'object'
+      ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+      : undefined;
+  const universeDomain =
+    options.universeDomain ??
+    options.universe_domain ??
+    universeDomainEnvVar ??
+    'googleapis.com';
+
+  // Update URL to point to the given TPC universe
+  if (universeDomain !== 'googleapis.com' && options.url) {
+    const url = new URL(options.url);
+    if (url.hostname.endsWith('.googleapis.com')) {
+      url.hostname = url.hostname.replace(/googleapis\.com$/, universeDomain);
+      options.url = url.toString();
+    }
+  }
+
   // Perform the HTTP request.  NOTE: this function used to return a
   // mikeal/request object. Since the transition to Axios, the method is
   // now void.  This may be a source of confusion for users upgrading from
   // version 24.0 -> 25.0 or up.
   if (authClient && typeof authClient === 'object') {
+    // Validate TPC universe
+    const universeFromAuth =
+      typeof authClient.getUniverseDomain === 'function'
+        ? await authClient.getUniverseDomain()
+        : undefined;
+    if (universeFromAuth && universeDomain !== universeFromAuth) {
+      throw new Error(
+        `The configured universe domain (${universeDomain}) does not match the universe domain found in the credentials (${universeFromAuth}). ` +
+          "If you haven't configured the universe domain explicitly, googleapis.com is the default."
+      );
+    }
+
     if (options.http2) {
       const authHeaders = await authClient.getRequestHeaders(options.url);
       const mooOpts = Object.assign({}, options);
