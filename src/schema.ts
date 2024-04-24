@@ -107,6 +107,7 @@ export interface SchemaMethod {
   fragment: string;
   mediaUpload: {protocols: {simple: {path: string}}};
   supportsMediaDownload?: boolean;
+  apiVersion?: string;
 }
 
 export interface FragmentResponse {

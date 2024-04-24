@@ -287,6 +287,27 @@ describe('createAPIRequest', () => {
       scope.done();
     });
 
+    it('should populate x-goog-api-version', async () => {
+      const scope = nock(url)
+        .get('/')
+        .reply(function () {
+          assert.ok(
+            /1234/.test(
+              this.req.headers['x-goog-api-version'][0]
+            )
+          );
+          return [200, ''];
+        });
+      await createAPIRequest<FakeParams>({
+        options: {url, apiVersion: '1234'},
+        params: {},
+        requiredParams: [],
+        pathParams: [],
+        context: fakeContext,
+      });
+      scope.done();
+    });
+
     it('should rewrite url to match default rootUrl', async () => {
       const rootUrl = 'http://www.googleapis.com/';
       const path = '/api/service';

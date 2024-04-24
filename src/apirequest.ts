@@ -21,7 +21,7 @@ import * as extend from 'extend';
 
 import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
-import {SchemaParameters} from './schema';
+import {SchemaParameters, SchemaMethod} from './schema';
 import * as h2 from './http2';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -138,7 +138,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
 
   // Grab headers from user provided options
   const headers = params.headers || {};
-  populateAPIHeader(headers);
+  populateAPIHeader(headers, options.apiVersion);
   delete params.headers;
 
   // Un-alias parameters that were modified due to conflicts with reserved names
@@ -390,7 +390,7 @@ class ProgressStream extends stream.Transform {
   }
 }
 
-function populateAPIHeader(headers: Headers) {
+function populateAPIHeader(headers: Headers, apiVersion: string | undefined) {
   // TODO: we should eventually think about adding browser support for this
   // populating the gl-web header (web support should also be added to
   // google-auth-library-nodejs).
@@ -398,5 +398,9 @@ function populateAPIHeader(headers: Headers) {
     headers[
       'x-goog-api-client'
     ] = `gdcl/${pkg.version} gl-node/${process.versions.node}`;
+  }
+
+  if (apiVersion) {
+    headers['x-goog-api-version'] = apiVersion;
   }
 }
