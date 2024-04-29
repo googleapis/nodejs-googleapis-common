@@ -395,9 +395,8 @@ function populateAPIHeader(headers: Headers, apiVersion: string | undefined) {
   // populating the gl-web header (web support should also be added to
   // google-auth-library-nodejs).
   if (!isBrowser()) {
-    headers[
-      'x-goog-api-client'
-    ] = `gdcl/${pkg.version} gl-node/${process.versions.node}`;
+    headers['x-goog-api-client'] =
+      `gdcl/${pkg.version} gl-node/${process.versions.node}`;
   }
 
   if (apiVersion) {

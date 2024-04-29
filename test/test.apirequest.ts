@@ -291,11 +291,7 @@ describe('createAPIRequest', () => {
       const scope = nock(url)
         .get('/')
         .reply(function () {
-          assert.ok(
-            /1234/.test(
-              this.req.headers['x-goog-api-version'][0]
-            )
-          );
+          assert.ok(/1234/.test(this.req.headers['x-goog-api-version'][0]));
           return [200, ''];
         });
       await createAPIRequest<FakeParams>({
