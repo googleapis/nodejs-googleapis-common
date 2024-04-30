@@ -118,6 +118,7 @@ export class Endpoint implements Target, APIRequestContext {
         options: {
           url: schemaUrl.substring(1, schemaUrl.length - 1),
           method: method.httpMethod,
+          apiVersion: method.apiVersion,
         },
         params,
         requiredParams: method.parameterOrder || [],
