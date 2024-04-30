@@ -4,6 +4,13 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [7.2.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.1.0...v7.2.0) (2024-04-30)
+
+
+### Features
+
+* Add Api Version to header for apiary ([#550](https://github.com/googleapis/nodejs-googleapis-common/issues/550)) ([fba0837](https://github.com/googleapis/nodejs-googleapis-common/commit/fba083723842f6d2f2a9e74ebfe3de08fd483262))
+
 ## [7.1.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.0.1...v7.1.0) (2024-03-21)
 
 
