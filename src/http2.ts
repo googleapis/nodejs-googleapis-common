@@ -14,7 +14,7 @@
 import * as http2 from 'http2';
 import * as zlib from 'zlib';
 import {URL} from 'url';
-import * as qs from 'qs';
+import * as qs from 'neoqs/legacy';
 import * as extend from 'extend';
 import {Stream, Readable} from 'stream';
 import * as util from 'util';
