@@ -16,10 +16,8 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-common_templates = gcp.CommonTemplates()
-templates = common_templates.node_library(templates_excludes=[
+node.owlbot_main(templates_excludes=[
   ".github/ISSUE_TEMPLATE",
   ".github/scripts",
   ".github/workflows"
 ])
-s.copy(templates)
