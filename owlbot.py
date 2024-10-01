@@ -9,15 +9,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import synthtool as s
-import synthtool.gcp as gcp
 import synthtool.languages.node as node
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
 
 node.owlbot_main(templates_excludes=[
   ".github/ISSUE_TEMPLATE",
   ".github/scripts",
   ".github/workflows"
+])
+node.owlbot_main(templates_excludes=[
+  ".github/ISSUE_TEMPLATE/",
+  ".github/scripts/",
+  ".github/workflows/"
 ])
