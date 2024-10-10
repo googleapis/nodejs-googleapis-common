@@ -22,10 +22,10 @@
     "lint": "gts check",
     "samples-test": "mocha build/samples-test",
     "docs": "jsdoc -c .jsdoc.js",
+    "predocs-test": "npm run docs",
     "docs-test": "linkinator docs",
     "webpack": "webpack",
     "browser-test": "karma start",
-    "predocs-test": "npm run docs",
     "prelint": "cd samples; npm link ../; npm install",
     "clean": "gts clean",
     "precompile": "gts clean"
