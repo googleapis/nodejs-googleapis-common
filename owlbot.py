@@ -9,4 +9,4 @@ logging.basicConfig(level=logging.DEBUG)
 
 common_templates = gcp.CommonTemplates()
 templates = common_templates.node_library()
-s.copy(excludes=["LICENSE", "README.md", ".github/ISSUE_TEMPLATE", ".github/scripts", ".kokoro", ".github/workflows/issues-no-repro.yaml", ".jsdoc.js"])
+s.copy(sources=templates, excludes=["LICENSE", "README.md", ".github/ISSUE_TEMPLATE", ".github/scripts", ".kokoro", ".github/workflows/issues-no-repro.yaml", ".jsdoc.js"])
