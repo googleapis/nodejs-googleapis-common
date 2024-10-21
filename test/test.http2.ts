@@ -204,6 +204,30 @@ describe('http2', () => {
     await reqPromise;
   });
 
+  it('should encode querystring parameters with a custom paramsSerializer', async () => {
+    let stream!: EventEmitter;
+    connectStub = () => {
+      const client = new FakeClient();
+      client.request = (headers: coreHttp2.OutgoingHttpHeaders) => {
+        assert.strictEqual(headers[HTTP2_HEADER_PATH], '/tasks?hello=world');
+        stream = new EventEmitter();
+        return stream;
+      };
+      return client;
+    };
+    const reqPromise = http2.request({
+      url,
+      params: {
+        hello: 'world',
+      },
+      paramsSerializer: () => 'x',
+    });
+    stream.emit('response', {[HTTP2_HEADER_STATUS]: 200});
+    stream.emit('data', Buffer.from('x'));
+    stream.emit('end');
+    await reqPromise;
+  });
+
   it('should reject the promise on stream errors', async () => {
     const resPromise = http2.request({url});
     requestStream.emit('response', {
