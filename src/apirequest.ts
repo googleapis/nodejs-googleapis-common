@@ -13,7 +13,7 @@
 
 import {GaxiosPromise, Headers} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
-import * as qs from 'qs';
+import * as qs from 'neoqs/legacy';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
