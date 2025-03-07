@@ -16,8 +16,8 @@ import * as assert from 'assert';
 import {describe, it, before} from 'mocha';
 import {APIRequestContext, GoogleAuth, createAPIRequest} from '../src';
 import * as stream from 'stream';
-import * as uuid from 'uuid';
 import {OAuth2Client} from 'google-auth-library';
+import {randomUUID} from 'crypto';
 
 interface FakeParams {
   foo: string;
@@ -100,7 +100,7 @@ describe('http2', () => {
 
   it('should handle multi-part uploads', async () => {
     const projectId = await auth.getProjectId();
-    const name = uuid.v4();
+    const name = randomUUID();
     const url = `https://storage.googleapis.com/storage/v1/b/${projectId}/o`;
     const result = await createAPIRequest<FakeParams>({
       options: {

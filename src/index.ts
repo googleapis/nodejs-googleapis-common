@@ -16,7 +16,6 @@ export {
   JWT,
   Compute,
   UserRefreshClient,
-  DefaultTransporter,
   GoogleAuth,
   ExternalAccountClient,
   BaseExternalAccountClient,
@@ -29,7 +28,6 @@ export {
   GaxiosError,
   GaxiosOptions,
   GaxiosResponse,
-  Headers,
   RetryConfig,
 } from 'gaxios';
 export {

@@ -214,7 +214,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
-      const userAgent = res.config.headers!['User-Agent'];
+      const userAgent = res.config.headers.get('User-Agent') || '';
       assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
       assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
@@ -236,7 +236,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
-      const userAgent = res.config.headers!['User-Agent'];
+      const userAgent = res.config.headers.get('User-Agent') || '';
       assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
       assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
@@ -261,7 +261,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       // frog/1.0 (jumps) google-api-nodejs-client/0.6.0 (gzip)
-      const userAgent = res.config.headers!['User-Agent'];
+      const userAgent = res.config.headers.get('User-Agent') || '';
       assert.ok(/frog\/1.0 \(jumps\)/.test(userAgent));
       assert.ok(/google-api-nodejs-client\/.* \(gzip\)/.test(userAgent));
     });
@@ -272,7 +272,7 @@ describe('createAPIRequest', () => {
         .reply(function () {
           assert.ok(
             /gdcl\/[\w.-]+ gl-node\//.test(
-              this.req.headers['x-goog-api-client'][0]
+              this.req.headers['x-goog-api-client']
             )
           );
           return [200, ''];
@@ -291,7 +291,7 @@ describe('createAPIRequest', () => {
       const scope = nock(url)
         .get('/')
         .reply(function () {
-          assert.ok(/1234/.test(this.req.headers['x-goog-api-version'][0]));
+          assert.ok(/1234/.test(this.req.headers['x-goog-api-version']));
           return [200, ''];
         });
       await createAPIRequest<FakeParams>({
@@ -324,7 +324,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       const expectedUrl = 'http://www.googleapis.com/api/service';
-      assert.strictEqual(res.config.url, expectedUrl);
+      assert.deepStrictEqual(res.config.url.toString(), expectedUrl);
     });
 
     it('should rewrite url to match default rootUrl of different length', async () => {
@@ -347,7 +347,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       const expectedUrl = 'https://my.domain.cc/api/service';
-      assert.strictEqual(res.config.url, expectedUrl);
+      assert.deepStrictEqual(res.config.url.toString(), expectedUrl);
     });
   });
 
@@ -366,7 +366,7 @@ describe('createAPIRequest', () => {
     };
     const auth = {
       request: (opts: GlobalOptions & MethodOptions) => {
-        const contentType = opts.headers!['content-type'];
+        const contentType = new Headers(opts.headers).get('content-type') || '';
         const boundary = `--${contentType.substring(
           contentType.indexOf('boundary=') + 9
         )}--`;
@@ -374,7 +374,7 @@ describe('createAPIRequest', () => {
         rStream.on('progress', (currentBytesReceived: number) => {
           totalBytesReceived += currentBytesReceived;
         });
-        opts.data.pipe(rStream);
+        (opts.data as stream.Stream.Readable).pipe(rStream);
       },
     };
 
@@ -432,8 +432,8 @@ describe('createAPIRequest', () => {
         },
       });
       scope.done();
-      assert.strictEqual(res.config.headers!['Global-Header'], 'global');
-      assert.strictEqual(res.config.headers!['Local-Header'], 'local');
+      assert.strictEqual(res.config.headers.get('Global-Header'), 'global');
+      assert.strictEqual(res.config.headers.get('Local-Header'), 'local');
     });
 
     it('should remove path params from the querystring when set in API level options', async () => {
@@ -456,7 +456,7 @@ describe('createAPIRequest', () => {
       });
       scope.done();
       const expectedUrl = `${url}/projects/${projectId}`;
-      assert.strictEqual(res.config.url, expectedUrl);
+      assert.strictEqual(res.config.url.toString(), expectedUrl);
     });
 
     it('should persist path params set at the API level', async () => {
@@ -479,9 +479,9 @@ describe('createAPIRequest', () => {
       };
       const expectedUrl = `${url}/projects/${projectId}`;
       const res1 = await createAPIRequest<FakeParams>(params);
-      assert.strictEqual(res1.config.url, expectedUrl);
+      assert.strictEqual(res1.config.url.toString(), expectedUrl);
       const res2 = await createAPIRequest<FakeParams>(params);
-      assert.strictEqual(res2.config.url, expectedUrl);
+      assert.deepStrictEqual(res2.config.url.toString(), expectedUrl);
       scope.done();
     });
 
@@ -512,7 +512,7 @@ describe('createAPIRequest', () => {
       const getUniverseDomainStub = sandbox
         .stub(auth, 'getUniverseDomain')
         .resolves('universe.com');
-      sandbox.stub(auth, 'getRequestHeaders').resolves({});
+      sandbox.stub(auth, 'getRequestHeaders').resolves(new Headers());
       const requestStub = sandbox
         .stub(auth, 'request')
         .resolves({data: fakeResponse} as GaxiosResponse);
@@ -546,7 +546,7 @@ describe('createAPIRequest', () => {
       const getUniverseDomainStub = sandbox
         .stub(auth, 'getUniverseDomain')
         .resolves('universe.com');
-      sandbox.stub(auth, 'getRequestHeaders').resolves({});
+      sandbox.stub(auth, 'getRequestHeaders').resolves(new Headers());
       const requestStub = sandbox
         .stub(auth, 'request')
         .resolves({data: fakeResponse} as GaxiosResponse);
@@ -605,7 +605,7 @@ describe('createAPIRequest', () => {
         const getUniverseDomainStub = sandbox
           .stub(auth, 'getUniverseDomain')
           .resolves('universe.com');
-        sandbox.stub(auth, 'getRequestHeaders').resolves({});
+        sandbox.stub(auth, 'getRequestHeaders').resolves(new Headers());
         const requestStub = sandbox
           .stub(auth, 'request')
           .resolves({data: fakeResponse} as GaxiosResponse);
@@ -645,7 +645,7 @@ describe('createAPIRequest', () => {
         const getUniverseDomainStub = sandbox
           .stub(auth, 'getUniverseDomain')
           .resolves('universe.com');
-        sandbox.stub(auth, 'getRequestHeaders').resolves({});
+        sandbox.stub(auth, 'getRequestHeaders').resolves(new Headers());
         const requestStub = sandbox
           .stub(auth, 'request')
           .resolves({data: fakeResponse} as GaxiosResponse);
