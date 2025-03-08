@@ -4,6 +4,17 @@
 
 [1]: https://www.npmjs.com/package/nodejs-googleapis-common?activeTab=versions
 
+## [8.0.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.2.0...v8.0.0) (2025-03-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Support Node 18+ ([#583](https://github.com/googleapis/nodejs-googleapis-common/issues/583))
+
+### Features
+
+* Support Node 18+ ([#583](https://github.com/googleapis/nodejs-googleapis-common/issues/583)) ([e821072](https://github.com/googleapis/nodejs-googleapis-common/commit/e821072015ae403233cda7e676f1c81753b9688b))
+
 ## [7.2.0](https://github.com/googleapis/nodejs-googleapis-common/compare/v7.1.0...v7.2.0) (2024-04-30)
 
 
