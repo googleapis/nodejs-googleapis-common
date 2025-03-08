@@ -11,6 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// re-exporting key dependencies
+export * as googleAuthLibrary from 'google-auth-library';
+export * as gaxios from 'gaxios';
+
 export {
   OAuth2Client,
   JWT,
@@ -30,6 +34,7 @@ export {
   GaxiosResponse,
   RetryConfig,
 } from 'gaxios';
+
 export {
   APIEndpoint,
   APIRequestContext,
