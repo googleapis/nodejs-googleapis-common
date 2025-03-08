@@ -45,6 +45,10 @@ module.exports = {
         use: 'null-loader',
       },
       {
+        test: /node_modules\/google-logging-utils\//,
+        use: 'null-loader',
+      },
+      {
         test: /node_modules(\/|\\)gtoken(\/|\\)/,
         use: 'null-loader',
       },

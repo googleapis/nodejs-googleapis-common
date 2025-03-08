@@ -42,6 +42,10 @@ module.exports = {
         use: 'null-loader',
       },
       {
+        test: /node_modules\/google-logging-utils\//,
+        use: 'null-loader',
+      },
+      {
         test: /node_modules\/https-proxy-agent\//,
         use: 'null-loader',
       },
