@@ -39,7 +39,7 @@
     "google-auth-library": "^9.7.0",
     "qs": "^6.7.0",
     "url-template": "^2.0.8",
-    "uuid": "^9.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-methods": "^7.18.6",
