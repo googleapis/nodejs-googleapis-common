@@ -12,8 +12,7 @@
 // limitations under the License.
 
 import * as fs from 'fs';
-import {Headers} from 'gaxios';
-import {DefaultTransporter} from 'google-auth-library';
+import {Gaxios} from 'gaxios';
 import resolve = require('url');
 import * as util from 'util';
 
@@ -32,7 +31,7 @@ export interface DiscoveryOptions {
 }
 
 export class Discovery {
-  private transporter = new DefaultTransporter();
+  private transporter = new Gaxios();
   private options: DiscoveryOptions;
 
   /**
@@ -72,9 +71,9 @@ export class Discovery {
    * @param discoveryUrl
    */
   async discoverAllAPIs(discoveryUrl: string): Promise<{}> {
-    const headers: Headers = this.options.includePrivate
-      ? {}
-      : {'X-User-Ip': '0.0.0.0'};
+    const headers = new Headers(
+      this.options.includePrivate ? {} : {'X-User-Ip': '0.0.0.0'}
+    );
     const res = await this.transporter.request<Schemas>({
       url: discoveryUrl,
       headers,

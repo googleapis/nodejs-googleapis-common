@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
+import {BodyResponseCallback} from 'google-auth-library/build/src/auth/authclient';
 import {APIRequestContext, APIRequestParams, GlobalOptions} from './api';
 import {createAPIRequest} from './apirequest';
 import {Schema, SchemaMethod, SchemaParameters, SchemaResource} from './schema';

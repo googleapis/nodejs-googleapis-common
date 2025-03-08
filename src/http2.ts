@@ -19,8 +19,13 @@ import * as extend from 'extend';
 import {Stream, Readable} from 'stream';
 import * as util from 'util';
 import * as process from 'process';
-import {GaxiosResponse, GaxiosOptions} from 'gaxios';
-import {GaxiosXMLHttpRequest, GaxiosError} from 'gaxios/build/src/common';
+import {
+  GaxiosResponse,
+  GaxiosOptions,
+  Gaxios,
+  GaxiosOptionsPrepared,
+} from 'gaxios';
+import {GaxiosError} from 'gaxios';
 
 const {
   HTTP2_HEADER_CONTENT_ENCODING,
@@ -82,39 +87,48 @@ export async function request<T>(
   // custom headers sent from the consumer.  Note: I am using `Object.assign`
   // here making the assumption these objects are not deep.  If it turns out
   // they are, we may need to use the `extend` npm module for deep cloning.
-  const headers = Object.assign({}, opts.headers, {
+  const headers = Gaxios.mergeHeaders(opts.headers, {
     [HTTP2_HEADER_PATH]: pathWithQs,
     [HTTP2_HEADER_METHOD]: config.method || 'GET',
   });
+
+  opts.headers = headers;
 
   // NOTE: This is working around an upstream bug in `apirequest.ts`. The
   // request path assumes that the `content-type` header is going to be set in
   // the underlying HTTP Client. This hack provides bug for bug compatability
   // with this bug in gaxios:
   // https://github.com/googleapis/gaxios/blob/main/src/gaxios.ts#L202
-  if (!headers[HTTP2_HEADER_CONTENT_TYPE]) {
+  if (!headers.has(HTTP2_HEADER_CONTENT_TYPE)) {
     if (opts.responseType !== 'text') {
-      headers[HTTP2_HEADER_CONTENT_TYPE] = 'application/json';
+      headers.set(HTTP2_HEADER_CONTENT_TYPE, 'application/json');
     }
   }
 
-  const res: GaxiosResponse<T> = {
+  const res = {
     config,
-    request: {} as GaxiosXMLHttpRequest,
-    headers: [],
+    request: {},
+    headers: new Headers(),
     status: 0,
     data: {} as T,
     statusText: '',
   };
+
   const chunks: Buffer[] = [];
   const session = sessionData.session;
   let req: http2.ClientHttp2Stream;
   return new Promise((resolve, reject) => {
     try {
+      const classicHeaders: Record<string, string> = {};
+
+      headers.forEach((value, key) => {
+        classicHeaders[key] = value;
+      });
+
       req = session
-        .request(headers)
+        .request(classicHeaders)
         .on('response', headers => {
-          res.headers = headers;
+          res.headers = new Headers(headers as {});
           res.status = Number(headers[HTTP2_HEADER_STATUS]);
           let stream: Readable = req;
           if (headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
@@ -122,7 +136,7 @@ export async function request<T>(
           }
           if (opts.responseType === 'stream') {
             res.data = stream as {} as T;
-            resolve(res);
+            resolve(res as {} as GaxiosResponse<T>);
             return;
           }
           stream
@@ -157,9 +171,15 @@ export async function request<T>(
                   const body = util.inspect(res.data, {depth: 5});
                   message = `${message}\n'${body}`;
                 }
-                reject(new GaxiosError<T>(message, opts, res));
+                reject(
+                  new GaxiosError<T>(
+                    message,
+                    opts as GaxiosOptionsPrepared,
+                    res as {} as GaxiosResponse<T>
+                  )
+                );
               }
-              resolve(res);
+              resolve(res as {} as GaxiosResponse<T>);
               return;
             });
         })
@@ -171,7 +191,8 @@ export async function request<T>(
       closeSession(url);
       reject(e);
     }
-    res.request = req as {} as GaxiosXMLHttpRequest;
+
+    res.request = req;
 
     // If data was provided, write it to the request in the form of
     // a stream, string data, or a basic object.

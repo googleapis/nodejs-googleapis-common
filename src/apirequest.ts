@@ -11,21 +11,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosPromise, Headers} from 'gaxios';
-import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
+import {GaxiosPromise, Gaxios} from 'gaxios';
+import {OAuth2Client} from 'google-auth-library';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
-import * as uuid from 'uuid';
 import * as extend from 'extend';
 
 import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
-import {SchemaParameters, SchemaMethod} from './schema';
+import {SchemaParameters} from './schema';
 import * as h2 from './http2';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
+
+const randomUUID = () =>
+  globalThis.crypto?.randomUUID() || require('crypto').randomUUID();
 
 interface Multipart {
   'content-type': string;
@@ -137,7 +139,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   delete params.auth;
 
   // Grab headers from user provided options
-  const headers = params.headers || {};
+  const headers = new Headers(params.headers || {});
   populateAPIHeader(headers, options.apiVersion);
   delete params.headers;
 
@@ -199,7 +201,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
 
   function multipartUpload(multipart: Multipart[]) {
-    const boundary = uuid.v4();
+    const boundary = randomUUID();
     const finale = `--${boundary}--`;
     const rStream = new stream.PassThrough({
       flush(callback) {
@@ -210,7 +212,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     });
     const pStream = new ProgressStream();
     const isStream = isReadableStream(multipart[1].body);
-    headers['content-type'] = `multipart/related; boundary=${boundary}`;
+    headers.set('content-type', `multipart/related; boundary=${boundary}`);
     for (const part of multipart) {
       const preamble = `--${boundary}\r\ncontent-type: ${part['content-type']}\r\n\r\n`;
       rStream.push(preamble);
@@ -237,9 +239,9 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
 
   function browserMultipartUpload(multipart: Multipart[]) {
-    const boundary = uuid.v4();
+    const boundary = randomUUID();
     const finale = `--${boundary}--`;
-    headers['content-type'] = `multipart/related; boundary=${boundary}`;
+    headers.set('content-type', `multipart/related; boundary=${boundary}`);
 
     let content = '';
     for (const part of multipart) {
@@ -282,10 +284,10 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.data = resource || undefined;
   }
 
-  options.headers = extend(true, options.headers || {}, headers);
+  options.headers = Gaxios.mergeHeaders(options.headers || {}, headers);
   options.params = params;
   if (!isBrowser()) {
-    options.headers!['Accept-Encoding'] = 'gzip';
+    options.headers.set('Accept-Encoding', 'gzip');
     options.userAgentDirectives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
@@ -300,7 +302,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
         return line;
       })
       .join(' ');
-    options.headers!['User-Agent'] = userAgent;
+    options.headers.set('User-Agent', userAgent);
   }
 
   // By default gaxios treats any 2xx as valid, and all non 2xx status
@@ -345,6 +347,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     }
   }
 
+  // An empty params would add a querystring on a spec-compliant serializer
+  if (!Object.keys(options.params).length) {
+    delete options.params;
+    delete options.paramsSerializer;
+  }
+
   // Perform the HTTP request.  NOTE: this function used to return a
   // mikeal/request object. Since the transition to Axios, the method is
   // now void.  This may be a source of confusion for users upgrading from
@@ -365,13 +373,13 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (options.http2) {
       const authHeaders = await authClient.getRequestHeaders(options.url);
       const mooOpts = Object.assign({}, options);
-      mooOpts.headers = Object.assign(mooOpts.headers!, authHeaders);
+      mooOpts.headers = Gaxios.mergeHeaders(mooOpts.headers!, authHeaders);
       return h2.request<T>(mooOpts);
     } else {
       return (authClient as OAuth2Client).request<T>(options);
     }
   } else {
-    return new DefaultTransporter().request<T>(options);
+    return new Gaxios().request<T>(options);
   }
 }
 
@@ -395,11 +403,13 @@ function populateAPIHeader(headers: Headers, apiVersion: string | undefined) {
   // populating the gl-web header (web support should also be added to
   // google-auth-library-nodejs).
   if (!isBrowser()) {
-    headers['x-goog-api-client'] =
-      `gdcl/${pkg.version} gl-node/${process.versions.node}`;
+    headers.set(
+      'x-goog-api-client',
+      `gdcl/${pkg.version} gl-node/${process.versions.node}`
+    );
   }
 
   if (apiVersion) {
-    headers['x-goog-api-version'] = apiVersion;
+    headers.set('x-goog-api-version', apiVersion);
   }
 }
