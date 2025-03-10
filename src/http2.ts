@@ -14,7 +14,7 @@
 import * as http2 from 'http2';
 import * as zlib from 'zlib';
 import {URL} from 'url';
-import * as qs from 'qs';
+import * as pq from 'picoquery';
 import * as extend from 'extend';
 import {Stream, Readable} from 'stream';
 import * as util from 'util';
@@ -70,10 +70,10 @@ export async function request<T>(
   }
 
   // Assemble the querystring based on config.params.  We're using the
-  // `qs` module to make life a little easier.
+  // `pq` module to make life a little easier.
   let pathWithQs = url.pathname;
   if (config.params && Object.keys(config.params).length > 0) {
-    const serializer = config.paramsSerializer || qs.stringify;
+    const serializer = config.paramsSerializer || pq.stringify;
     const q = serializer(opts.params);
     pathWithQs += `?${q}`;
   }

@@ -13,7 +13,7 @@
 
 import {GaxiosPromise, Headers} from 'gaxios';
 import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
-import * as qs from 'qs';
+import * as pq from 'picoquery';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
 import * as uuid from 'uuid';
@@ -186,7 +186,11 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   // This serializer also encodes spaces in the querystring as `%20`,
   // whereas the default serializer in gaxios encodes to a `+`.
   options.paramsSerializer = params => {
-    return qs.stringify(params, {arrayFormat: 'repeat'});
+    return pq.stringify(params, {
+      arrayRepeat: true,
+      arrayRepeatSyntax: 'repeat',
+      nestingSyntax: 'js',
+    });
   };
 
   // delete path params from the params object so they do not end up in query
