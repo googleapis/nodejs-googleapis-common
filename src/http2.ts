@@ -14,7 +14,7 @@
 import * as http2 from 'http2';
 import * as zlib from 'zlib';
 import {URL} from 'url';
-import * as qs from 'qs';
+import * as querystring from 'querystring';
 import * as extend from 'extend';
 import {Stream, Readable} from 'stream';
 import * as util from 'util';
@@ -69,12 +69,17 @@ export async function request<T>(
     clearTimeout(sessionData.timeoutHandle);
   }
 
-  // Assemble the querystring based on config.params.  We're using the
-  // `qs` module to make life a little easier.
+  // Assemble the querystring based on config.params.
   let pathWithQs = url.pathname;
   if (config.params && Object.keys(config.params).length > 0) {
-    const serializer = config.paramsSerializer || qs.stringify;
-    const q = serializer(opts.params);
+    let q: string;
+    if (config.paramsSerializer) {
+      q = config.paramsSerializer(opts.params);
+    } else {
+      q = querystring.stringify(opts.params, undefined, undefined, {
+        encodeURIComponent,
+      });
+    }
     pathWithQs += `?${q}`;
   }
 
