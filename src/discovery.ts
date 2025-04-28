@@ -12,8 +12,7 @@
 // limitations under the License.
 
 import * as fs from 'fs';
-import {Headers} from 'gaxios';
-import {DefaultTransporter} from 'google-auth-library';
+import {Gaxios} from 'gaxios';
 import resolve = require('url');
 import * as util from 'util';
 
@@ -32,7 +31,7 @@ export interface DiscoveryOptions {
 }
 
 export class Discovery {
-  private transporter = new DefaultTransporter();
+  private transporter = new Gaxios();
   private options: DiscoveryOptions;
 
   /**
@@ -72,9 +71,9 @@ export class Discovery {
    * @param discoveryUrl
    */
   async discoverAllAPIs(discoveryUrl: string): Promise<{}> {
-    const headers: Headers = this.options.includePrivate
-      ? {}
-      : {'X-User-Ip': '0.0.0.0'};
+    const headers = new Headers(
+      this.options.includePrivate ? {} : {'X-User-Ip': '0.0.0.0'},
+    );
     const res = await this.transporter.request<Schemas>({
       url: discoveryUrl,
       headers,
@@ -84,7 +83,7 @@ export class Discovery {
       items.map(async api => {
         const endpointCreator = await this.discoverAPI(api.discoveryRestUrl);
         return {api, endpointCreator};
-      })
+      }),
     );
 
     const versionIndex: {
@@ -116,8 +115,8 @@ export class Discovery {
                 'Unable to load endpoint %s("%s"): %s',
                 set.api.name,
                 version,
-                (e as Error).message
-              )
+                (e as Error).message,
+              ),
             );
           }
         };
@@ -134,7 +133,7 @@ export class Discovery {
    * @returns A promise that resolves with a function that creates the endpoint
    */
   async discoverAPI(
-    apiDiscoveryUrl: string | {url?: string}
+    apiDiscoveryUrl: string | {url?: string},
   ): Promise<EndpointCreator> {
     if (typeof apiDiscoveryUrl === 'string') {
       const parts = resolve.parse(apiDiscoveryUrl);
