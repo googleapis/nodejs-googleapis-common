@@ -49,6 +49,18 @@ module.exports = {
         use: 'null-loader',
       },
       {
+        test: /node_modules\/gaxios\//,
+        use: 'null-loader',
+      },
+      {
+        test: /node_modules\/google-auth-library\//,
+        use: 'null-loader',
+      },
+      {
+        test: /node_modules\/googleapis-common\//,
+        use: 'null-loader',
+      },
+      {
         test: /node_modules(\/|\\)gtoken(\/|\\)/,
         use: 'null-loader',
       },

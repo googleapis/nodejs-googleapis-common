@@ -48,7 +48,7 @@ export interface SessionData {
 export const sessions: {[index: string]: SessionData} = {};
 
 /**
- * @expiremental
+ * @experimental
  */
 export interface GaxiosResponseWithHTTP2<T = ReturnType<JSON['parse']>>
   extends Omit<GaxiosResponse<T>, 'headers'> {
