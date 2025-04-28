@@ -89,7 +89,7 @@ export async function request<T>(
 
   // Assemble the headers based on basic HTTP2 primitives (path, method) and
   // custom headers sent from the consumer. Note: the native `Headers` type does
-  // not support
+  // not support HTTP2 header names (e.g. ':status')
   const headers = headersToClassicHeaders(opts.headers);
   headers[HTTP2_HEADER_PATH] = pathWithQs;
   headers[HTTP2_HEADER_METHOD] = config.method || 'GET';
