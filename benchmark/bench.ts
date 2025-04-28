@@ -45,7 +45,7 @@ async function makeHttp2Request() {
   const sandbox = sinon.createSandbox();
   const url = 'https://www.googleapis.com/discovery/v1/apis/';
   const auth = new GoogleAuth();
-  sandbox.stub(auth, 'getRequestHeaders').resolves({});
+  sandbox.stub(auth, 'getRequestHeaders').resolves(new Headers());
   const startTime = Date.now();
   await createAPIRequest<{}>({
     options: {url, http2: true},
@@ -84,4 +84,4 @@ async function makeHttp1Request() {
   return endTime - startTime;
 }
 
-main();
+main().catch(console.error);

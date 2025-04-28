@@ -11,21 +11,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosPromise, Headers} from 'gaxios';
-import {DefaultTransporter, OAuth2Client} from 'google-auth-library';
+import {Gaxios} from 'gaxios';
+import {GoogleAuth} from 'google-auth-library';
 import * as qs from 'qs';
 import * as stream from 'stream';
 import * as urlTemplate from 'url-template';
-import * as uuid from 'uuid';
 import * as extend from 'extend';
 
 import {APIRequestParams, BodyResponseCallback} from './api';
 import {isBrowser} from './isbrowser';
-import {SchemaParameters, SchemaMethod} from './schema';
+import {SchemaParameters} from './schema';
 import * as h2 from './http2';
+import {GaxiosResponseWithHTTP2} from './http2';
+import {headersToClassicHeaders, martialGaxiosResponse} from './util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
+
+const randomUUID = () =>
+  globalThis.crypto?.randomUUID() || require('crypto').randomUUID();
 
 interface Multipart {
   'content-type': string;
@@ -64,24 +68,26 @@ function getMissingParams(params: SchemaParameters, required: string[]) {
  * @param callback   Callback when request finished or error found
  */
 export function createAPIRequest<T>(
-  parameters: APIRequestParams
-): GaxiosPromise<T>;
+  parameters: APIRequestParams,
+): Promise<GaxiosResponseWithHTTP2<T>>;
 export function createAPIRequest<T>(
   parameters: APIRequestParams,
-  callback: BodyResponseCallback<T>
+  callback: BodyResponseCallback<T>,
 ): void;
 export function createAPIRequest<T>(
   parameters: APIRequestParams,
-  callback?: BodyResponseCallback<T>
-): void | GaxiosPromise<T> {
+  callback?: BodyResponseCallback<T>,
+): void | Promise<GaxiosResponseWithHTTP2<T>> {
   if (callback) {
     createAPIRequestAsync<T>(parameters).then(r => callback(null, r), callback);
   } else {
-    return createAPIRequestAsync(parameters);
+    return createAPIRequestAsync<T>(parameters);
   }
 }
 
-async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
+async function createAPIRequestAsync<T>(
+  parameters: APIRequestParams,
+): Promise<GaxiosResponseWithHTTP2<T>> {
   // Combine the GaxiosOptions options passed with this specific
   // API call with the global options configured at the API Context
   // level, or at the global level.
@@ -90,14 +96,14 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     {}, // Ensure we don't leak settings upstream
     parameters.context.google?._options || {}, // Google level options
     parameters.context._options || {}, // Per-API options
-    parameters.options // API call params
+    parameters.options, // API call params
   );
 
   const params = extend(
     true,
     {}, // New base object
     options.params, // Combined global/per-api params
-    parameters.params // API call params
+    parameters.params, // API call params
   );
 
   options.userAgentDirectives = options.userAgentDirectives || [];
@@ -137,7 +143,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   delete params.auth;
 
   // Grab headers from user provided options
-  const headers = params.headers || {};
+  const headers = headersToClassicHeaders(params.headers || {});
   populateAPIHeader(headers, options.apiVersion);
   delete params.headers;
 
@@ -199,7 +205,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
 
   function multipartUpload(multipart: Multipart[]) {
-    const boundary = uuid.v4();
+    const boundary = randomUUID();
     const finale = `--${boundary}--`;
     const rStream = new stream.PassThrough({
       flush(callback) {
@@ -237,7 +243,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
   }
 
   function browserMultipartUpload(multipart: Multipart[]) {
-    const boundary = uuid.v4();
+    const boundary = randomUUID();
     const finale = `--${boundary}--`;
     headers['content-type'] = `multipart/related; boundary=${boundary}`;
 
@@ -282,10 +288,10 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.data = resource || undefined;
   }
 
-  options.headers = extend(true, options.headers || {}, headers);
+  options.headers = Gaxios.mergeHeaders(options.headers || {}, headers);
   options.params = params;
   if (!isBrowser()) {
-    options.headers!['Accept-Encoding'] = 'gzip';
+    options.headers.set('Accept-Encoding', 'gzip');
     options.userAgentDirectives.push({
       product: 'google-api-nodejs-client',
       version: pkg.version,
@@ -300,7 +306,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
         return line;
       })
       .join(' ');
-    options.headers!['User-Agent'] = userAgent;
+    options.headers.set('User-Agent', userAgent);
   }
 
   // By default gaxios treats any 2xx as valid, and all non 2xx status
@@ -323,7 +329,7 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     options.universeDomain !== options.universe_domain
   ) {
     throw new Error(
-      'Please set either universe_domain or universeDomain, but not both.'
+      'Please set either universe_domain or universeDomain, but not both.',
     );
   }
   const universeDomainEnvVar =
@@ -345,6 +351,12 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     }
   }
 
+  // An empty params would add a querystring on a spec-compliant serializer
+  if (!Object.keys(options.params).length) {
+    delete options.params;
+    delete options.paramsSerializer;
+  }
+
   // Perform the HTTP request.  NOTE: this function used to return a
   // mikeal/request object. Since the transition to Axios, the method is
   // now void.  This may be a source of confusion for users upgrading from
@@ -358,20 +370,24 @@ async function createAPIRequestAsync<T>(parameters: APIRequestParams) {
     if (universeFromAuth && universeDomain !== universeFromAuth) {
       throw new Error(
         `The configured universe domain (${universeDomain}) does not match the universe domain found in the credentials (${universeFromAuth}). ` +
-          "If you haven't configured the universe domain explicitly, googleapis.com is the default."
+          "If you haven't configured the universe domain explicitly, googleapis.com is the default.",
       );
     }
 
     if (options.http2) {
       const authHeaders = await authClient.getRequestHeaders(options.url);
       const mooOpts = Object.assign({}, options);
-      mooOpts.headers = Object.assign(mooOpts.headers!, authHeaders);
+      mooOpts.headers = Gaxios.mergeHeaders(mooOpts.headers!, authHeaders);
       return h2.request<T>(mooOpts);
     } else {
-      return (authClient as OAuth2Client).request<T>(options);
+      const res = await (authClient as GoogleAuth).request<T>(options);
+
+      return martialGaxiosResponse(res);
     }
   } else {
-    return new DefaultTransporter().request<T>(options);
+    return new Gaxios()
+      .request<T>(options)
+      .then(res => martialGaxiosResponse(res));
   }
 }
 
@@ -390,7 +406,10 @@ class ProgressStream extends stream.Transform {
   }
 }
 
-function populateAPIHeader(headers: Headers, apiVersion: string | undefined) {
+function populateAPIHeader(
+  headers: Record<string, string>,
+  apiVersion: string | undefined,
+) {
   // TODO: we should eventually think about adding browser support for this
   // populating the gl-web header (web support should also be added to
   // google-auth-library-nodejs).
