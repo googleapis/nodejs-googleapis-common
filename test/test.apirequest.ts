@@ -57,7 +57,7 @@ class FakeWritable extends stream.Writable {
   _write(
     chunk: Buffer | string,
     encoding: string,
-    callback: (error?: Error | null) => void
+    callback: (error?: Error | null) => void,
   ) {
     let chunkString = chunk.toString();
     if (!this.startParsed) {
@@ -272,8 +272,8 @@ describe('createAPIRequest', () => {
         .reply(function () {
           assert.ok(
             /gdcl\/[\w.-]+ gl-node\//.test(
-              this.req.headers['x-goog-api-client']
-            )
+              this.req.headers['x-goog-api-client'],
+            ),
           );
           return [200, ''];
         });
@@ -368,7 +368,7 @@ describe('createAPIRequest', () => {
       request: (opts: GlobalOptions & MethodOptions) => {
         const contentType = new Headers(opts.headers).get('content-type') || '';
         const boundary = `--${contentType.substring(
-          contentType.indexOf('boundary=') + 9
+          contentType.indexOf('boundary=') + 9,
         )}--`;
         const rStream = new FakeWritable(boundary, {highWaterMark: 400});
         rStream.on('progress', (currentBytesReceived: number) => {
@@ -533,7 +533,7 @@ describe('createAPIRequest', () => {
       assert.ok(requestStub.calledOnce);
       assert.strictEqual(
         requestStub.getCall(0).args[0].url,
-        expectedUniverseUrl
+        expectedUniverseUrl,
       );
       assert(result);
     });
@@ -567,7 +567,7 @@ describe('createAPIRequest', () => {
       assert.ok(requestStub.calledOnce);
       assert.strictEqual(
         requestStub.getCall(0).args[0].url,
-        expectedUniverseUrl
+        expectedUniverseUrl,
       );
       assert(result);
     });
@@ -590,7 +590,7 @@ describe('createAPIRequest', () => {
         (err: Error) => {
           assert.ok(err.message.includes('but not both'));
           return true;
-        }
+        },
       );
     });
 
@@ -630,7 +630,7 @@ describe('createAPIRequest', () => {
         assert.ok(requestStub.calledOnce);
         assert.strictEqual(
           requestStub.getCall(0).args[0].url,
-          expectedUniverseUrl
+          expectedUniverseUrl,
         );
         assert(result);
       });
@@ -671,7 +671,7 @@ describe('createAPIRequest', () => {
         assert.ok(requestStub.calledOnce);
         assert.strictEqual(
           requestStub.getCall(0).args[0].url,
-          expectedUniverseUrl
+          expectedUniverseUrl,
         );
         assert(result);
       });
@@ -698,11 +698,11 @@ describe('createAPIRequest', () => {
           assert.ok(
             err.message.includes(
               'The configured universe domain (universe.com) does not match the universe domain ' +
-                'found in the credentials (wrong-universe.com)'
-            )
+                'found in the credentials (wrong-universe.com)',
+            ),
           );
           return true;
-        }
+        },
       );
     });
 
@@ -726,11 +726,11 @@ describe('createAPIRequest', () => {
           assert.ok(
             err.message.includes(
               'The configured universe domain (googleapis.com) does not match the universe domain ' +
-                'found in the credentials (wrong-universe.com)'
-            )
+                'found in the credentials (wrong-universe.com)',
+            ),
           );
           return true;
-        }
+        },
       );
     });
 
@@ -755,11 +755,11 @@ describe('createAPIRequest', () => {
           assert.ok(
             err.message.includes(
               'The configured universe domain (wrong-universe.com) does not match the universe domain ' +
-                'found in the credentials (googleapis.com)'
-            )
+                'found in the credentials (googleapis.com)',
+            ),
           );
           return true;
-        }
+        },
       );
     });
   });

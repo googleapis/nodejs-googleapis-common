@@ -19,13 +19,8 @@ import * as extend from 'extend';
 import {Stream, Readable} from 'stream';
 import * as util from 'util';
 import * as process from 'process';
-import {
-  GaxiosResponse,
-  GaxiosOptions,
-  Gaxios,
-  GaxiosOptionsPrepared,
-} from 'gaxios';
-import {GaxiosError} from 'gaxios';
+import {GaxiosResponse, GaxiosOptions} from 'gaxios';
+import {headersToClassicHeaders} from './util';
 
 const {
   HTTP2_HEADER_CONTENT_ENCODING,
@@ -53,12 +48,21 @@ export interface SessionData {
 export const sessions: {[index: string]: SessionData} = {};
 
 /**
+ * @expiremental
+ */
+export interface GaxiosResponseWithHTTP2<T = ReturnType<JSON['parse']>>
+  extends Omit<GaxiosResponse<T>, 'headers'> {
+  request?: http2.ClientHttp2Stream;
+  headers: http2.IncomingHttpHeaders & http2.IncomingHttpStatusHeader; // {}
+}
+
+/**
  * Public method to make an http2 request.
  * @param config - Request options.
  */
 export async function request<T>(
-  config: GaxiosOptions
-): Promise<GaxiosResponse<T>> {
+  config: GaxiosOptions,
+): Promise<GaxiosResponseWithHTTP2<T>> {
   const opts = extend(true, {}, config);
   opts.validateStatus = opts.validateStatus || validateStatus;
   opts.responseType = opts.responseType || 'json';
@@ -84,13 +88,11 @@ export async function request<T>(
   }
 
   // Assemble the headers based on basic HTTP2 primitives (path, method) and
-  // custom headers sent from the consumer.  Note: I am using `Object.assign`
-  // here making the assumption these objects are not deep.  If it turns out
-  // they are, we may need to use the `extend` npm module for deep cloning.
-  const headers = Gaxios.mergeHeaders(opts.headers, {
-    [HTTP2_HEADER_PATH]: pathWithQs,
-    [HTTP2_HEADER_METHOD]: config.method || 'GET',
-  });
+  // custom headers sent from the consumer. Note: the native `Headers` type does
+  // not support
+  const headers = headersToClassicHeaders(opts.headers);
+  headers[HTTP2_HEADER_PATH] = pathWithQs;
+  headers[HTTP2_HEADER_METHOD] = config.method || 'GET';
 
   opts.headers = headers;
 
@@ -99,46 +101,43 @@ export async function request<T>(
   // the underlying HTTP Client. This hack provides bug for bug compatability
   // with this bug in gaxios:
   // https://github.com/googleapis/gaxios/blob/main/src/gaxios.ts#L202
-  if (!headers.has(HTTP2_HEADER_CONTENT_TYPE)) {
+  if (!headers[HTTP2_HEADER_CONTENT_TYPE]) {
     if (opts.responseType !== 'text') {
-      headers.set(HTTP2_HEADER_CONTENT_TYPE, 'application/json');
+      headers[HTTP2_HEADER_CONTENT_TYPE] = 'application/json';
     }
   }
 
   const res = {
     config,
-    request: {},
-    headers: new Headers(),
+    headers: {},
     status: 0,
     data: {} as T,
     statusText: '',
-  };
+  } as GaxiosResponseWithHTTP2;
 
   const chunks: Buffer[] = [];
   const session = sessionData.session;
   let req: http2.ClientHttp2Stream;
   return new Promise((resolve, reject) => {
     try {
-      const classicHeaders: Record<string, string> = {};
-
-      headers.forEach((value, key) => {
-        classicHeaders[key] = value;
-      });
-
       req = session
-        .request(classicHeaders)
-        .on('response', headers => {
-          res.headers = new Headers(headers as {});
-          res.status = Number(headers[HTTP2_HEADER_STATUS]);
+        .request(headers)
+        .on('response', responseHeaders => {
+          Object.assign(res, {
+            headers: responseHeaders,
+            status: responseHeaders[HTTP2_HEADER_STATUS],
+          });
+
           let stream: Readable = req;
-          if (headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
+          if (responseHeaders[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
             stream = req.pipe(zlib.createGunzip());
           }
           if (opts.responseType === 'stream') {
-            res.data = stream as {} as T;
-            resolve(res as {} as GaxiosResponse<T>);
+            res.data = stream;
+            resolve(res);
             return;
           }
+
           stream
             .on('data', d => {
               chunks.push(d);
@@ -171,15 +170,9 @@ export async function request<T>(
                   const body = util.inspect(res.data, {depth: 5});
                   message = `${message}\n'${body}`;
                 }
-                reject(
-                  new GaxiosError<T>(
-                    message,
-                    opts as GaxiosOptionsPrepared,
-                    res as {} as GaxiosResponse<T>
-                  )
-                );
+                reject(new Error(message, {cause: res}));
               }
-              resolve(res as {} as GaxiosResponse<T>);
+              resolve(res);
               return;
             });
         })
@@ -188,8 +181,10 @@ export async function request<T>(
           return;
         });
     } catch (e) {
-      closeSession(url);
-      reject(e);
+      closeSession(url)
+        .then(() => reject(e))
+        .catch(reject);
+      return;
     }
 
     res.request = req;
@@ -213,9 +208,7 @@ export async function request<T>(
     // a nice round number, and I don't know what would be a better
     // choice. Keeping this channel open will hold a file descriptor
     // which will prevent the process from exiting.
-    sessionData.timeoutHandle = setTimeout(() => {
-      closeSession(url);
-    }, 500);
+    sessionData.timeoutHandle = setTimeout(() => closeSession(url), 500);
   });
 }
 
