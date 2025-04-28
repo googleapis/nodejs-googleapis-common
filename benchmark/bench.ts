@@ -84,4 +84,4 @@ async function makeHttp1Request() {
   return endTime - startTime;
 }
 
-main();
+main().catch(console.error);

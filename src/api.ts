@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosOptions, GaxiosResponse} from 'gaxios';
+import {GaxiosOptions} from 'gaxios';
 import {
   OAuth2Client,
   GoogleAuth,

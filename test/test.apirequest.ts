@@ -143,7 +143,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      assert.rejects(async () => {
+      return assert.rejects(async () => {
         await createAPIRequest<FakeParams>({
           options: {
             url,
@@ -162,7 +162,7 @@ describe('createAPIRequest', () => {
     });
 
     it('should not populate resource parameter in URL, if it is an object', async () => {
-      assert.rejects(async () => {
+      return assert.rejects(async () => {
         await createAPIRequest<FakeParams>({
           options: {
             url,
@@ -574,7 +574,7 @@ describe('createAPIRequest', () => {
 
     it('should disallow setting both universeDomain and universe_domain', async () => {
       const gduUrl = 'https://api.googleapis.com/path?param=value#extra';
-      assert.rejects(
+      return assert.rejects(
         createAPIRequest<FakeParams>({
           options: {url: gduUrl},
           params: {},
