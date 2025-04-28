@@ -11,10 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {BodyResponseCallback} from 'google-auth-library/build/src/transporters';
 import {APIRequestContext, APIRequestParams, GlobalOptions} from './api';
 import {createAPIRequest} from './apirequest';
 import {Schema, SchemaMethod, SchemaParameters, SchemaResource} from './schema';
+import {GaxiosResponseWithHTTP2} from './http2';
+
+type HTTP2BodyResponseCallback = (
+  err: Error | null,
+  res?: GaxiosResponseWithHTTP2 | null,
+) => void;
 
 export interface Target {
   [index: string]: {};
@@ -44,7 +49,7 @@ export class Endpoint implements Target, APIRequestContext {
     target: Target,
     rootSchema: Schema,
     schema: SchemaResource,
-    context: APIRequestContext
+    context: APIRequestContext,
   ) {
     this.applyMethodsFromSchema(target, rootSchema, schema, context);
     if (schema.resources) {
@@ -75,7 +80,7 @@ export class Endpoint implements Target, APIRequestContext {
     target: Target,
     rootSchema: Schema,
     schema: SchemaResource,
-    context: APIRequestContext
+    context: APIRequestContext,
   ) {
     if (schema.methods) {
       for (const name in schema.methods) {
@@ -98,20 +103,20 @@ export class Endpoint implements Target, APIRequestContext {
   private makeMethod(
     schema: Schema,
     method: SchemaMethod,
-    context: APIRequestContext
+    context: APIRequestContext,
   ) {
     return (
-      paramsOrCallback: {} | BodyResponseCallback<{}>,
-      callback?: BodyResponseCallback<{}>
+      paramsOrCallback: {} | HTTP2BodyResponseCallback,
+      callback?: HTTP2BodyResponseCallback,
     ) => {
       const params =
         typeof paramsOrCallback === 'function' ? {} : paramsOrCallback;
       callback =
         typeof paramsOrCallback === 'function'
-          ? (paramsOrCallback as BodyResponseCallback<{}>)
+          ? (paramsOrCallback as HTTP2BodyResponseCallback)
           : callback;
       const schemaUrl = buildurl(
-        schema.rootUrl + schema.servicePath + method.path
+        schema.rootUrl + schema.servicePath + method.path,
       );
 
       const parameters: APIRequestParams = {
@@ -133,7 +138,7 @@ export class Endpoint implements Target, APIRequestContext {
         method.mediaUpload.protocols.simple.path
       ) {
         const mediaUrl = buildurl(
-          schema.rootUrl + method.mediaUpload.protocols.simple.path
+          schema.rootUrl + method.mediaUpload.protocols.simple.path,
         );
         parameters.mediaUrl = mediaUrl.substring(1, mediaUrl.length - 1);
       }
