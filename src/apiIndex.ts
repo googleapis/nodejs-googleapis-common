@@ -18,7 +18,7 @@ export function getAPI<T>(
   options: ServiceOptions | string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   versions: {[index: string]: any},
-  context?: GoogleConfigurable
+  context?: GoogleConfigurable,
 ) {
   let version: string;
   if (typeof options === 'string') {
@@ -36,7 +36,7 @@ export function getAPI<T>(
     return Object.freeze(ep) as T;
   } catch (e) {
     throw new Error(
-      `Unable to load endpoint ${api}("${version}"): ${(e as Error).message}`
+      `Unable to load endpoint ${api}("${version}"): ${(e as Error).message}`,
     );
   }
 }

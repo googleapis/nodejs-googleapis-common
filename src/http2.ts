@@ -20,7 +20,7 @@ import {Stream, Readable} from 'stream';
 import * as util from 'util';
 import * as process from 'process';
 import {GaxiosResponse, GaxiosOptions} from 'gaxios';
-import {GaxiosXMLHttpRequest, GaxiosError} from 'gaxios/build/src/common';
+import {headersToClassicHeaders} from './util';
 
 const {
   HTTP2_HEADER_CONTENT_ENCODING,
@@ -48,12 +48,21 @@ export interface SessionData {
 export const sessions: {[index: string]: SessionData} = {};
 
 /**
+ * @experimental
+ */
+export interface GaxiosResponseWithHTTP2<T = ReturnType<JSON['parse']>>
+  extends Omit<GaxiosResponse<T>, 'headers'> {
+  request?: http2.ClientHttp2Stream;
+  headers: http2.IncomingHttpHeaders & http2.IncomingHttpStatusHeader; // {}
+}
+
+/**
  * Public method to make an http2 request.
  * @param config - Request options.
  */
 export async function request<T>(
-  config: GaxiosOptions
-): Promise<GaxiosResponse<T>> {
+  config: GaxiosOptions,
+): Promise<GaxiosResponseWithHTTP2<T>> {
   const opts = extend(true, {}, config);
   opts.validateStatus = opts.validateStatus || validateStatus;
   opts.responseType = opts.responseType || 'json';
@@ -79,13 +88,13 @@ export async function request<T>(
   }
 
   // Assemble the headers based on basic HTTP2 primitives (path, method) and
-  // custom headers sent from the consumer.  Note: I am using `Object.assign`
-  // here making the assumption these objects are not deep.  If it turns out
-  // they are, we may need to use the `extend` npm module for deep cloning.
-  const headers = Object.assign({}, opts.headers, {
-    [HTTP2_HEADER_PATH]: pathWithQs,
-    [HTTP2_HEADER_METHOD]: config.method || 'GET',
-  });
+  // custom headers sent from the consumer. Note: the native `Headers` type does
+  // not support HTTP2 header names (e.g. ':status')
+  const headers = headersToClassicHeaders(opts.headers);
+  headers[HTTP2_HEADER_PATH] = pathWithQs;
+  headers[HTTP2_HEADER_METHOD] = config.method || 'GET';
+
+  opts.headers = headers;
 
   // NOTE: This is working around an upstream bug in `apirequest.ts`. The
   // request path assumes that the `content-type` header is going to be set in
@@ -98,14 +107,14 @@ export async function request<T>(
     }
   }
 
-  const res: GaxiosResponse<T> = {
+  const res = {
     config,
-    request: {} as GaxiosXMLHttpRequest,
-    headers: [],
+    headers: {},
     status: 0,
     data: {} as T,
     statusText: '',
-  };
+  } as GaxiosResponseWithHTTP2;
+
   const chunks: Buffer[] = [];
   const session = sessionData.session;
   let req: http2.ClientHttp2Stream;
@@ -113,18 +122,22 @@ export async function request<T>(
     try {
       req = session
         .request(headers)
-        .on('response', headers => {
-          res.headers = headers;
-          res.status = Number(headers[HTTP2_HEADER_STATUS]);
+        .on('response', responseHeaders => {
+          Object.assign(res, {
+            headers: responseHeaders,
+            status: responseHeaders[HTTP2_HEADER_STATUS],
+          });
+
           let stream: Readable = req;
-          if (headers[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
+          if (responseHeaders[HTTP2_HEADER_CONTENT_ENCODING] === 'gzip') {
             stream = req.pipe(zlib.createGunzip());
           }
           if (opts.responseType === 'stream') {
-            res.data = stream as {} as T;
+            res.data = stream;
             resolve(res);
             return;
           }
+
           stream
             .on('data', d => {
               chunks.push(d);
@@ -157,7 +170,7 @@ export async function request<T>(
                   const body = util.inspect(res.data, {depth: 5});
                   message = `${message}\n'${body}`;
                 }
-                reject(new GaxiosError<T>(message, opts, res));
+                reject(new Error(message, {cause: res}));
               }
               resolve(res);
               return;
@@ -168,10 +181,13 @@ export async function request<T>(
           return;
         });
     } catch (e) {
-      closeSession(url);
-      reject(e);
+      closeSession(url)
+        .then(() => reject(e))
+        .catch(reject);
+      return;
     }
-    res.request = req as {} as GaxiosXMLHttpRequest;
+
+    res.request = req;
 
     // If data was provided, write it to the request in the form of
     // a stream, string data, or a basic object.
@@ -192,9 +208,7 @@ export async function request<T>(
     // a nice round number, and I don't know what would be a better
     // choice. Keeping this channel open will hold a file descriptor
     // which will prevent the process from exiting.
-    sessionData.timeoutHandle = setTimeout(() => {
-      closeSession(url);
-    }, 500);
+    sessionData.timeoutHandle = setTimeout(() => closeSession(url), 500);
   });
 }
 

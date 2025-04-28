@@ -42,7 +42,7 @@ export class AuthPlus extends GoogleAuth {
    * subsequent calls to getProjectId().
    */
   async getClient(
-    options?: GoogleAuthOptions
+    options?: GoogleAuthOptions,
   ): Promise<
     Compute | JWT | UserRefreshClient | BaseExternalAccountClient | Impersonated
   > {

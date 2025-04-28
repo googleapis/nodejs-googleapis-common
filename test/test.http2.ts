@@ -103,7 +103,7 @@ describe('http2', () => {
         assert.strictEqual(headers[HTTP2_HEADER_METHOD], 'GET');
         assert.strictEqual(
           headers[HTTP2_HEADER_CONTENT_TYPE],
-          'application/json'
+          'application/json',
         );
         stream = new EventEmitter();
         return stream;
