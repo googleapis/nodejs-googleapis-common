@@ -33,7 +33,6 @@ export {
   GaxiosOptions,
   GaxiosResponse,
   RetryConfig,
-  GaxiosResponseWithHTTP2,
 } from 'gaxios';
 
 export {
@@ -68,5 +67,6 @@ export {
   Schemas,
   SchemaType,
 } from './schema';
+export {GaxiosResponseWithHTTP2} from './http2';
 
 export * from './util';
