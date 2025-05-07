@@ -33,6 +33,7 @@ export {
   GaxiosOptions,
   GaxiosResponse,
   RetryConfig,
+  GaxiosResponseWithHTTP2,
 } from 'gaxios';
 
 export {
