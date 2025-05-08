@@ -50,11 +50,14 @@ export const sessions: {[index: string]: SessionData} = {};
 /**
  * @experimental
  */
-export interface GaxiosResponseWithHTTP2<T = ReturnType<JSON['parse']>>
+export interface GaxiosResponseWithHTTP2Data<T = ReturnType<JSON['parse']>>
   extends Omit<GaxiosResponse<T>, 'headers'> {
   request?: http2.ClientHttp2Stream;
   headers: http2.IncomingHttpHeaders & http2.IncomingHttpStatusHeader; // {}
 }
+export type GaxiosResponseWithHTTP2<T = GaxiosResponseWithHTTP2Data> = Promise<
+  GaxiosResponseWithHTTP2Data<T>
+>;
 
 /**
  * Public method to make an http2 request.

@@ -374,7 +374,7 @@ describe('createAPIRequest', () => {
         rStream.on('progress', (currentBytesReceived: number) => {
           totalBytesReceived += currentBytesReceived;
         });
-        (opts.data as stream.Stream.Readable).pipe(rStream);
+        (opts.data as any).pipe(rStream);
       },
     };
 
