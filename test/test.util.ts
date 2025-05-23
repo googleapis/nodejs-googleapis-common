@@ -14,7 +14,7 @@
 
 import {strict as assert} from 'assert';
 import {describe, it} from 'mocha';
-import {headersToClassicHeaders, martialGaxiosResponse} from '../src/util';
+import {headersToClassicHeaders, marshallGaxiosResponse} from '../src/util';
 import {GaxiosResponse} from 'gaxios';
 
 describe('headersToClassicHeaders', () => {
@@ -27,7 +27,7 @@ describe('headersToClassicHeaders', () => {
   });
 });
 
-describe('martialGaxiosResponse', () => {
+describe('marshallGaxiosResponse', () => {
   it('should return a valid Response with plain headers', () => {
     const headers = {a: 'b'};
     const status = 204;
@@ -43,7 +43,7 @@ describe('martialGaxiosResponse', () => {
       data: {},
     });
 
-    const newRes = martialGaxiosResponse(gRes);
+    const newRes = marshallGaxiosResponse(gRes);
 
     // headers should be writable
     assert.deepEqual(newRes.headers, headers);

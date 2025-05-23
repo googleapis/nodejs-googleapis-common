@@ -44,12 +44,12 @@ export function headersToClassicHeaders<T extends Record<string, string>>(
 }
 
 /**
- * Martial a GaxiosResponse into a library-friendly type.
+ * marshall a GaxiosResponse into a library-friendly type.
  *
  * @param res the Gaxios Response
  * @returns the GaxiosResponse with HTTP2-ready/compatible headers
  */
-export function martialGaxiosResponse<T extends GaxiosResponse>(res?: T) {
+export function marshallGaxiosResponse<T extends GaxiosResponse>(res?: T) {
   return Object.defineProperties(res || {}, {
     headers: {
       configurable: true,
