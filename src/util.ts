@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import {GaxiosResponse} from 'gaxios';
+import {GaxiosResponseWithHTTP2} from './http2';
 
 // TypeScript does not have `HeadersInit` in the standard types yet
 export type HeadersInit = ConstructorParameters<typeof Headers>[0];
@@ -49,7 +50,12 @@ export function headersToClassicHeaders<T extends Record<string, string>>(
  * @returns the GaxiosResponse with HTTP2-ready/compatible headers
  */
 export function martialGaxiosResponse<T extends GaxiosResponse>(res?: T) {
-  return Object.assign({}, res, {
-    headers: headersToClassicHeaders(res?.headers),
-  });
+  return Object.defineProperties(res || {}, {
+    headers: {
+      configurable: true,
+      writable: true,
+      enumerable: true,
+      value: headersToClassicHeaders(res?.headers),
+    },
+  }) as unknown as GaxiosResponseWithHTTP2;
 }
