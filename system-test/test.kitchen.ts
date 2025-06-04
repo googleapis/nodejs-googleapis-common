@@ -14,7 +14,8 @@
 
 import * as assert from 'assert';
 import {describe, it, before, after} from 'mocha';
-import * as execa from 'execa';
+import {execFileSync} from 'child_process';
+
 import * as fs from 'fs';
 import * as mv from 'mv';
 import {ncp} from 'ncp';
@@ -37,18 +38,24 @@ describe('pack and install', () => {
    */
   before('should be able to use the d.ts', async () => {
     console.log(`${__filename} staging area: ${stagingPath}`);
-    await execa('npm', ['pack'], {stdio: 'inherit'});
+    execFileSync('npm', ['pack']);
     const tarball = `${pkg.name}-${pkg.version}.tgz`;
     // stagingPath can be on another filesystem so fs.rename() will fail
     // with EXDEV, hence we use `mv` module here.
     await mvp(tarball, `${stagingPath}/googleapis-common.tgz`);
     await ncpp('system-test/fixtures/kitchen', `${stagingPath}/`);
-    await execa('npm', ['install'], {cwd: `${stagingPath}/`, stdio: 'inherit'});
+    execFileSync('npm', ['install'], {
+      cwd: `${stagingPath}/`,
+      stdio: 'inherit',
+    });
   });
 
   it('should be able to webpack the library', async () => {
     // we expect npm install is executed in the before hook
-    await execa('npx', ['webpack'], {cwd: `${stagingPath}/`, stdio: 'inherit'});
+    execFileSync('npx', ['webpack'], {
+      cwd: `${stagingPath}/`,
+      stdio: 'inherit',
+    });
     const bundle = path.join(stagingPath, 'dist', 'bundle.min.js');
     const stat = fs.statSync(bundle);
     assert(stat.size < 400 * 1024);
