@@ -23,7 +23,7 @@ import {isBrowser} from './isbrowser';
 import {SchemaParameters} from './schema';
 import * as h2 from './http2';
 import {GaxiosResponseWithHTTP2} from './http2';
-import {headersToClassicHeaders, martialGaxiosResponse} from './util';
+import {headersToClassicHeaders, marshallGaxiosResponse} from './util';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../../package.json');
@@ -382,12 +382,12 @@ async function createAPIRequestAsync<T>(
     } else {
       const res = await (authClient as GoogleAuth).request<T>(options);
 
-      return martialGaxiosResponse(res);
+      return marshallGaxiosResponse(res);
     }
   } else {
     return new Gaxios()
       .request<T>(options)
-      .then(res => martialGaxiosResponse(res));
+      .then(res => marshallGaxiosResponse(res));
   }
 }
 
