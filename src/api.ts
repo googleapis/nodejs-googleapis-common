@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {GaxiosOptions, GaxiosResponse} from 'gaxios';
+import {GaxiosOptions} from 'gaxios';
 import {
   OAuth2Client,
   GoogleAuth,
@@ -19,6 +19,7 @@ import {
 } from 'google-auth-library';
 
 import {Endpoint} from './endpoint';
+import {GaxiosResponseWithHTTP2} from './http2';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface APIRequestParams<T = any> {
@@ -80,7 +81,7 @@ export interface ServiceOptions extends GlobalOptions {
 
 export type BodyResponseCallback<T> = (
   err: Error | null,
-  res?: GaxiosResponse<T> | null
+  res?: GaxiosResponseWithHTTP2<T> | null,
 ) => void;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
