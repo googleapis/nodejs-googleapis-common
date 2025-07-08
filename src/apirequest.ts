@@ -68,15 +68,15 @@ function getMissingParams(params: SchemaParameters, required: string[]) {
  * @param callback   Callback when request finished or error found
  */
 export function createAPIRequest<T>(
-  parameters: APIRequestParams
+  parameters: APIRequestParams,
 ): Promise<GaxiosResponseWithHTTP2<T>>;
 export function createAPIRequest<T>(
   parameters: APIRequestParams,
-  callback: BodyResponseCallback<T>
+  callback: BodyResponseCallback<T>,
 ): void;
 export function createAPIRequest<T>(
   parameters: APIRequestParams,
-  callback?: BodyResponseCallback<T>
+  callback?: BodyResponseCallback<T>,
 ): void | Promise<GaxiosResponseWithHTTP2<T>> {
   if (callback) {
     createAPIRequestAsync<T>(parameters).then(r => callback(null, r), callback);
@@ -86,7 +86,7 @@ export function createAPIRequest<T>(
 }
 
 async function createAPIRequestAsync<T>(
-  parameters: APIRequestParams
+  parameters: APIRequestParams,
 ): Promise<GaxiosResponseWithHTTP2<T>> {
   // Combine the GaxiosOptions options passed with this specific
   // API call with the global options configured at the API Context
@@ -96,14 +96,14 @@ async function createAPIRequestAsync<T>(
     {}, // Ensure we don't leak settings upstream
     parameters.context.google?._options || {}, // Google level options
     parameters.context._options || {}, // Per-API options
-    parameters.options // API call params
+    parameters.options, // API call params
   );
 
   const params = extend(
     true,
     {}, // New base object
     options.params, // Combined global/per-api params
-    parameters.params // API call params
+    parameters.params, // API call params
   );
 
   options.userAgentDirectives = options.userAgentDirectives || [];
@@ -329,7 +329,7 @@ async function createAPIRequestAsync<T>(
     options.universeDomain !== options.universe_domain
   ) {
     throw new Error(
-      'Please set either universe_domain or universeDomain, but not both.'
+      'Please set either universe_domain or universeDomain, but not both.',
     );
   }
   const universeDomainEnvVar =
@@ -370,7 +370,7 @@ async function createAPIRequestAsync<T>(
     if (universeFromAuth && universeDomain !== universeFromAuth) {
       throw new Error(
         `The configured universe domain (${universeDomain}) does not match the universe domain found in the credentials (${universeFromAuth}). ` +
-          "If you haven't configured the universe domain explicitly, googleapis.com is the default."
+          "If you haven't configured the universe domain explicitly, googleapis.com is the default.",
       );
     }
 
@@ -408,7 +408,7 @@ class ProgressStream extends stream.Transform {
 
 function populateAPIHeader(
   headers: Record<string, string>,
-  apiVersion: string | undefined
+  apiVersion: string | undefined,
 ) {
   // TODO: we should eventually think about adding browser support for this
   // populating the gl-web header (web support should also be added to
